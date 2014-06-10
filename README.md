@@ -5,6 +5,8 @@ r-space
 
 ## Themenüberblick
 
+### [**Arbeiten mit R und RStudio**](https://github.com/ctreffe/r-space/wiki/r-intro)
+
 ### [**Datenzugriff mit R**](https://github.com/ctreffe/r-space/wiki/datenzugriff)
 
 ### [**Erstellen von Grafiken mit R**](https://github.com/ctreffe/r-space/wiki/grafiken)
