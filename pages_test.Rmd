@@ -1,8 +1,5 @@
 ---
-title: "Github Pages Test"
-author: "Christian Treffenstädt"
-date: "8 5 2019"
-output: html_document
+title: "Test"
 ---
 
 Personal Test 2

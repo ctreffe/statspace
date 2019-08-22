@@ -1,0 +1,10 @@
+name: "Test"
+output_dir: "docs"
+navbar:
+  title: "Test"
+  left:
+  - text: "Home"
+  href: index.html
+output:
+  html_document:
+theme: cosmo
