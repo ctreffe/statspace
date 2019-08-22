@@ -4,7 +4,9 @@ navbar:
   title: "Test"
   left:
   - text: "Home"
-  href: index.html
+    href: index.html
+  - text: "Test"
+    href: pages_test.html
 output:
   html_document:
-theme: cosmo
+theme: minima
