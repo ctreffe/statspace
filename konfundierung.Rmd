@@ -175,13 +175,13 @@ Wir betrachten hier kurz sowohl die wissenschaftliche, als auch die Praktiker-Pe
 
 -   Auf dieser Grundlage kann eine praktische Entscheidung getroffen werden. Das kann unter Umständen auch bedeuten, dass es angemessen ist, Interventionen mit guter Evidenz **nicht** umzusetzen, dafür aber andere Interventionen mit schlechter Evidenz **umzusetzen**.
 
-+-----------------------------+---------------------------------------------------------------------+-------------------------------------------------------------------------------+
-| /                           | Intervention umgesetzt                                              | Intervention nicht umgesetzt                                                  |
-+=============================+=====================================================================+===============================================================================+
-| Theorie **trifft zu**       | (1) Intervention auf Basis zutreffender Theorie umgesetzt           | (2) Intervention auf Basis zutreffender Theorie **nicht** umgesetzt           |
-+-----------------------------+---------------------------------------------------------------------+-------------------------------------------------------------------------------+
-| Theorie **trifft nicht zu** | (3) Intervention auf Basis **nicht** zutreffender Theorie umgesetzt | (4) Intervention auf Basis **nicht** zutreffender Theorie **nicht** umgesetzt |
-+-----------------------------+---------------------------------------------------------------------+-------------------------------------------------------------------------------+
++-----------------------------+-----------------------------------------------------------------+---------------------------------------------------------------------------+
+| /                           | Intervention umgesetzt                                          | Intervention nicht umgesetzt                                              |
++=============================+=================================================================+===========================================================================+
+| Theorie **trifft zu**       | Intervention auf Basis zutreffender Theorie umgesetzt           | Intervention auf Basis zutreffender Theorie **nicht** umgesetzt           |
++-----------------------------+-----------------------------------------------------------------+---------------------------------------------------------------------------+
+| Theorie **trifft nicht zu** | Intervention auf Basis **nicht** zutreffender Theorie umgesetzt | Intervention auf Basis **nicht** zutreffender Theorie **nicht** umgesetzt |
++-----------------------------+-----------------------------------------------------------------+---------------------------------------------------------------------------+
 
 ### Was tun gegen Konfundierung?
 
