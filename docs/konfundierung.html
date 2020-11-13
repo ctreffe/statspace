@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Konfundierung</title>
+
+<script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Methoden</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="konfundierung.html">Konfundierung</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown-header">Georg-Elias-Müller-Institut für Psychologie</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Konfundierung</h1>
+
+</div>
+
+
+<div id="was-ist-konfundierung" class="section level2">
+<h2>Was ist Konfundierung?</h2>
+<p><strong>Konfundierung</strong> | Lat. <em>confundere</em>: Verwechseln, vermischen, zusammengießen</p>
+<p>Konfundierung ist ein besonders folgenreicher Fall von irreführenden Daten. Sie liegt vor, wenn wir einen Zusammenhang zwischen zwei Variablen beobachten, der eigentlich auf eine dritte Variable zurückzuführen ist, die wir nicht berücksichtigt haben. Im Detail ist Konfundierung durch folgende Aspekte gekennzeichnet:</p>
+<ol style="list-style-type: decimal">
+<li>Unsere unabhängige Variable korreliert mit einer dritten Variable, die wir in der Analyse nicht berücksichtigt haben.</li>
+<li>Diese dritte Variable verursacht Veränderungen in der abhängigen Variable.</li>
+<li>Durch die Punkte (1) und (2) finden wir einen Zusammenhang (z.B. Korrelation) zwischen unserer unabhängigen und unserer abhängigen Variable.</li>
+</ol>
+<p>Wenn wir nun aus dem Zusammenhang, bzw. der Korrelation der unabhängigen und der abhängigen Variable schließen, dass die unabhängige Variable Änderungen in der abhängigen Variable <em>verursacht</em> (d.h. dass sie einen <em>kausalen</em> Einfluss hat), dann unterliegen wir einem Irrtum.</p>
+<p><img src="files/konfundierung.png" style="text-align: center;" width="750" /></p>
+</div>
+<div id="beispiel-die-emotions-ablösungs-therapie" class="section level2">
+<h2>Beispiel: Die Emotions-Ablösungs-Therapie</h2>
+<p><img src="files/coat.png" style="float: left; margin-right: 1rem;" width="200" /></p>
+<div id="die-story" class="section level3">
+<h3>Die Story</h3>
+<p>Nehmen wir einmal an, wir möchten die Wirkung einer neuen Psychotherapiemethode testen. Die Methode, um die es geht, ist die (fiktive) sogenannte “Emotions-Ablösungs-Therapie”. Sie funktioniert so: Patient:innen mit schwerer klinischer Depression ziehen sich zu Beginn einer Therapiesitzung einen schweren Mantel an. Während der Sitzung lassen die Patient:innen insbesondere ihren negativen Emotionen freien Lauf. Dabei stellen die Patient:innen sich vor, wie sie ihre Emotionen in den Mantel abgeben. Am Ende der häufig sowohl für Therapeut:in, als auch für Patient:in sehr anstrengenden Sitzung, wird der Mantel und damit die negative Emotionalität einfach abgelegt.</p>
+<p>Ein norwegisches Forschungsteam hat kürzlich eine Pressekonferenz abgehalten, in der sie von vielversprechenden Ergebnissen einer ersten Studie berichten. Nach einem 12-wöchigen experimentellen Therapieprogramm in der Wartezeit auf einen herkömmlichen Therapieplatz wiesen die Teilnehmenden deutlich geringere Werte in Becks Depressions-Inventar auf, als vor der Therapie.</p>
+</div>
+<div id="die-analyse" class="section level3">
+<h3>Die Analyse</h3>
+<p>Hier zunächst ein Blick auf die Daten der ersten beiden Versuchspersonen. Die Spalte <code>id</code> enthält eine Zahl zur identifizierung der Versuchsperson, <code>time</code> zeigt den Messzeitpunkt (“pre” = vor der Behandlung, “post” = nach der Behandlung) und <code>bdi</code> enthält den BDI-Summenscore, der Versuchsperson zum jeweiligen Zeitpunkt. Es gibt zwei Zeitpunkte und daher bei diesem Datenformat (“long” Format genannt) zwei Zeilen pro Person.</p>
+<pre><code>## # A tibble: 120 x 3
+##      id time    bdi
+##   &lt;int&gt; &lt;fct&gt; &lt;dbl&gt;
+## 1     1 pre      56
+## 2     1 post     48
+## 3     2 pre      54
+## 4     2 post     52
+## # … with 116 more rows</code></pre>
+<p>Das Forschungsteam analysierte die Daten mit einer einfachen linearen Regression (in diesem Fall äquivalent zum t-Test). Hier die Ergebnisse:</p>
+<pre><code>## 
+## Call:
+## lm(formula = bdi ~ time, data = treated)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -20.167  -9.817  -0.200   9.433  20.300 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   38.167      2.132  17.900   &lt;2e-16 ***
+## timepost      -6.467      3.015  -2.145   0.0362 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 11.68 on 58 degrees of freedom
+## Multiple R-squared:  0.07347,    Adjusted R-squared:  0.0575 
+## F-statistic: 4.599 on 1 and 58 DF,  p-value: 0.03619</code></pre>
+<p>Der Unterschied zwischen prä- und post-Messung ist erheblich: Der BDI-Summenscore war im Mittel nach der Behandlung um ganze -6.47 Punkte geringer als vorher (95 %-Konfidenzintervall: [-12.5, -0.43 ]). Der Unterschied ist auch in der grafischen Darstellung deutlich zu sehen:</p>
+<div class="figure" style="text-align: center">
+<img src="konfundierung_files/figure-html/unnamed-chunk-3-1.png" alt="**Abbildung**: Wirkung der Emotions-Ablösungs-Therapie.
+Fehlerbalken zeigen plus/minus eine Standardabweichung im BDI score um den Mittelwert.
+Gepunktete Linien zeigen 95%-Konfidenzintervalle für die Mittelwerte." width="90%" />
+<p class="caption">
+<strong>Abbildung</strong>: Wirkung der Emotions-Ablösungs-Therapie. Fehlerbalken zeigen plus/minus eine Standardabweichung im BDI score um den Mittelwert. Gepunktete Linien zeigen 95%-Konfidenzintervalle für die Mittelwerte.
+</p>
+</div>
+</div>
+<div id="der-haken" class="section level3">
+<h3>Der Haken</h3>
+<p>Was ist nun der Haken an dieser Analyse? Der Haken ist: Die Datenerhebung begann im Winter und endete im Frühling. Im Winter gibt es, gerade in nördlichen Breitengeraden, nur sehr wenige Stunden Sonnenlicht pro Tag. Das kann das Befinden von Menschen erheblich beeinflussen. So bilden viele Menschen in nördlichen Ländern eine sogenannte Winterdepression aus. Sobald es wieder mehr Sonnenlicht gibt, fühlen sich die Menschen wieder besser. Gehen wir einmal die Checkliste von oben durch:</p>
+<ol style="list-style-type: decimal">
+<li>Unsere unabhängige Variable (Zeipunkt der BDI-Messung, prä/post) korreliert mit einer dritten Variable, die wir in der Analyse nicht berücksichtigt haben: Die prä-Messung fand im Winter, die post-Messung im Frühling statt.</li>
+<li>Diese dritte Variable verursacht Veränderungen in der abhängigen Variable: Im Winter gibt es wegen der Sonneneinstrahlung generell hohe BDI-Werte, im Frühling geringere.</li>
+<li>Durch die Kombination von (1) und (2) scheint es in unserer naiven Analyse so, als würden die Daten für die Wirksamkeit der Therapie sprechen. (Hier wissen wir: Das ist ein Fehlschluss. In der Realität wissen wir das oft nicht.)</li>
+</ol>
+</div>
+<div id="warum-ist-der-haken-wichtig" class="section level3">
+<h3>Warum ist der Haken wichtig?</h3>
+<p>Wir betrachten hier kurz sowohl die wissenschaftliche, als auch die Praktiker-Perspektive, und unterscheiden zwei Szenarien:</p>
+<ol style="list-style-type: decimal">
+<li>Wir sind unsicher, ob Konfundierung vorliegt. Das ist der Fall, wenn wir Konfundierung durch unser Forschungsdesign nicht ausschließen können, z.B. weil wir einfach keine Kontrollgruppe haben, die wir mit unserer Experimentalgruppe vergleichen. Wir können dann schlicht nicht wissen, ob Konfundierung vorliegt, selbst wenn wir keine Vermutung haben, welche Einflüsse möglicherweise zu Konfundierung führen könnten.</li>
+<li>Wir haben Hinweise auf Konfundierung. Das ist der Fall, wenn wir (1) Konfundierung durch nicht ausschließen können und (2) es darüber hinaus zusätzlich Informationen gibt, die auf Konfundierung hindeuten. So ein Hinweis könnte z.B. eine plausible Alternativerklärung oder eine Ungereimtheit in der statistischen Analyse sein. Die Winterdepressions-Erklärung aus dem Beispiel oben ist eine solche plausible Alternativerklärung.</li>
+</ol>
+<p><strong>Wissenschaftliche Perspektive |</strong> Die wissenschaftliche Perspektive stellt den Erkenntnisgewinn in den Mittelpunkt: Stimmt unsere Theorie? Wie groß und wie zuverlässig ist der Effekt? Welche Faktoren beeinflussen das Ergebnis?</p>
+<ul>
+<li>Wenn in einer Studie eine Alternativerklärung für das gefundene Ergebnis durch eine konfundierende Drittvariable nicht ausgeschlossen werden kann, dann handelt es sich bei dieser Studie nicht um einen <em>geeigneten Test</em> der untersuchten Theorie oder Hypothese.</li>
+<li>Das heißt nicht notwendigerweise, dass die Theorie oder Hypothese durch die Studie widerlegt wird - sie wurde einfach nicht richtig getestet. Sie bietet per se erst einmal keine gute Evidenz.</li>
+<li>Wenn wir darüber hinaus Hinweise auf Konfundierung haben, und diese Konfundierug den gesamten Effekt erklären kann, dann kann die Studie als Evidenz gegen die Theorie/Hypothese interpretiert werden. Man sollte trotzdem meistens vorsichtig mit einem starken Urteil sein und lieber zusätzliche Studien mit experimenteller Kontrolle für Konfundierung durchführen.</li>
+</ul>
+<p><strong>Praktiker-Perspektive</strong> | Die praktische Perspektive stellt die Nützlichkeit einer aus der Forschung abgeleiteten Intervention in den Mittelpunkt: Sollten wir die Intervention einsetzen? Wie überzeugt sind wir insgesamt von der Evidenz für oder gegen die Wirksamkeit der Intervention? Wie ist das Kosten-Nutzen-Verhältnis? Diese Fragen werden durch die wissenschaftliche Perspektive unterfüttert. Es kann dabei auch um generelle Handlungsempfehlungen gehen, nicht nur um ganz konkret umrissene Interventionen.</p>
+<ul>
+<li><p>Wenn eine Konfundierung nicht ausgeschlossen werden kann (und die konfundierte Studie die einzige verfügbare Evidenz ist), dann kann es sein, dass der vermutete/gefunde Effekt in Wirklichkeit nicht existiert. Das hat praktische Konsequenzen.</p></li>
+<li><p>Praktiker sollten dennoch nicht einfach dem Schema folgen, dass wirksame Interventionen umgesetzt werden und nicht eindeutig wirksame Interventionen nicht umgesetzt werden. Sie müssen stattdessen als Risikomanager:innen handeln und die möglichen positiven und negativen Konsequenzen ihrer Entscheidung ganzheitlich abwägen.</p></li>
+<li><p>Dafür eignet sich die Abwägung anhand einer vier-Felder-Tafel, die vier Situationen aufzeigt (siehe unten). Für jede dieser Situationen müssen die folgenden Fragen beantwortet werden:</p>
+<ul>
+<li>Welche Kosten (finanzielle und Opportunitätskosten) entstehen durch diese Entscheidung?</li>
+<li>Welche positiven Effekte könnten durch diese Entscheidung eintreten?</li>
+<li>Welche negativen Effekte könnten durch diese Entscheidung eintreten?</li>
+<li>Wie groß, bzw. wichtig sind die möglichen positiven und negativen Effekte?</li>
+<li>Wie wahrscheinlich sind die jeweiligen positiven oder negativen Effekte? Hier sollten die Gesamtheit der empirischen Evidenz, die Theorie über den Wirkmechanismus und praktische Erfahrung einfließen.</li>
+</ul></li>
+<li><p>Auf dieser Grundlage kann eine praktische Entscheidung getroffen werden. Das kann unter Umständen auch bedeuten, dass es angemessen ist, Interventionen mit guter Evidenz <strong>nicht</strong> umzusetzen, dafür aber andere Interventionen mit schlechter Evidenz <strong>umzusetzen</strong>.</p></li>
+</ul>
+<table>
+<colgroup>
+<col width="16%" />
+<col width="38%" />
+<col width="44%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>/</th>
+<th>Intervention umgesetzt</th>
+<th>Intervention nicht umgesetzt</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Theorie <strong>trifft zu</strong></td>
+<td><ol style="list-style-type: decimal">
+<li>Intervention auf Basis zutreffender Theorie umgesetzt</li>
+</ol></td>
+<td><ol start="2" style="list-style-type: decimal">
+<li>Intervention auf Basis zutreffender Theorie <strong>nicht</strong> umgesetzt</li>
+</ol></td>
+</tr>
+<tr class="even">
+<td>Theorie <strong>trifft nicht zu</strong></td>
+<td><ol start="3" style="list-style-type: decimal">
+<li>Intervention auf Basis <strong>nicht</strong> zutreffender Theorie umgesetzt</li>
+</ol></td>
+<td><ol start="4" style="list-style-type: decimal">
+<li>Intervention auf Basis <strong>nicht</strong> zutreffender Theorie <strong>nicht</strong> umgesetzt</li>
+</ol></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="was-tun-gegen-konfundierung" class="section level3">
+<h3>Was tun gegen Konfundierung?</h3>
+<ul>
+<li><p><strong>Das randomisierte Experiment</strong> | Glücklicherweise gibt es eine wahre Wunderwaffe gegen Konfundierung: Das randomisierte Experiment. Wir teilen dabei unsere Versuchspersonen zufällig in eine <strong>Kontroll- und eine Experimentalgruppe</strong> ein. Die beiden Gruppen unterscheiden sich ausschließlich darin, dass in der Experimentalgruppe die untersuchte Intervention durchgeführt wird, während die Kontrollgruppe als Vergleichgröße dient, mit der der Einfluss von Drittvariablen konstant gehalten wird. Im Falle von Interventionen muss besonders aufgepasst werden, dass durch die Kontrollgruppe auch ein möglicher <em>Placebo</em>-Effekt kontrolliert wird. So können wir schließlich die Entwicklung in beiden Gruppen miteinander vergleichen den Effekt unserer Intervention identifizieren.</p></li>
+<li><p><strong>Statistische Kontrolle</strong> | Zufällige Zuteilung zu Experimentalgruppen ist nicht immer möglich, beispielsweise wenn man Unterschiede zwischen Männern und Frauen untersuchen möchte. In diesen Fällen können wir unsere Datenanalyse verbessern, indem wir bspw. mögliche konfundierende Drittvariablen in einer Regressionsanalyse explizit als Kovariaten mit aufnehmen. Theoretisch kann so die Verzerrung der Analyse behoben werden. Doch <em>Vorsicht</em>: Die statistische Kontrolle ist weniger sicher als das randomisierte Experiment. Insbesondere können diese Probleme die Analyse verzerren:</p>
+<ul>
+<li><p><strong>Unvollständige Kontrolle</strong> | Wenn es konfundierende Drittvariablen gibt, die wir in unserer Analyse nicht berücksichtigen, kann deren verzerrender Einfluss auf das Ergebnis nicht entfernt werden. Das kann zum Beispiel der Fall sein, wenn wir solche Drittvariablen vergessen, oder aber wenn es für uns schlicht nicht möglich ist, sie zu messen.</p></li>
+<li><p><strong>Collider</strong> | Es gibt noch eine andere Art von Drittvariable, sogenannte <em>Collider</em>. Sie sind die weniger bekannten Zwillinge der konfudierenden Drittvariablen und funktionieren genau umgekehrt: Ein Collider verzerrt unsere Ergebnisse, <em>wenn wir ihn in die statische Analyse aufnehmen</em>. Collider sind Variablen, die durch die unabhängige und die abhängige Variable gemeinsam verursacht werden. Wie genau das funktioniert, ist in diesem (englischen) Blog-Post schön beschrieben: <a href="http://www.the100.ci/2017/03/14/that-one-weird-third-variable-problem-nobody-ever-mentions-conditioning-on-a-collider/">That one weird third variable problem nobody ever mentions: Conditioning on a collider</a></p></li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="beispiel-aus-der-wissenschaft" class="section level2">
+<h2>Beispiel aus der Wissenschaft</h2>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

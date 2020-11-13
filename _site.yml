@@ -1,32 +1,20 @@
-name: "Test"
+name: "Methoden"
 output_dir: "docs"
-output:
-  html_document:
-theme: minima
 navbar:
-  title: "My Website"
-  type: inverse
+  title: "Methoden"
   left:
     - text: "Home"
-      icon: fa-home
       href: index.html
-    - text: "About"
-      icon: fa-info
-      href: about.html
-    - text: "More"
-      icon: fa-gear
-      menu:
-        - text: "Heading 1"
-        - text: "Page A"
-          href: page-a.html
-        - text: "Page B"
-          href: page-b.html
-        - text: "---------"
-        - text: "Heading 2"
-        - text: "Page C"
-          href: page-c.html
-        - text: "Page D"
-          href: page-d.html
+    - text: "Konfundierung"
+      href: konfundierung.html
+    # - text: "Skripte"
+    #   icon: fa-brain
+    #   menu:
+        
   right:
-    - icon: fa-question fa-lg
-      href: https://example.com
+    - text: "Georg-Elias-Müller-Institut für Psychologie"
+output:
+  html_document:
+    # theme: readable
+    highlight: textmate
+    css: styles.css

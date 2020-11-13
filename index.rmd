@@ -1,5 +1,5 @@
 ---
-title: "Test"
+title: "Welcome"
 ---
 
-This is an initial test page.
+Herzlich willkommen auf unserer Sammlung von Skripten mit Informationen über Forschungsmethoden und Praxisrelevanz in der Psychologie.
