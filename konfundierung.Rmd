@@ -2,6 +2,12 @@
 title: "Konfundierung"
 ---
 
+<!-- Comment Section:
+
+* 
+
+-->
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
@@ -193,4 +199,30 @@ Wir betrachten hier kurz sowohl die wissenschaftliche, als auch die Praktiker-Pe
 
     -   **Collider** \| Es gibt noch eine andere Art von Drittvariable, sogenannte *Collider*. Sie sind die weniger bekannten Zwillinge der konfudierenden Drittvariablen und funktionieren genau umgekehrt: Ein Collider verzerrt unsere Ergebnisse, *wenn wir ihn in die statische Analyse aufnehmen*. Collider sind Variablen, die durch die unabhängige und die abhängige Variable gemeinsam verursacht werden. Wie genau das funktioniert, ist in diesem (englischen) Blog-Post schön beschrieben: [That one weird third variable problem nobody ever mentions: Conditioning on a collider](http://www.the100.ci/2017/03/14/that-one-weird-third-variable-problem-nobody-ever-mentions-conditioning-on-a-collider/)
 
-## Beispiel aus der Wissenschaft
+## Beispiele aus der Wissenschaft
+
+### Der Belohnungsaufschub und seine Folgen
+
+1972 wurde unter der Leitung des Psychologen Walter Mischel an der Stanford University eine Studie (das berühmte Stanford Marshmallow Experiment) zum Belohnungsaufschub (Delayed Gratification) bei Kindern durchgeführt. In dem bekannten Experiment (Mischel & Ebbesen, 1970) werden Kinder mit einer essbaren Belohnung in einem Raum alleine gelassen. Ihnen wird gesagt, dass sie die Belohnung gerne essen dürfen, dass sie aber eine zweite Belohnung erhalten, wenn sie eine Zeit lang warten und die erste Belohnung nicht essen. Die Versuchsleitung verlässt mit diesem Versprechen den Raum und kehrt nach spätestens 15 Minuten (ggf. mit der zweiten Belohnung) zurück. Die zentrale Variable, die in diesem Experiment gemessen wird, ist die Zeit, die ein Kind es aushält, auf die Rückkehr der Versuchsleitung zu warten, bevor es die Belohnung isst.
+
+In einer vielbeachteten Folgestudie (Shoda, Mischel, & Peake, 1990) berichteten Mischel und seine Kollegen dann Zusammenhänge zwischen der Fähigkeit zum Belohungsaufschub im Kindesalter und kognitiven Fähigkeiten sowie Selbstregulationskompetenzen in der späteren Adoleszenz. Mit ihrer Studie legten die Autoren so den Grundstein für die nach wie vor verbreitete Annahme, dass es sich bei der Fähigkeit zum Belohnungsaufschub im frühen Kindesalter um eine fundamentale Fähigkeit handelt, die mit wesentlichen Vorteilen in der späteren Entwicklung einer Person einhergeht. Einige Folgevorhaben beschäftigten sich daher mit der Entwicklung gezielter Interventionen, die die Fähigkeit zum Belohnungsaufschub bei Kindern verbessern sollen, um deren weitere Entwicklung positiv zu beeinflussen. Wie sich allerdings zeigen lässt, ist der Einfluss dieser Fähigkeit auf die spätere Entwicklung wahrscheinlich wesentlich geringer, als Mischel und sein Kollegen dachten, da sie bei ihren Originalanalysen potenzielle Konfundierungen nicht berücksichtigt hatten. In einer aktuellen Replikationsstudie konnten Watts, Duncan und Quan (2018) zeigen, dass bei Kontrolle für naheliegende Konfundierungen (z.B. der Familienhintergrund und kognitive Fähigkeiten) sich der von ihnen zunächst ebenfalls beobachtete Effekt des Belohnungsaufschubs deutlich reduzierte oder sogar ganz verschwand (je nach Auswahl der Kontrollvariablen).
+
+Wir können nun also nicht ausschließen, dass die positiven Effekte eines stärkeren Belohnungsaufschubs im Kindesalter auf eine oder mehrere Drittvariablen (konkret die in der Replikationsstudie genutzten Kontrollvariablen) zurückzuführen ist. Die Autoren der Replikationsstudie raten in Anbetracht ihrer Ergebnisse folgerichtig zur Vorsicht, was die Entwicklung von Interventionen zur Stärkung des Belohungsaufschubs im Kindesalter angeht. Ob solche Interventionen in Anbetracht der hier gezeigten potenziellen Konfundierungen sinnvoll sind, ist fraglich.
+
+#### Quellen und weitere Informationen
+
+-   Originalartikel zum Belohungsaufschub:
+
+    Mischel, W., & Ebbesen, E. B. (1970). Attention in delay of gratification. *Journal of Personality and Social Psychology*, *16*(2), 329--337. <https://doi.org/10.1037/h0029815>
+
+-   Artikel zu Langzeit-Outcomes:
+
+    Shoda, Y., Mischel, W., & Peake, P. K. (1990). Predicting adolescent cognitive and self-regulatory competencies from preschool delay of gratification: Identifying diagnostic conditions. *Developmental Psychology*, *26*(6), 978--986. [https://doi.org/10.1037/0012-1649.26.6.978](https://dx.doi.org/10.1037/0012-1649.26.6.978)
+
+-   Replikation mit Kontrollvariablen:
+
+    Watts, T. W., Duncan, G. J., & Quan, H. (2018). Revisiting the Marshmallow Test: A Conceptual Replication Investigating Links Between Early Delay of Gratification and Later Outcomes. *Psychological Science*, *29*(7), 1159--1177. [https://doi.org/10.1177/0956797618761661](https://dx.doi.org/10.1177/0956797618761661)
+
+-   Ein Video, dass den Marshmallow Test zeigt: <https://www.youtube.com/watch?v=QX_oy9614HQ>
+
+-   Eine bekannte Abwandlung des Experiments in der Werbung: <https://www.youtube.com/watch?v=JhZQNjLBQFQ>
