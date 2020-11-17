@@ -4,7 +4,12 @@ title: "Konfundierung"
 
 <!-- Comment Section:
 
-* 
+Befehl zum Rendern der Seiten: rmarkdown::render_site()
+
+Topics & Todo:
+
+* Idee für zusätzliches Skript: Collider Bias und Selektionseffekte
+
 
 -->
 
