@@ -13,7 +13,7 @@
 
 <title>Konfundierung</title>
 
-<script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.1/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -23,17 +23,6 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
-<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
-
-<style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -307,6 +296,16 @@ $(document).ready(function () {
 </div>
 
 
+<!-- Comment Section:
+
+Befehl zum Rendern der Seiten: rmarkdown::render_site()
+
+Topics & Todo:
+
+* Idee für zusätzliches Skript: Collider Bias und Selektionseffekte
+
+
+-->
 <div id="was-ist-konfundierung" class="section level2">
 <h2>Was ist Konfundierung?</h2>
 <p><strong>Konfundierung</strong> | Lat. <em>confundere</em>: Verwechseln, vermischen, zusammengießen</p>
@@ -337,7 +336,7 @@ $(document).ready(function () {
 ## 2     1 post     48
 ## 3     2 pre      54
 ## 4     2 post     52
-## # … with 116 more rows</code></pre>
+## # ... with 116 more rows</code></pre>
 <p>Das Forschungsteam analysierte die Daten mit einer einfachen linearen Regression (in diesem Fall äquivalent zum t-Test). Hier die Ergebnisse:</p>
 <pre><code>## 
 ## Call:
@@ -442,8 +441,27 @@ Gepunktete Linien zeigen 95%-Konfidenzintervalle für die Mittelwerte." width="9
 </ul>
 </div>
 </div>
-<div id="beispiel-aus-der-wissenschaft" class="section level2">
-<h2>Beispiel aus der Wissenschaft</h2>
+<div id="beispiele-aus-der-wissenschaft" class="section level2">
+<h2>Beispiele aus der Wissenschaft</h2>
+<div id="der-belohnungsaufschub-und-seine-folgen" class="section level3">
+<h3>Der Belohnungsaufschub und seine Folgen</h3>
+<p>1972 wurde unter der Leitung des Psychologen Walter Mischel an der Stanford University eine Studie (das berühmte Stanford Marshmallow Experiment) zum Belohnungsaufschub (Delayed Gratification) bei Kindern durchgeführt. In dem bekannten Experiment (Mischel &amp; Ebbesen, 1970) werden Kinder mit einer essbaren Belohnung in einem Raum alleine gelassen. Ihnen wird gesagt, dass sie die Belohnung gerne essen dürfen, dass sie aber eine zweite Belohnung erhalten, wenn sie eine Zeit lang warten und die erste Belohnung nicht essen. Die Versuchsleitung verlässt mit diesem Versprechen den Raum und kehrt nach spätestens 15 Minuten (ggf. mit der zweiten Belohnung) zurück. Die zentrale Variable, die in diesem Experiment gemessen wird, ist die Zeit, die ein Kind es aushält, auf die Rückkehr der Versuchsleitung zu warten, bevor es die Belohnung isst.</p>
+<p>In einer vielbeachteten Folgestudie (Shoda, Mischel, &amp; Peake, 1990) berichteten Mischel und seine Kollegen dann Zusammenhänge zwischen der Fähigkeit zum Belohungsaufschub im Kindesalter und kognitiven Fähigkeiten sowie Selbstregulationskompetenzen in der späteren Adoleszenz. Mit ihrer Studie legten die Autoren so den Grundstein für die nach wie vor verbreitete Annahme, dass es sich bei der Fähigkeit zum Belohnungsaufschub im frühen Kindesalter um eine fundamentale Fähigkeit handelt, die mit wesentlichen Vorteilen in der späteren Entwicklung einer Person einhergeht. Einige Folgevorhaben beschäftigten sich daher mit der Entwicklung gezielter Interventionen, die die Fähigkeit zum Belohnungsaufschub bei Kindern verbessern sollen, um deren weitere Entwicklung positiv zu beeinflussen. Wie sich allerdings zeigen lässt, ist der Einfluss dieser Fähigkeit auf die spätere Entwicklung wahrscheinlich wesentlich geringer, als Mischel und sein Kollegen dachten, da sie bei ihren Originalanalysen potenzielle Konfundierungen nicht berücksichtigt hatten. In einer aktuellen Replikationsstudie konnten Watts, Duncan und Quan (2018) zeigen, dass bei Kontrolle für naheliegende Konfundierungen (z.B. der Familienhintergrund und kognitive Fähigkeiten) sich der von ihnen zunächst ebenfalls beobachtete Effekt des Belohnungsaufschubs deutlich reduzierte oder sogar ganz verschwand (je nach Auswahl der Kontrollvariablen).</p>
+<p>Wir können nun also nicht ausschließen, dass die positiven Effekte eines stärkeren Belohnungsaufschubs im Kindesalter auf eine oder mehrere Drittvariablen (konkret die in der Replikationsstudie genutzten Kontrollvariablen) zurückzuführen ist. Die Autoren der Replikationsstudie raten in Anbetracht ihrer Ergebnisse folgerichtig zur Vorsicht, was die Entwicklung von Interventionen zur Stärkung des Belohungsaufschubs im Kindesalter angeht. Ob solche Interventionen in Anbetracht der hier gezeigten potenziellen Konfundierungen sinnvoll sind, ist fraglich.</p>
+<div id="quellen-und-weitere-informationen" class="section level4">
+<h4>Quellen und weitere Informationen</h4>
+<ul>
+<li><p>Originalartikel zum Belohungsaufschub:</p>
+<p>Mischel, W., &amp; Ebbesen, E. B. (1970). Attention in delay of gratification. <em>Journal of Personality and Social Psychology</em>, <em>16</em>(2), 329–337. <a href="https://doi.org/10.1037/h0029815" class="uri">https://doi.org/10.1037/h0029815</a></p></li>
+<li><p>Artikel zu Langzeit-Outcomes:</p>
+<p>Shoda, Y., Mischel, W., &amp; Peake, P. K. (1990). Predicting adolescent cognitive and self-regulatory competencies from preschool delay of gratification: Identifying diagnostic conditions. <em>Developmental Psychology</em>, <em>26</em>(6), 978–986. <a href="https://dx.doi.org/10.1037/0012-1649.26.6.978">https://doi.org/10.1037/0012-1649.26.6.978</a></p></li>
+<li><p>Replikation mit Kontrollvariablen:</p>
+<p>Watts, T. W., Duncan, G. J., &amp; Quan, H. (2018). Revisiting the Marshmallow Test: A Conceptual Replication Investigating Links Between Early Delay of Gratification and Later Outcomes. <em>Psychological Science</em>, <em>29</em>(7), 1159–1177. <a href="https://dx.doi.org/10.1177/0956797618761661">https://doi.org/10.1177/0956797618761661</a></p></li>
+<li><p>Ein Video, dass den Marshmallow Test zeigt: <a href="https://www.youtube.com/watch?v=QX_oy9614HQ" class="uri">https://www.youtube.com/watch?v=QX_oy9614HQ</a></p></li>
+<li><p>Eine bekannte Abwandlung des Experiments in der Werbung: <a href="https://www.youtube.com/watch?v=JhZQNjLBQFQ" class="uri">https://www.youtube.com/watch?v=JhZQNjLBQFQ</a></p></li>
+</ul>
+</div>
+</div>
 </div>
 
 
@@ -455,7 +473,7 @@ Gepunktete Linien zeigen 95%-Konfidenzintervalle für die Mittelwerte." width="9
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();
