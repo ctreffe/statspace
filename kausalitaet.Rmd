@@ -151,6 +151,22 @@ Wir betrachten hier kurz sowohl die wissenschaftliche, als auch die Praktiker-Pe
 
 -   Dahingehend treffen die gleichen, detaillierteren Überlegungen zu, die wir in unserem Artikel zu [Konfundierung](https://ctreffe.github.io/r-space/konfundierung.html) (siehe "Warum ist der Haken wichtig?") geschildert haben.
 
+<div class="alert alert-info">
+
+#### **Studierenden-Perspektive**
+
+Besonders für Studierende ist es wichtig, Kernaussagen prägnant zusammenfassen zu können.
+
+**Frage**: Die Autoren berichten von einer Korrelation zwischen Bildungsjahren und sozioökonomischem Status und werten das als Evidenz für ihre Theorie, dass mehr Bildung zu einem höheren sozioökonomischen Status führt. Wie bewerten Sie die Evidenz?
+
+**Mögliche Antwort**: Zunächst einmal ist die Korrelation konsistent mit der Theorie. Allerdings kann durch die bloße Berechnung einer Korrelation weder die umgekehrte Kausalrichtung ausgeschlossen werden, noch können konfundierende Einflüsse von Drittvariablen ausgeschlossen werden. Deshalb handelt es sich allenfalls um einen schwachen Test der Theorie, die Evidenz ist nicht hinreichend für die Schlussfolgerung.
+
+**Frage**: Würden Sie auf Basis dieser Ergebnisse zusätzliche Investitionen ins Bildungsystem befürworten?
+
+**Mögliche Antwort**: Diese konkrete Evidenz ist nicht eindeutig und daher keine gute Entscheidungsgrundlage. Die Frage nach Investitionen ins Bildungssystem sollte allerdings mit einem größeren Horizont betrachtet werden: Es gibt durchaus plausible Gründe anzunehmen, dass Investitionen in Bildung von Nutzen sind. Der Umstand, dass die korrelative Evidenz unbefriegend ist, kann keineswegs als Beleg des Gegenteils gelten.
+
+</div>
+
 ## Literatur und Links
 
 -   Cook, Thomas D., and Donald T. Campbell. *Quasi-Experimentation: Design & Analysis Issues for Field Settings*. Houghton Mifflin Company, Boston 1979.
