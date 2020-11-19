@@ -13,7 +13,7 @@
 
 <title>Konfundierung</title>
 
-<script src="site_libs/header-attrs-2.1/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.3/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -276,8 +276,20 @@ $(document).ready(function () {
         <li>
   <a href="index.html">Home</a>
 </li>
-<li>
-  <a href="konfundierung.html">Konfundierung</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Methoden-Skripte
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="konfundierung.html">Konfundierung</a>
+    </li>
+    <li>
+      <a href="kausalitaet.html">Kaulität und Korrelation</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -336,7 +348,7 @@ Topics & Todo:
 ## 2     1 post     48
 ## 3     2 pre      54
 ## 4     2 post     52
-## # ... with 116 more rows</code></pre>
+## # … with 116 more rows</code></pre>
 <p>Das Forschungsteam analysierte die Daten mit einer einfachen linearen Regression (in diesem Fall äquivalent zum t-Test). Hier die Ergebnisse:</p>
 <pre><code>## 
 ## Call:
@@ -436,7 +448,7 @@ Gepunktete Linien zeigen 95%-Konfidenzintervalle für die Mittelwerte." width="9
 <li><p><strong>Statistische Kontrolle</strong> | Zufällige Zuteilung zu Experimentalgruppen ist nicht immer möglich, beispielsweise wenn man Unterschiede zwischen Männern und Frauen untersuchen möchte. In diesen Fällen können wir unsere Datenanalyse verbessern, indem wir bspw. mögliche konfundierende Drittvariablen in einer Regressionsanalyse explizit als Kovariaten mit aufnehmen. Theoretisch kann so die Verzerrung der Analyse behoben werden. Doch <em>Vorsicht</em>: Die statistische Kontrolle ist weniger sicher als das randomisierte Experiment. Insbesondere können diese Probleme die Analyse verzerren:</p>
 <ul>
 <li><p><strong>Unvollständige Kontrolle</strong> | Wenn es konfundierende Drittvariablen gibt, die wir in unserer Analyse nicht berücksichtigen, kann deren verzerrender Einfluss auf das Ergebnis nicht entfernt werden. Das kann zum Beispiel der Fall sein, wenn wir solche Drittvariablen vergessen, oder aber wenn es für uns schlicht nicht möglich ist, sie zu messen.</p></li>
-<li><p><strong>Collider</strong> | Es gibt noch eine andere Art von Drittvariable, sogenannte <em>Collider</em>. Sie sind die weniger bekannten Zwillinge der konfudierenden Drittvariablen und funktionieren genau umgekehrt: Ein Collider verzerrt unsere Ergebnisse, <em>wenn wir ihn in die statische Analyse aufnehmen</em>. Collider sind Variablen, die durch die unabhängige und die abhängige Variable gemeinsam verursacht werden. Wie genau das funktioniert, ist in diesem (englischen) Blog-Post schön beschrieben: <a href="http://www.the100.ci/2017/03/14/that-one-weird-third-variable-problem-nobody-ever-mentions-conditioning-on-a-collider/">That one weird third variable problem nobody ever mentions: Conditioning on a collider</a></p></li>
+<li><p><strong>Collider</strong> | Es gibt noch eine andere Art von Drittvariable, sogenannte <em>Collider</em>. Sie sind die weniger bekannten Zwillinge der konfudierenden Drittvariablen und funktionieren genau umgekehrt: Ein Collider verzerrt unsere Ergebnisse, <em>wenn wir ihn in die statische Analyse aufnehmen</em>. Collider sind Variablen, die durch die unabhängige und die abhängige Variable gemeinsam verursacht werden. Über Collider kann man auch als Selektionseffekte nachdenken. Wie genau das funktioniert, ist in diesem (englischen) Blog-Post schön beschrieben: <a href="http://www.the100.ci/2017/03/14/that-one-weird-third-variable-problem-nobody-ever-mentions-conditioning-on-a-collider/">That one weird third variable problem nobody ever mentions: Conditioning on a collider</a></p></li>
 </ul></li>
 </ul>
 </div>

@@ -5,11 +5,13 @@ navbar:
   left:
     - text: "Home"
       href: index.html
-    - text: "Konfundierung"
-      href: konfundierung.html
-    # - text: "Skripte"
-    #   icon: fa-brain
-    #   menu:
+      
+    - text: "Methoden-Skripte"
+      menu:
+        - text: "Konfundierung"
+          href: konfundierung.html
+        - text: "Kaulität und Korrelation"
+          href: kausalitaet.html
         
   right:
     - text: "Georg-Elias-Müller-Institut für Psychologie"
