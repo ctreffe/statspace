@@ -117,7 +117,7 @@ Auch wenn Korrelation allein keine hinreichende Bedingung für Kausalität ist, 
 ::: {.alert .alert-warning}
 **Zwei Worte der Vorsicht!**
 
-1.  Damit wir überzeugt sein können, dass ein bestimmter Effekt nicht vorliegt, müssen wir besonderes Augenmerk auf unsere Typ-2-Fehlerrate, also den Anteil falsch-negativer Ergebnisse richten. Der häufige Fall einer bloßen nicht-Widerlegung der Nullhypothese (p \> 0.05) ist nur bei hoher *Power* ein wertvoller Hinweis und insgesamt nicht die ideale Methode, um die *Abwesenheit* eines Effekts zu überprüfen. Zum Test der Abwesenheit eines Effekts können *Äquivalenztests* eingesetzt werden (siehe Link unten).
+1.  Damit wir überzeugt sein können, dass ein bestimmter Effekt nicht vorliegt, müssen wir besonderes Augenmerk auf unsere Typ-2-Fehlerrate (auch "Beta-Fehler", im Kontrat zum "Alpha-Fehler"), also den Anteil falsch-negativer Ergebnisse richten. Der häufige Fall einer bloßen nicht-Widerlegung der Nullhypothese (p \> 0.05) ist nur bei hoher *Power* ein wertvoller Hinweis und insgesamt nicht die ideale Methode, um die *Abwesenheit* eines Effekts zu überprüfen. Zum Test der Abwesenheit eines Effekts können *Äquivalenztests* eingesetzt werden (siehe Link unten).
 2.  Die statistische Korrelation bildet *lineare* Zusammenhänge ab, in der realen Welt gibt es aber auch *nicht-lineare*, z.B. *exponentielle* Zusammenhänge. Deshalb kann das fehlen einer linearen Korrelation nur lineare Kausalzusammenhänge widerlegen.
 :::
 
