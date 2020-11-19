@@ -36,7 +36,7 @@ Thomas Cook und Donald T. Campbell formulierten 1979 eine nützliche Definition 
 2.  Zeitliche Abfolge: Die Ursache muss zeitlich *vor* der Wirkung geschehen.
 3.  Keine [Konfundierung](https://ctreffe.github.io/r-space/konfundierung.html) durch Alternativerklärungen: Die UV ist der einzige Faktor, der die beobachtete Veränderung in der AV ausgelöst haben kann.
 
-Aus diesen drei Bedingungen kann man direkt ablesen, woher die Kernaussage von "Korrelation ≠ Kausalität" kommt: Wenn eine Korrelation vorliegt, dann wissen wir dadurch nicht automatisch, ob die anderen beiden Bedingungen für Kausalität auch erfüllt sind. Jede einzelne der drei Bedingungen ist *notwendig* für Kausalität, aber sie sind nur gemeinsam auch *hinreichend* (für eine kurze Erläuterung siehe Wiki: [notwendige und hinreichende Bedingung](https://de.wikipedia.org/wiki/Notwendige_und_hinreichende_Bedingung)).
+Aus diesen drei Bedingungen kann man direkt ablesen, woher die Kernaussage der Aussage "Korrelation ≠ Kausalität" kommt: Wenn eine Korrelation vorliegt, dann wissen wir dadurch nicht automatisch, ob die anderen beiden Bedingungen für Kausalität auch erfüllt sind. Jede einzelne der drei Bedingungen ist *notwendig* für Kausalität, aber sie sind nur gemeinsam auch *hinreichend* (für eine kurze Erläuterung siehe Wiki: [notwendige und hinreichende Bedingung](https://de.wikipedia.org/wiki/Notwendige_und_hinreichende_Bedingung)).
 
 Schauen wir uns nun zunächst einmal anhand eines Beispiels etwas genauer an, was das bedeutet. Wie Korrelationen trotzdem schon für sich genommen hilfreich bei der Erforschung von Ursache-Wirkungs-Beziehungen sein können, dazu später mehr.
 
@@ -70,7 +70,7 @@ p <- d %>% ggplot() +
   geom_point() +
   geom_smooth(method="lm", se=F) +
   labs(x = "Bildungsniveau in Jahren", 
-       y = "Sozioökonomischer Status (z-Werte)") +
+       y = "Sozioökonomischer Status im Alter von 40 (z-Werte)") +
   annotate(geom = "label", x = 9, y = 2, 
            label = glue::glue("r = {c_formatted}")) +
   theme_classic()
@@ -80,7 +80,7 @@ p <- d %>% ggplot() +
 
 ### Die Story
 
-Nehmen wir als Beispiel ein fiktives Forschungsprojekt, in der der Zusammenhang von sozioökonomischem Status und Bildungsniveau (gemessen in Jahren im Bildungssystem) untersucht wird. Das Forschungsteam hat eine Vermutug: Je mehr Bildung eine Person genießt, desto höher ist in der Folge ihr sozioökonomischer Status. Sie fragen 100 Menschen, wie viele Jahre sie im Bildungssystem verbracht haben, das beinhaltet z.B. alle Schulformen, Fachhochschulen und Universitäten. Eine Person, die mit 6 Jahren eingeschult wird und mit 26 ihr Studium abschließt hat somit 20 Jahre im Bildungssystem verbracht. Zusätzlich füllen die Befragten eine Skala aus, mit der ihr sozioökonomischer Status eingeschätzt wird.
+Nehmen wir als Beispiel ein fiktives Forschungsprojekt, in der der Zusammenhang von sozioökonomischem Status und Bildungsniveau (gemessen in Jahren im Bildungssystem) untersucht wird. Das Forschungsteam hat eine Vermutug: Je mehr Bildung eine Person genießt, desto höher ist in der Folge ihr sozioökonomischer Status. Sie fragen 100 Menschen im Alter von 40 Jahren, wie viele Jahre sie im Bildungssystem verbracht haben, das beinhaltet z.B. alle Schulformen, Fachhochschulen und Universitäten. Eine Person, die mit 6 Jahren eingeschult wird und mit 26 ihr Studium abschließt hat somit 20 Jahre im Bildungssystem verbracht. Zusätzlich füllen die Befragten eine Skala aus, mit der ihr sozioökonomischer Status eingeschätzt wird.
 
 ### Die Analyse
 
@@ -102,9 +102,9 @@ Unsere Wissenschaftler:innen waren leider zu voreilig, denn der beschriebene Zus
 
     -   Das Bildungsniveau verursacht Unterschiede im sozioökonomischen Status
 
-    -   Sozioökonomischer Status verursacht Unterschiede im Bildungsniveau
+    -   Sozioökonomischer Status verursacht Unterschiede im Bildungsniveau. Das kann der Fall sein, falls der sozioökonomische Status über die Lebensspanne weitgehend stabil bleibt - so könnten Kinder aus wohlhabenderen Familien aufgrund ihres höheren soz.-ök.-Status es sich möglicherweise eher leisten, mehr Zeit im Bildungssystem zu verbringen.
 
-    -   Bildungsniveau und sozioökonomischer Status stehen in einer wechselseitigen Ursache-Wirkungs-Beziehung zueinander, d.h. beide sind sowohl Ursache als auch Wirkung.
+    -   Bildungsniveau und sozioökonomischer Status stehen in einer wechselseitigen Ursache-Wirkungs-Beziehung zueinander, d.h. beide sind sowohl Ursache als auch Wirkung: Möglicherweise können Kinder aus wohlhabenderen Familien länger im Bildungssystem bleiben, wodurch sie ihren soziokömomischen Status wiederum weiter verbessern könnten.
 
 3.  ❓ **Alternativerklärungen** sind nicht ausgeschlossen. Damit könnte es sein, dass beide Faktoren durch einen dritten, unbeobachteten Faktor verursacht werden, und dadurch eine Scheinkorrelation entsteht (siehe [Konfundierung](https://ctreffe.github.io/r-space/konfundierung.html)).
 
@@ -117,7 +117,7 @@ Auch wenn Korrelation allein keine hinreichende Bedingung für Kausalität ist, 
 ::: {.alert .alert-warning}
 **Zwei Worte der Vorsicht!**
 
-1.  Damit wir überzeugt sein können, dass ein bestimmter Effekt nicht vorliegt, müssen wir besonderes Augenmerk auf unsere Typ-2-Fehlerrate, also den Anteil falsch-negativer Ergebnisse richten.
+1.  Damit wir überzeugt sein können, dass ein bestimmter Effekt nicht vorliegt, müssen wir besonderes Augenmerk auf unsere Typ-2-Fehlerrate, also den Anteil falsch-negativer Ergebnisse richten. Der häufige Fall einer bloßen nicht-Widerlegung der Nullhypothese (p \> 0.05) ist nur bei hoher *Power* ein wertvoller Hinweis und insgesamt nicht die ideale Methode, um die *Abwesenheit* eines Effekts zu überprüfen. Zum Test der Abwesenheit eines Effekts können *Äquivalenztests* eingesetzt werden (siehe Link unten).
 2.  Die statistische Korrelation bildet *lineare* Zusammenhänge ab, in der realen Welt gibt es aber auch *nicht-lineare*, z.B. *exponentielle* Zusammenhänge. Deshalb kann das fehlen einer linearen Korrelation nur lineare Kausalzusammenhänge widerlegen.
 :::
 
@@ -135,9 +135,9 @@ Wir betrachten hier kurz sowohl die wissenschaftliche, als auch die Praktiker-Pe
 
 **Wissenschaftliche Perspektive** \| Die wissenschaftliche Perspektive stellt den Erkenntnisgewinn in den Mittelpunkt: Stimmt unsere Theorie?
 
--   *Nicht die statistische Rechnung, sondern das Studiendesign ,bestimmt, ob eine Analyse ein starker Test einer kausalen Theorie ist.*
+-   *Ein passendes statistisches Verfahren, bspw. durch Rechnung einer Korrelation oder Kontrolle von potentiellen konfundierenden Störvariablen, ist eine notwendige, aber keine hinreichende Bedingung für einen starken Test von kausalen Theorien.* Das bedeutet, wenn wir einen Datensatz haben, in dem die zweite und dritte Bedingung für Kausalität nicht überprüft werden können, dann können wir dieses Manko nicht durch eine andere rechnerische Analyse kompensieren: Das Studiendesign ist wichtig. Gleichwohl muss auch bei geeignetem Studiendesign natürlich auf die angemessene statistische Analyse geachtet werden.
 
-    -   Eine Korrelation zwischen zwei Variablen ist *konsistent* mit einer kausalen Beziehung zwischen diese Variablen. Wenn keine Korrelation gefunden wird, spricht das gegen eine kausale Beziehung.
+    -   Eine Korrelation zwischen zwei Variablen ist *konsistent* mit einer kausalen Beziehung zwischen diese Variablen. Wenn keine Korrelation gefunden wird (siehe "Zwei Worte der Vorsicht"), spricht das gegen eine kausale Beziehung.
 
     -   Eine Korrelation allein ist aber keine überzeugende Evidenz *für* eine Kausalbeziehung oder für *eine bestimmte Richtung* einer Kausalbeziehung. Dafür müssen die zeitliche Abfolge berücksichtigt und Alternativerklärungen ausgeschlossen werden.
 
@@ -147,8 +147,12 @@ Wir betrachten hier kurz sowohl die wissenschaftliche, als auch die Praktiker-Pe
 
 -   Wenn wir auf Basis rein korrelativer Daten eine Intervention umsetzen, dann kann es sein, dass der gewünschte Effekt ausbleibt: Vielleicht ist die Kausalrichtung eine andere.
 
--   Auch in diesem Fall sollten Praktiker sich als Risikomanager:innen verstehen. Es treffen die gleichen Überlegungen zu, die in unserem Artikel zu [Konfundierung](https://ctreffe.github.io/r-space/konfundierung.html) geschildert wurden.
+-   Solche Daten sollten deshalb nicht als einzige Evidenz zur Bedrüngung von praktischen Entscheidungen verwendet werden. Vielmehr sollten sich Praktiker als Risikomanager:innen verstehen und die theoretische Plausibilität und empirische Evidenz ganzheitlich betrachten. Auf dieser Basis können sie verschiedene Szenarien abwägen und eine bestmöglich fundierte Entscheidung treffen.
+
+-   Dahingehend treffen die gleichen, detaillierteren Überlegungen zu, die wir in unserem Artikel zu [Konfundierung](https://ctreffe.github.io/r-space/konfundierung.html) (siehe "Warum ist der Haken wichtig?") geschildert haben.
 
 ## Literatur und Links
 
-Cook, Thomas D., and Donald T. Campbell. *Quasi-Experimentation: Design & Analysis Issues for Field Settings*. Houghton Mifflin Company, Boston 1979.
+-   Cook, Thomas D., and Donald T. Campbell. *Quasi-Experimentation: Design & Analysis Issues for Field Settings*. Houghton Mifflin Company, Boston 1979.
+
+-   **Äquivalenztests**: Lakens, D., Scheel, A. M., & Isager, P. M. (2018). Equivalence Testing for Psychological Research: A Tutorial. Advances in Methods and Practices in Psychological Science, 1(2), 259--269. <https://doi.org/10.1177/2515245918770963>

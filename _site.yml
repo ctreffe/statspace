@@ -1,7 +1,7 @@
-name: "Methoden"
+name: "R-Space"
 output_dir: "docs"
 navbar:
-  title: "Methoden"
+  title: "R-Space"
   left:
     - text: "Home"
       href: index.html
