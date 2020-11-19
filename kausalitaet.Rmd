@@ -159,7 +159,7 @@ Besonders für Studierende ist es wichtig, Kernaussagen prägnant zusammenfassen
 
 **Frage**: Die Autoren berichten von einer Korrelation zwischen Bildungsjahren und sozioökonomischem Status und werten das als Evidenz für ihre Theorie, dass mehr Bildung zu einem höheren sozioökonomischen Status führt. Wie bewerten Sie die Evidenz?
 
-**Mögliche Antwort**: Zunächst einmal ist die Korrelation konsistent mit der Theorie. Allerdings kann durch die bloße Berechnung einer Korrelation weder die umgekehrte Kausalrichtung ausgeschlossen werden, noch können konfundierende Einflüsse von Drittvariablen ausgeschlossen werden. Deshalb handelt es sich allenfalls um einen schwachen Test der Theorie, die Evidenz ist nicht hinreichend für die Schlussfolgerung.
+**Mögliche Antwort**: Zunächst einmal ist die Korrelation konsistent mit der Theorie. Allerdings kann durch die bloße Berechnung einer Korrelation in dem berichteten Querschnittsdesign weder die umgekehrte Kausalrichtung ausgeschlossen werden, noch können konfundierende Einflüsse von Drittvariablen ausgeschlossen werden. Deshalb handelt es sich allenfalls um einen schwachen Test der Theorie, die Evidenz ist nicht hinreichend für die Schlussfolgerung.
 
 **Frage**: Würden Sie auf Basis dieser Ergebnisse zusätzliche Investitionen ins Bildungsystem befürworten?
 
