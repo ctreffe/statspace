@@ -314,11 +314,11 @@ $(document).ready(function () {
 <div id="was-sind-multilevel-modelle" class="section level2">
 <h2>Was sind Multilevel Modelle?</h2>
 <p><img src="files/mindful_school.jpeg" title="Bild: 4774344sean/Thinkstock" style="float: right; margin: 1rem;" width="300" /></p>
-<p>Um Multilevel-Modelle zu Erklärung holen wir in diesem Skript anhand eines Beispiels etwas aus. Stellen wir uns einmal folgende Situation vor: Sie haben den Auftrag, im Rahmen eines pädagogisch-psychologischen Projektes die Effektivität von Achtsamkeitsübungen in der Praxis zu untersuchen. Die Theorie: Durch eine kurze Achtsamkeitsübung am Beginn einer Schulstunde sinkt die Unruhe in der Klasse, was zu einem besseren Lernklima führt. Bevor Sie enorme Ressourcen aufwenden, um die Frage in einem groß angelegten Feld-Experiment zu untersuchen, werten Sie vorhandene Daten aus.</p>
+<p>Um Multilevel-Modelle zu erklären, holen wir in diesem Skript anhand eines Beispiels etwas aus. Stellen wir uns einmal folgende Situation vor: Sie haben den Auftrag, im Rahmen eines pädagogisch-psychologischen Projektes die Effektivität von Achtsamkeitsübungen in der Praxis zu untersuchen. Die Theorie: Durch eine kurze Achtsamkeitsübung am Beginn einer Schulstunde sinkt die Unruhe in der Klasse, was zu einem besseren Lernklima führt. Bevor Sie enorme Ressourcen aufwenden, um die Frage in einem groß angelegten Feld-Experiment zu untersuchen, werten Sie vorhandene Daten aus.</p>
 </div>
 <div id="die-story-schulen-in-mittelerde" class="section level2">
 <h2>Die Story: Schulen in Mittelerde</h2>
-<p><img src="files/shall_not_pass.jpg" title="Comic by Kevin Beckstrom" style="float: left; margin: 1rem;" width="300" />Und Sie haben Glück: Es gibt einen sehr ergiebigen Datensatz über acht Schulen in Mittelerde, die sie nutzen können. Einige Klassenlehrer, sowohl in Gondor, als auch in Rohan, haben sich von den Elben überzeugen lassen, routinemäßig zu Beginn jeder Unterrichtsstunde eine Achtsamkeitsmeditation durchzuführen. Im Datensatz finden Sie Informationen zur Lesefertigkeit der Schüler:innen am Ende der 9. Klasse und Informationen über die Schule. Hier ein Blick in die Daten:</p>
+<p><img src="files/shall_not_pass.jpg" title="Comic by Kevin Beckstrom" style="float: left; margin: 1rem;" width="300" />Und Sie haben Glück: Es gibt einen sehr ergiebigen Datensatz über acht Schulen in Mittelerde, den sie nutzen können. Einige Klassenlehrer, sowohl in Gondor, als auch in Rohan, haben sich von den Elben überzeugen lassen, routinemäßig zu Beginn jeder Unterrichtsstunde eine Achtsamkeitsmeditation durchzuführen. Im Datensatz finden Sie Informationen zur Lesefertigkeit der Schüler:innen am Ende der 9. Klasse und Informationen über die Schule. Die Lesefertigkeit verwenden wir hier als abhängige Variable, da wir ein besseres Lernklima dadurch definieren, dass die Schüler:innen bessere Leistung erbringen. Hier ein Blick in die Daten:</p>
 <table>
 <thead>
 <tr class="header">
@@ -334,7 +334,7 @@ $(document).ready(function () {
 <tr class="odd">
 <td align="right">592</td>
 <td align="left">gondor</td>
-<td align="left">Arwen-Abendstern-Schule</td>
+<td align="left">(G) Arwen-Abendstern-Schule</td>
 <td align="left">FALSE</td>
 <td align="left">b</td>
 <td align="right">36.6</td>
@@ -342,7 +342,7 @@ $(document).ready(function () {
 <tr class="even">
 <td align="right">373</td>
 <td align="left">gondor</td>
-<td align="left">Gandalf-Gymnasium</td>
+<td align="left">(G) Gandalf-Gymnasium</td>
 <td align="left">FALSE</td>
 <td align="left">c</td>
 <td align="right">32.6</td>
@@ -350,7 +350,7 @@ $(document).ready(function () {
 <tr class="odd">
 <td align="right">209</td>
 <td align="left">rohan</td>
-<td align="left">Schildmaid-Eowyn-Schule</td>
+<td align="left">(R) Schildmaid-Eowyn-Schule</td>
 <td align="left">TRUE</td>
 <td align="left">b</td>
 <td align="right">28.6</td>
@@ -358,7 +358,7 @@ $(document).ready(function () {
 <tr class="even">
 <td align="right">11</td>
 <td align="left">rohan</td>
-<td align="left">König-Theoden-Gesamtschule</td>
+<td align="left">(R) König-Theoden-Gesamtschule</td>
 <td align="left">TRUE</td>
 <td align="left">a</td>
 <td align="right">28.9</td>
@@ -366,7 +366,7 @@ $(document).ready(function () {
 <tr class="odd">
 <td align="right">212</td>
 <td align="left">rohan</td>
-<td align="left">Schildmaid-Eowyn-Schule</td>
+<td align="left">(R) Schildmaid-Eowyn-Schule</td>
 <td align="left">TRUE</td>
 <td align="left">b</td>
 <td align="right">33.4</td>
@@ -383,15 +383,16 @@ $(document).ready(function () {
 </ul>
 <div id="die-analyse" class="section level3">
 <h3>Die Analyse</h3>
-<p>Schauen wir uns nun eine einfache Analyse der Daten an. Wir rechnen folgende Regression:</p>
+<p>Wir fangen zur Einordnung mit einer einfachen Regression an und gehen noch einmal die Bestandteile eines einfachen Regressionsmodells durch. Wir rechnen folgende Regression:</p>
 <p><span class="math display">\[
 y_i = \hat{\beta}_0 + \hat{\beta}_1 \cdot x_i + \hat{\epsilon}_i
 \]</span></p>
 <p>Dabei ist</p>
 <ul>
-<li><p><span class="math inline">\(y_i\)</span> die Lesefertigkeit von Schüler:in $i$,</p></li>
+<li><p><span class="math inline">\(y_i\)</span> die Lesefertigkeit von Schüler:in <span class="math inline">\(i\)</span>,</p></li>
 <li><p><span class="math inline">\(x_i\)</span> ein Indikator dasfür, ob Schüler:in <span class="math inline">\(i\)</span> in einer Klasse ist, in der Achtsamkeitsübungen durchgeführt werden (0 = Nein, 1 = Ja),</p></li>
 <li><p>und <span class="math inline">\(\hat{\beta}_1\)</span> der geschätzte mittlere Unterschied in der Lesefertigkeit zwischen Schüler:innen, die Achtsamkeitsübungen erfahren und solchen, die keine Achtsamkeitsübungen erfahren.</p></li>
+<li><p><span class="math inline">\(\hat{\epsilon}_i\)</span> der geschätzte <em>Fehler</em>, also der Unterschiedung zwischen unserem geschätzten Wert der Lesefertigkeit auf Grundlage von <span class="math inline">\(x_i\)</span> und der <em>tatsächlichen</em>, gemessenen Lesefertigkeit.</p></li>
 </ul>
 <p>Hier der R-Output zur Regression:</p>
 <pre><code>## 
@@ -420,12 +421,15 @@ Gepunktete Linien zeigen 95%-Konfidenzintervalle für die Mittelwerte." width="6
 <strong>Abbildung</strong>: Mittlere Lesefertigkeiten in Schulklassen, in denen Achtsamkeitsübungen durchgeführt oder nicht durchgeführt werden. Die Plots a) und b) zeigen die gleichen Daten, einmal als Balkendiagramm und einmal als Violin-Plot mit Rohdaten im Hintergrund (jeder Datenpunkt bezieht sich auf eine:n Schüler:in). Fehlerbalken zeigen plus/minus eine Standardabweichung in der Lesefertigkeit um den Mittelwert. Gepunktete Linien zeigen 95%-Konfidenzintervalle für die Mittelwerte.
 </p>
 </div>
+<div class="alert alert-info">
+<p>Nebenbei bemerkt: Unsere Darstellung mit Standardabweichungen als “Pointrange”/Fehlerbalken und Konfidenzintervallen als gestrichelten Linien ist etwas ungewöhnlich. Häufig findet man Darstellungen der Konfidenzintervalle oder Standardfehler als Fehlerbalken. Wir wählen die hier gezeigte Darstellung, da sie unserer Ansicht nach einen vollständigeren Eindruck der Daten vermittelt: Das Konfidenzintervall gibt einen Eindruck über die Schätzunsicherheit (es ersetzt damit eine Darstellung des Standardfehlers und ist besser verständlich) und die Standardabweichung gibt einen Eindruck über die Varianz der zugrundeliegenden Daten. Mehr dazu hier: <a href="https://statmodeling.stat.columbia.edu/2020/05/10/uncertainty-and-variation-as-distinct-concepts/">Uncertainty and variation as distinct concepts</a></p>
+</div>
 </div>
 <div id="der-haken" class="section level3">
 <h3>Der Haken</h3>
 <p>Der Haken ist: Wir haben zwar eine große Stichprobe und für sich genommen tolle Daten, doch es handelt sich hier um <strong>kein experimentelles Design</strong>. Das heißt genauer:</p>
 <ul>
-<li><p>Wir vergleichen zwar gewissermaßen eine Kontroll- und eine Experimentalgruppe miteinander, aber diese <strong>Gruppen wurden nicht zufällig eingeteilt</strong>. Wir haben stattdessen Daten genommen, die uns ohnehin vorlagen. Damit besteht ein großes Risiko für <a href="https://ctreffe.github.io/r-space/konfundierung.html">Konfundierung</a>.</p></li>
+<li><p>Wir vergleichen zwar gewissermaßen eine Kontroll- und eine Experimentalgruppe miteinander, aber diese <strong>Gruppen wurden nicht zufällig eingeteilt</strong>. Wir haben stattdessen Daten genommen, die uns ohnehin vorlagen. Damit besteht ein großes Risiko für <a href="https://ctreffe.github.io/r-space/konfundierung.html">Konfundierung</a>. (Anmerkung: Das trifft auf unseren Beispiel-Datensatz zu, muss aber nicht für alle Multilevel-Datensätze gelten.)</p></li>
 <li><p>In unserem Datensatz haben wir zusätzlichen Grund, Verzerrungen zu vermuten, denn unsere Beobachtungen sind <strong>nicht unabhängig voneinander</strong>: Unser Datensatz lässt sich systematisch in zusammengehörige Untergruppen einteilen (siehe Abbildung unten). Schüler:innen aus der gleichen Klasse oder Schule sind sich vermutlich untereinander ähnlicher, als Schüler:innen aus verschiedenen Schulen oder gar verschiedenen Reichen. Die Unabhängigkeit <em>aller</em> Datenpunkte ist allerdings eine zentrale Annahme für die Gültigkeit unserer statistischen Analyse.</p></li>
 </ul>
 <div class="figure">
@@ -437,7 +441,7 @@ Gepunktete Linien zeigen 95%-Konfidenzintervalle für die Mittelwerte." width="6
 <h3>Warum ist der Haken wichtig?</h3>
 <p>Das wird am besten deutlich, wenn wir eine ausgefeiltere Analyse anwenden, mit der wir die Beziehungen innerhalb unseres Datensatzes explizit berücksichtigen. In einer Regressionsgleichung, in der wir Korrelationen innerhalb von Schulen berücksichtigen wollen, sieht das ungefähr so aus:</p>
 <p><img src="files/multilevel_formula.png" style="text-align: center;" width="400" /></p>
-<p>Die Formel zeigt eine <em>Multilevel-Regression</em>. Dabei ist für uns insbesondere der <em>fixed effect</em> <span class="math inline">\(\hat{\beta}_1\)</span> interessant; das ist praktisch die gleiche Größe wie in der normalen Regression. Der Unterschied ist, dass wir durch den <em>random effect</em> $\hat{u}_{0j}$ die Unterschiede zwischen den Schulen explizit berücksichtigen und aus unserer Schätzung für <span class="math inline">\(\hat{\beta}_1\)</span> “herausrechnen” können. Schauen wir uns zu dieser Analyse nun einen Plot an, so sehen wir: In jeder einzelnen Schule für sich genommen sind die Achtsamkeitsübungen tatsächlich mit <em>besseren</em> Leseleistungen assoziiert.</p>
+<p>Die Formel zeigt eine <em>Multilevel-Regression</em>. Dabei ist für uns insbesondere der <em>fixed effect</em> <span class="math inline">\(\hat{\beta}_1\)</span> interessant; das ist praktisch die gleiche Größe wie in der normalen Regression. Der Unterschied ist, dass wir durch den <em>random effect</em> <span class="math inline">\(\hat{u}\_{0j}\)</span> die Unterschiede zwischen den Schulen explizit berücksichtigen und aus unserer Schätzung für <span class="math inline">\(\hat{\beta}_1\)</span> “herausrechnen” können. Schauen wir uns zu dieser Analyse nun einen Plot an, so sehen wir: In jeder einzelnen Schule für sich genommen sind die Achtsamkeitsübungen tatsächlich mit <em>besseren</em> Leseleistungen assoziiert.</p>
 <div class="figure" style="text-align: center">
 <img src="multilevel_files/figure-html/panels-1.png" alt="**Abbildung**: Violin-Plot der Lesefertigkeit in Klassen mit und ohne Achtsamkeitsübungen. Gepunktete Linie zeigt den Schul-Mittelwert." width="672" />
 <p class="caption">
@@ -476,7 +480,7 @@ Gepunktete Linien zeigen 95%-Konfidenzintervalle für die Mittelwerte." width="6
 <p><strong>Wissenschaftliche Perspektive</strong> | Die wissenschaftliche Perspektive stellt den Erkenntnisgewinn in den Mittelpunkt: Stimmt unsere Theorie? Wie groß und wie zuverlässig ist der Effekt? Welche Faktoren beeinflussen das Ergebnis?</p>
 <ul>
 <li><p>Wenn wir Daten mit hierarchischen Strukturen (z.B. Schüler in Klassen in Schulen in Ländern, …) analysieren, dann wird ggf. die Annahme unabhängiger Beobachtungen verletzt. Diese Annahme ist wichtig für klassische statistischer Verfahren wie t-Test, ANOVA und Regression (<em>t-Test und ANOVA sind nur andere Darstellungen von Regressionen</em>).</p></li>
-<li><p>Wenn die Unabhängigkeitsannahme verletzt wird, <em>kann</em> es sein, dass die Schlussfolgerungen statistischer Analysen <em>falsch</em> sind. Genau genommen ist eine solche Analyse schlicht <strong>unbrauchbar</strong>, um Hypothesen zu testen.</p></li>
+<li><p>Wenn die Unabhängigkeitsannahme verletzt wird, <em>kann</em> es sein, dass die Schlussfolgerungen statistischer Analysen <em>falsch</em> sind. Genau genommen ist in diesem Fall (d.h., wenn tatsächlich die Unabhängigkeitsannahme verletzt ist) eine solche Analyse unbrauchbar, um Hypothesen zu testen.</p></li>
 </ul>
 <p><strong>Praktiker-Perspektive</strong> | Die praktische Perspektive stellt die Nützlichkeit einer aus der Forschung abgeleiteten Intervention in den Mittelpunkt: Sollten wir die Intervention einsetzen?</p>
 <ul>
@@ -487,9 +491,22 @@ Gepunktete Linien zeigen 95%-Konfidenzintervalle für die Mittelwerte." width="6
 <div class="alert alert-warning">
 <p><strong>Ein paar Hinweise zu Multilevel-Modellen</strong></p>
 <ul>
-<li><p>Je nach Versuchsdesign kann es auch in randomisierten Experimenten durchaus sein, dass hierarchische Daten entstehen, bspw. wenn Versuchspersonen in Untergruppen eingeteilt werden. Das sollte bei der Analyse berücksichtigt werden!</p></li>
+<li><p>Hier haben wir als Beispiel nicht-experimentelle Querschnittsdaten zur Veranschaulichung eines Multilevel-Modells genommen. Je nach Versuchsdesign kann es aber auch in randomisierten Experimenten durchaus sein, dass hierarchische Daten entstehen, bspw. wenn Versuchspersonen in Untergruppen eingeteilt werden. Das sollte bei der Analyse berücksichtigt werden!</p></li>
+<li><p>Ein häufiger Anwendungsfall für Multilevel-Modelle sind auch <strong>Messwiederholungsdaten</strong>. Dabei sind die einzelnen Messzeitpunkt in Versuchspersonen genestet.</p></li>
 <li><p>Es gibt keine objektive, immer zutreffende Regel dafür, um zu entscheiden, welche Effekt als <em>fixed</em> und welche als <em>random</em> Effekte modelliert werden. Hier müssen theoriegeleitete Entscheidungen getroffen werden. Die Leitfrage, um diese Entscheidung zu treffen ist: „Welcher Effekt ist von wissenschaftlichem Interesse für mich?" Das ist tendenziell ein <em>fixed</em> Effekt. Auch die umgekehrte Frage ist hilfreich: „Welcher Effekt hat möglicherweise einen verzerrenden Einfluss, den ich ‘herausrechnen’ möchte?" Das ist tendenziell ein <em>random</em> Effekt.</p></li>
 <li><p>Es kann durchaus sein, dass Daten eine hierarchische Struktur ähnlich der hier vorgestellten aufweisen, ohne dass eine Modellierung in einem Multilevel-Modell notwendig ist. Dafür kann z.B. die <em>Intraclass Correlation (ICC)</em> berechnet werden; eine Korrelation, die angibt, wie ähnlich sich Beobachtungen <em>innerhalb einer Gruppe</em> sind. Eine hohe ICC deutet darauf hin, dass eine Multilevel-Analyse sinnvoll ist. Für Details verweisen wir auf Field (2012).</p></li>
+</ul>
+</div>
+<div class="alert alert-info">
+<p><strong>Begriffliche Verwirrungen bei Multilevel-Modellen</strong></p>
+<ul>
+<li><p>Daten mit Hierarchischen Strukturen werden oft auch als <em>genestete</em> Daten bezeichnet. Im hier behandelten Beispiel würde man sagen, dass Beobachtungen von Schüler:innen in Schulen und Schulen in Ländern genestet sind.</p></li>
+<li><p>Für Multilevel-Modelle existieren eine Reihe von Bezeichnungen, die häufig praktisch synonym verwendet werden. Beispiele sind:</p>
+<ul>
+<li><p>Linear mixed effects regression. Das “mixed” soll hier verdeutlichen, dass sowohl “fixed”, als auch “random” Effekte im Modell aufgenommen werden.</p></li>
+<li><p>Hierarchical linear models. <strong>Achtung</strong>: Hier besteht Verwechslungsgefahr zum Schrittweisen vorgehen bei Regressionsanalysen (Modellvergleichende Tests zur Identifikation des am besten passenden Modells). Dieses Schrittweise Vorgehen wird gerade unter Psycholog:innen auch häufig “Hierarchical Regression” genannt, beinhaltet aber nicht notwendigerweise Multilevel Regressionen.</p></li>
+<li><p>Multilevel models.</p></li>
+</ul></li>
 </ul>
 </div>
 </div>
@@ -497,6 +514,7 @@ Gepunktete Linien zeigen 95%-Konfidenzintervalle für die Mittelwerte." width="6
 <div id="quellen-und-links" class="section level2">
 <h2>Quellen und Links</h2>
 <ul>
+<li>Der simulierte Datensatz zu diesem Skript kann für eigene Analysen hier heruntergeladen werden: <a href="https://raw.githubusercontent.com/ctreffe/r-space/master/files/schools_middle_earth.csv">link</a></li>
 <li><em>Field (2012) Discovering Statistics Using R, Kapitel 19: Multilevel linear models. SAGE Publication</em></li>
 </ul>
 </div>
