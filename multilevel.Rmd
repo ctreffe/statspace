@@ -222,7 +222,7 @@ Dabei ist
 
 -   und $\hat{\beta}_1$ der geschätzte mittlere Unterschied in der Lesefertigkeit zwischen Schüler:innen, die Achtsamkeitsübungen erfahren und solchen, die keine Achtsamkeitsübungen erfahren.
 
--   $\hat{\epsilon}_i$ der geschätzte *Fehler*, also der Unterschiedung zwischen unserem geschätzten Wert der Lesefertigkeit auf Grundlage von $x_i$ und der *tatsächlichen*, gemessenen Lesefertigkeit.
+-   $\hat{\epsilon}_i$ der geschätzte *Fehler*, also der Unterschied zwischen unserem geschätzten Wert der Lesefertigkeit auf Grundlage von $x_i$ und der *tatsächlichen*, gemessenen Lesefertigkeit.
 
 Hier der R-Output zur Regression:
 
