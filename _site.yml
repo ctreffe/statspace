@@ -10,13 +10,15 @@ navbar:
       menu:
         - text: "Konfundierung"
           href: konfundierung.html
-        - text: "Kaulität und Korrelation"
+        - text: "Kausalität und Korrelation"
           href: kausalitaet.html
+        - text: "Multilevel Modelle"
+          href: multilevel.Rmd
         
   right:
     - text: "Georg-Elias-Müller-Institut für Psychologie"
 output:
   html_document:
-    # theme: readable
+    # theme: united
     highlight: textmate
     css: styles.css

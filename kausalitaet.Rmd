@@ -151,8 +151,7 @@ Wir betrachten hier kurz sowohl die wissenschaftliche, als auch die Praktiker-Pe
 
 -   Dahingehend treffen die gleichen, detaillierteren Überlegungen zu, die wir in unserem Artikel zu [Konfundierung](https://ctreffe.github.io/r-space/konfundierung.html) (siehe "Warum ist der Haken wichtig?") geschildert haben.
 
-<div class="alert alert-info">
-
+::: {.alert .alert-info}
 #### **Studierenden-Perspektive**
 
 Besonders für Studierende ist es wichtig, Kernaussagen prägnant zusammenfassen zu können.
@@ -163,9 +162,8 @@ Besonders für Studierende ist es wichtig, Kernaussagen prägnant zusammenfassen
 
 **Frage**: Würden Sie auf Basis dieser Ergebnisse zusätzliche Investitionen ins Bildungsystem befürworten?
 
-**Mögliche Antwort**: Diese konkrete Evidenz ist nicht eindeutig und daher keine gute Entscheidungsgrundlage. Die Frage nach Investitionen ins Bildungssystem sollte allerdings mit einem größeren Horizont betrachtet werden: Es gibt durchaus plausible Gründe anzunehmen, dass Investitionen in Bildung von Nutzen sind. Der Umstand, dass die korrelative Evidenz unbefriegend ist, kann keineswegs als Beleg des Gegenteils gelten.
-
-</div>
+**Mögliche Antwort**: Diese konkrete Evidenz ist nicht eindeutig und daher keine gute Entscheidungsgrundlage. Die Frage nach Investitionen ins Bildungssystem sollte allerdings mit einem größeren Horizont betrachtet werden: Es gibt durchaus plausible Gründe anzunehmen, dass Investitionen in Bildung von Nutzen sind. Der Umstand, dass die korrelative Evidenz unbefriedigend ist, kann keineswegs als Beleg des Gegenteils gelten.
+:::
 
 ## Literatur und Links
 

@@ -79,7 +79,7 @@ plot <- treated %>%
   
   # Darstellung von Standardabweichungen
   stat_summary(fun.data = "mean_sdl", fun.args = list(mult = 1), 
-               geom = "pointrange", width = 0.15) +
+               geom = "pointrange") +
   
   stat_summary(fun.data = "mean_cl_boot", 
                geom = "errorbar", linetype = "dotted", color = "grey20") +
@@ -214,7 +214,7 @@ In einer vielbeachteten Folgestudie (Shoda, Mischel, & Peake, 1990) berichteten 
 
 Wir können nun also nicht ausschließen, dass die positiven Effekte eines stärkeren Belohnungsaufschubs im Kindesalter auf eine oder mehrere Drittvariablen (konkret die in der Replikationsstudie genutzten Kontrollvariablen) zurückzuführen ist. Die Autoren der Replikationsstudie raten in Anbetracht ihrer Ergebnisse folgerichtig zur Vorsicht, was die Entwicklung von Interventionen zur Stärkung des Belohungsaufschubs im Kindesalter angeht. Ob solche Interventionen in Anbetracht der hier gezeigten potenziellen Konfundierungen sinnvoll sind, ist fraglich.
 
-#### Quellen und weitere Informationen
+## Quellen und weitere Informationen
 
 -   Originalartikel zum Belohungsaufschub:
 
