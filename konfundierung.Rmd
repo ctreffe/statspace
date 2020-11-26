@@ -55,9 +55,10 @@ treated <- d %>% filter(group == "treatment")
 
 # summarised data with difference
 diff_data <- d %>% 
-  select(-sunhours) %>% 
+  dplyr::select(-sunhours) %>%
   pivot_wider(values_from=bdi, names_from=time) %>% 
-  mutate(bdi_change = post - pre)
+  mutate(bdi_change = post - pre) %>% 
+  ungroup()
 ```
 
 ```{r model1}
