@@ -13,7 +13,7 @@ navbar:
         - text: "Kausalität und Korrelation"
           href: kausalitaet.html
         - text: "Multilevel Modelle"
-          href: multilevel.Rmd
+          href: multilevel.html
         
   right:
     - text: "Georg-Elias-Müller-Institut für Psychologie"
