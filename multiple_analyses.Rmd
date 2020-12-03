@@ -1,0 +1,203 @@
+---
+title: "Multiple Analysen"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+library(tidyverse)
+```
+
+```{r}
+analyse <- function(n=100, navs=3, b = 0) {
+  # simulate independent variable
+  uv <- rnorm(n)
+  
+  # simulate dependent variables
+  avs = list()
+  for (i in 1:navs) avs[[i]] <- b * uv + rnorm(n)
+  
+  # run linear regressions and return vector of p values
+  models <- list()
+  i <- 1
+  for (av in avs) {
+    m <- lm(av ~ uv)
+    models[[i]] <- m
+    i <- i + 1
+  }
+  
+  return(models)
+}
+```
+
+```{r}
+simulate_data <- function(nsim = 1000, n = 100, navs = 3, b = 0) {
+  sims <- list()
+  for (i in 1:nsim) {
+    sims[[i]] <- analyse(n=n, navs=navs, b = b)
+  }
+  return(sims)
+}
+```
+
+```{r}
+extract_pvalues <- function(sims) {
+  res <- list()
+  for (i in seq_along(sims)) {
+    sim <- sims[[i]]
+    ps <- rep(NA, times=length(sim))
+    for (m in seq_along(sim)) {
+      ps[m] <- summary(sim[[m]])$coefficients[2,4]
+    }
+    p_df <- tibble(sim = i, model = paste0("model", seq_along(ps)), p = ps)
+    res[[i]] <- p_df %>% pivot_wider(names_from=model, values_from=p)
+  }
+  
+  resdf <- bind_rows(res)
+  return(resdf)
+}
+```
+
+```{r}
+curate <- function(df, b, n) {
+  df <- df %>% 
+    mutate(true_beta = b, n = n) %>% 
+    pivot_longer(starts_with("model"), names_to="model", values_to="p")
+  return(df)
+}
+```
+
+```{r}
+conduct_simulation <- function(sample_sizes, effect_sizes, navs, nsim) {
+  df_list <- list()
+  i <- 1
+  for (n in sample_sizes) {
+    for (b in effect_sizes) {
+
+      d <- simulate_data(n = n, b = b, navs = navs, nsim = nsim) %>% 
+        extract_pvalues() %>% 
+        curate(b = b, n = n)  
+      
+      df_list[[i]] <- d
+      i <- i + 1
+    }
+  }
+  
+  df <- bind_rows(df_list) %>% 
+    mutate(n_f = factor(n)) %>% 
+    mutate(true_beta_f = factor(true_beta, levels = effect_sizes,
+                                labels = paste("beta =", effect_sizes)))
+  
+  return(df)
+}
+```
+
+```{r}
+generate_power_df <- function(df) {
+  # treating everything as single test (gives powers)
+  power.df <- df %>% 
+    group_by(true_beta, n, true_beta_f, n_f) %>% 
+    summarise(nsig = sum(p < 0.05), sig_share = nsig / n())
+  return(power.df)
+}
+```
+
+```{r}
+generate_nsig_df <- function(df, nsim) {
+  # counting the number of significant results for each unit of tests
+  nsig.df <- df %>%
+    group_by(sim, true_beta, n, true_beta_f, n_f) %>% 
+    summarise(nsig = sum(p < 0.05)) %>% 
+    group_by(nsig, true_beta, n, true_beta_f, n_f) %>% 
+    summarise(n_occurances = n(), share_occurances = n_occurances / nsim) %>% 
+    arrange(n, true_beta, nsig)
+  return(nsig.df)
+}
+```
+
+```{r}
+generate_onesig_df <- function(df, nsim) {
+  # counting the number of analyses in which at least one of 4 tests was significant
+  onesig.df <- df %>% 
+    filter(nsig != 0) %>% 
+    group_by(true_beta, true_beta_f, n, n_f) %>% 
+    summarise(n_onesig = sum(n_occurances)) %>% 
+    mutate(share_onesig = n_onesig / nsim) %>% 
+    identity()
+  return(onesig.df)
+}
+```
+
+```{r}
+plot_power <- function(df, nsim) {
+  power.plt <- df %>% 
+    ggplot() +
+    aes(x = n_f, y = sig_share) +
+    aes(fill = n_f) +
+    scale_fill_brewer(palette = "Set2") +
+    geom_bar(stat = "identity") +
+    facet_wrap(~true_beta_f) +
+    geom_text(aes(label = sig_share %>% format(nsmall = 2, digits = 2)), nudge_y = 0.05) +
+    labs(x = "Stichprobengröße", y = "Anteil signifikanter Tests insgesamt",
+         title = paste("Anteil signifikanter Tests nach Effektstärke und Stichprobengröße. nsim =", nsim),
+         subtitle = "Zeigt falsch-positiv-Rate für beta = 0 (oben links) und Power für verschiedene Effektstärken beta > 0",
+         fill = "Stichprobengröße") +
+    theme(legend.position = "bottom")
+  
+  return(power.plt)
+}
+```
+
+```{r}
+plot_nsig <- function(df, navs, nsim) {
+  nsig.plt <- df %>% 
+    ggplot() +
+    aes(x = factor(nsig), y = share_occurances) +
+    geom_bar(stat = "identity") +
+    aes(fill = n_f) +
+    scale_fill_brewer(palette = "Set2") +
+    facet_grid(cols = vars(true_beta_f), rows = vars(n_f)) +
+    labs(x = "Anzahl von signifikanten Tests.",
+         y = "Anteil an der Gesamtzahl von Analysen",
+         title = paste("Muster von Testergebnissen nach Effektstärke und Stichprobengröße. nsim =", nsim),
+         subtitle = paste("Pro Simulation wurden", navs, "Tests durchgeführt. In der linken Spalte (beta = 0) ist Alpha-Fehler-Inflation sichtbar."), 
+         fill = "Stichprobengröße") +
+    theme(legend.position = "bottom")
+  return(nsig.plt)
+}
+```
+
+```{r}
+# general settings for data simulation
+sample_sizes <- c(25, 50, 100)
+effect_sizes <- c(0, 0.1, 0.25, 0.5)
+```
+
+```{r}
+# conduct simulation and plot results
+navs <- 4
+nsim <- 10
+df <- conduct_simulation(sample_sizes, effect_sizes, navs, nsim)
+df %>% generate_power_df() %>% plot_power(nsim)
+df %>% generate_nsig_df(nsim) %>% plot_nsig(navs = navs, nsim)
+```
+
+```{r}
+# conduct simulation and plot results
+navs <- 10
+nsim <- 10
+df <- conduct_simulation(sample_sizes, effect_sizes, navs, nsim)
+df %>% generate_power_df() %>% plot_power(nsim)
+df %>% generate_nsig_df(nsim) %>% plot_nsig(navs=navs, nsim)
+```
+
+Was heißt es eigentlich, wenn von vier Tests zwei signifikant werden?
+
+Um darüber zu reden, müssen wir ein paar Konzepte auffrischen:
+
+-   Teststärke (Power)
+
+-   Alpha-Fehler-Niveau
+
+-   Alpha-Fehler-Inflation
