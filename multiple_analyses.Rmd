@@ -7,6 +7,21 @@ editor_options:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 library(tidyverse)
+library(ggthemes)
+
+# general settings for data simulation
+set.seed = 12345
+run_simulation <- FALSE
+
+sample_sizes <- c(25, 50, 100)
+effect_sizes <- c(0, 0.2, 0.35, 0.5)
+nsim <- 500
+
+theme_update(panel.background = element_rect(fill = NA, color = "#6baed6"))
+theme_update(panel.grid = element_blank())
+theme_update(strip.background = element_rect(fill = "#6baed6"))
+theme_update(strip.text = element_text(color = "white"))
+theme_update(plot.background = element_rect(fill = "#deebf7"))
 ```
 
 ```{r}
@@ -137,11 +152,11 @@ plot_power <- function(df, nsim) {
     aes(fill = n_f) +
     scale_fill_brewer(palette = "Set2") +
     geom_bar(stat = "identity") +
-    facet_wrap(~true_beta_f) +
+    facet_grid(cols = vars(true_beta_f)) +
     geom_text(aes(label = sig_share %>% format(nsmall = 2, digits = 2)), nudge_y = 0.05) +
     labs(x = "Stichprobengröße", y = "Anteil signifikanter Tests insgesamt",
-         title = paste("Anteil signifikanter Tests nach Effektstärke und Stichprobengröße. nsim =", nsim),
-         subtitle = "Zeigt falsch-positiv-Rate für beta = 0 (oben links) und Power für verschiedene Effektstärken beta > 0",
+         title = "Anteil signifikanter Tests für versch. Effektstärken und Stichprobengrößen.",
+         subtitle = paste(nsim, "Simulationen. Zeigt falsch-positiv-Rate für beta = 0 (links)\nund Power für verschiedene Effektstärken beta > 0"),
          fill = "Stichprobengröße") +
     theme(legend.position = "bottom")
   
@@ -160,8 +175,8 @@ plot_nsig <- function(df, navs, nsim) {
     facet_grid(cols = vars(true_beta_f), rows = vars(n_f)) +
     labs(x = "Anzahl von signifikanten Tests.",
          y = "Anteil an der Gesamtzahl von Analysen",
-         title = paste("Muster von Testergebnissen nach Effektstärke und Stichprobengröße. nsim =", nsim),
-         subtitle = paste("Pro Simulation wurden", navs, "Tests durchgeführt. In der linken Spalte (beta = 0) ist Alpha-Fehler-Inflation sichtbar."), 
+         title = "Muster von Testergebnissen für versch. Effektstärken und Stichprobengrößen.",
+         subtitle = paste(nsim, "Simulationen. Pro Simulation wurden", navs, "Tests durchgeführt.\nIn der linken Spalte (beta = 0) ist Alpha-Fehler-Inflation sichtbar.\nDie Zeilen zeigen Ergebnisse für versch. Stichprobengrößen."), 
          fill = "Stichprobengröße") +
     theme(legend.position = "bottom")
   return(nsig.plt)
@@ -169,35 +184,321 @@ plot_nsig <- function(df, navs, nsim) {
 ```
 
 ```{r}
-# general settings for data simulation
-sample_sizes <- c(25, 50, 100)
-effect_sizes <- c(0, 0.1, 0.25, 0.5)
+# conduct simulation and plot results
+# 4 dependent variables
+
+if (run_simulation) {
+  df4 <- conduct_simulation(sample_sizes, effect_sizes, navs = 4, nsim)  
+  write_csv(df4, "files/sim_4avs.csv")
+  saveRDS(df4, file = "files/sim_4avs.rds")
+} else {
+  df4 <- readRDS("files/sim_4avs.rds")
+}
+
+power.plt4 <- df4 %>% generate_power_df() %>% plot_power(nsim)
+nsim.plt4 <- df4 %>% generate_nsig_df(nsim) %>% plot_nsig(navs = 4, nsim)
+
+
+ggsave("files/nsim_plot4.png", nsim.plt4)
 ```
 
 ```{r}
 # conduct simulation and plot results
-navs <- 4
-nsim <- 10
-df <- conduct_simulation(sample_sizes, effect_sizes, navs, nsim)
-df %>% generate_power_df() %>% plot_power(nsim)
-df %>% generate_nsig_df(nsim) %>% plot_nsig(navs = navs, nsim)
+# 10 dependent variables
+
+if (run_simulation) {
+  df10 <- conduct_simulation(sample_sizes, effect_sizes, navs = 10, nsim)  
+  write_csv(df10, "files/sim_10avs.csv")
+  saveRDS(df10, file = "files/sim_10avs.rds")
+} else {
+  df10 <- readRDS("files/sim_10avs.rds")
+}
+
+power.plt10 <- df10 %>% generate_power_df() %>% plot_power(nsim)
+nsim.plt10 <- df10 %>% generate_nsig_df(nsim) %>% plot_nsig(navs=10, nsim)
+
+ggsave("files/nsim_plot10.png", nsim.plt10)
+
+# save power plot of this simulation
+# because it has by far the biggest sample size
+ggsave("files/power_plot.png", power.plt10) 
 ```
 
-```{r}
-# conduct simulation and plot results
+Paul und Marie arbeiten gemeinsam an ihrem Masterarbeitsprojekt. Sie haben insgesamt vier statistische Tests ihrer Hypothese durchgeführt, von denen zwei Tests ein signifikantes Ergebnis und zwei ein nicht signifikantes Ergebnis lieferten. Nun diskutieren Sie über die Interpretation.
+
+Marie sieht die Ergebnisse als Bestätigung der Hypothese an: „Wenn es keinen Effekt gäbe, dann wäre es ziemlich unwahrscheinlich, dass von vier Tests zwei signifikant werden. Ich finde, das spricht eher dafür, dass unsere Hypothese stimm."
+
+Paul dagegen ist skeptisch: „Zwei von vier, das ist doch nur eine 50/50 Chance! Wenn unsere Hypothese stimmen würde, dann müssten das doch alle vier Tests zeigen. Ich glaube, das war reiner Zufall."
+
+
+## Wer hat recht?
+
+Die Diskussion von Paul und Marie ist ein schöner Anlass, um über *Befundsmuster* zu sprechen, anstatt nur über einzelne Befunde. 
+
+Um eine fundierte Einschätzung zu erreichen, müssen wir das Problem unter verschiedenen Gesichtspunkten betrachten.
+
+Wir haben zu diesem Zweck eine Simulationsstudie durchgeführt, in der wir Pauls und Maries Analyse nachempfunden haben. Das heißt, wir gehen umgekehrt vor: Wir basteln uns verschiedene Datensätze, in denen wir den *wahren* Effekt genau kennen, und schauen, welche Muster sich in der Analyse ergeben. So können wir Pauls und Maries Befundmuster besser einschätzen.
+
+Wir gehen die verschiedenen Aspekte nun Schritt für Schritt durch und fassen sie am Ende noch einmal zusammen.
+
+## Simulationsstudie
+
+### Das Modell
+
+Zuerst müssen wir für Transparenz sorgen, damit klar ist, welche Modelle wir simulieren und berechnen. Unser Modell ist zu Veranschauungszwecken ziemlich einfach: Die vier Tests sind jeweils einfache lineare Regressionen, bei denen sowohl der Prädiktor, als auch die abhängige Variable normalverteilt und z-standardisiert sind. Das hier sind unsere zugehörigen Regressionsgleichungen:
+
+$$\begin{array}{ll}
+y_{i1} = & \beta_{01} + \beta_{11} \cdot x_i + \epsilon_{i1}\\
+y_{i2} = & \beta_{02} + \beta_{12} \cdot x_i + \epsilon_{i2}\\
+y_{i3} = & \beta_{03} + \beta_{13} \cdot x_i + \epsilon_{i3}\\
+y_{i4} = & \beta_{04} + \beta_{14} \cdot x_i + \epsilon_{i4}\\
+& \text{mit} \ i=1, ..., n
+\end{array}$$
+
+Oder kompakt ausgedrückt:
+
+$$\begin{array}{ll}
+y_{ij} = & \beta_{0j} + \beta_{1j} \cdot x_i + \epsilon_{ij}\\
+& \text{mit} \ i=1, ..., 100 \\
+& \text{und} \ j=1, ..., 4
+\end{array}$$
+
+Ein paar Anmerkungen dazu:
+
+- Unsere Stichprobengröße ist $n$
+- $y_{ij}$ ist der Wert einer bestimmten abhängigen Variable $j$ für eine Versuchsperson $i$.
+- $x_i$ ist unser Prädiktor, also unsere unabhängige Variable. Diese Variable ist für alle abhängigen Variablen gleich und hat deshalb keinen Index $j$.
+- Der Effekt, den wir schätzen möchten, ist die Größe von $\beta_{1j}$, also der durchschnittliche Effekt des Prädiktors $x_i$ auf die jeweilige abhängige Variable.
+- Da sowohl $x_i$, als auch $y_{ij}$ Normalverteilt mit Mittelwert 0 und Standardabweichung 1 sind (wir haben die Daten so simuliert), ist $\beta_{1j}$ eine *standardisierte* Effektstärke mit der Einheit *Standardabweichungen* (ähnlich wie Cohen's d).
+- Wir führen 500 Simulationen durch, das heißt wir erzeugen 500 mal Zufallsdaten und analysieren diese Zufallsdaten, damit wir uns anschauen können, wie häufig welche Ergebnisse bei unseren Analysen herauskommen.
+
+In jedem der vier Tests wird diese Hypothese getestet:
+$$H_0: \beta_{1j} = 0 \enspace \text{vs.} \enspace H_1: \beta_{1j} \neq 0$$
+
+Dabei nutzen wir zu Veranschauungszwecken in jeden einzelnen Test ein Alpha-Niveau von $0.05$, d.h. wenn die Wahrscheinlichkeit für unser Ergebnis unter Annahme der $H_0$ nur eine Wahrscheinlichkeit von 5 % oder kleiner hätte, werten wir das Ergebnis als signifikant und verwerfen die Nullhypothese.
+
+### Was passiert, wenn es tatsächlich keinen Effekt gibt?
+
+Schauen wir uns zunächst den Fall an, dass die Nullhypothese stimmt, also
+
+$$\beta_{1j} = 0.$$
+Die Frage, die uns interessiert ist: **Wie wahrscheinlich sind folgende Szenarien?**
+
+- 0/4 Tests werden signifikant
+- 1/4 Tests werden signifikant
+- 2/4 Tests werden signifikant (Pauls und Maries Situation)
+- 3/4 Tests werden signifikant
+- 4/4 Tests werden signifikant
+
+Wir simulieren dafür unsere vier Analysen 500 mal, jeweils mit einer Stichprobengröße von $n = 25$. Hier das Ergebnis:
+
+```{r, fig.width = 6, fig.height = 3, fig.align="center"}
+df4 %>% generate_nsig_df(nsim) %>% 
+  filter(n == 25, true_beta == 0) %>% 
+  plot_nsig(navs = 4, nsim) +
+  geom_text(aes(label = share_occurances %>% round(2) %>% format(nsmall = 2)),
+            nudge_y = 0.04, size = 3) +
+  labs(title = "Muster von Testergebnissen, wenn der wahre Effekt 0 ist.") +
+  labs(subtitle = "N = 25. Tests pro Simulation: 4") +
+  scale_x_discrete(limits = c("0", "1", "2", "3", "4")) +
+  guides(fill = FALSE)
+```
+
+Wichtige Punkte dabei:
+
+- Wir können in diesem Plot die **Alpha-Fehler-Inflation** durch multiples Testen beobachten: Nur in 79 % der Fälle waren alle vier Tests nicht signifikant - in 21 % der Fälle war *mindestens* einer der Tests signifikant, *obwohl der wahre Effekt 0 ist*. Das ist der Grund, warum es wichtig ist, alle Tests, auch nicht signifikante, zu berichten. Wenn nur die signifikanten Tests berichtet werden, dann gibt es zu viele falsch-positive Befunde.
+
+- Dass von vier Tests zwei oder mehr signifikant werden, wenn die Nullhypothese stimmt, ist extrem unwahrscheinlich: In gerade einmal 2 % der Fälle gab es zwei signifikante Ergebnisse, und in unseren 500 Simulationen kamen drei oder vier signifikante Ergebnisse kein einziges Mal vor. Genauer:
+  
+### Was passiert, wenn es einen Effekt gibt?
+
+Das hängt sehr stark davon ab, wie groß unsere **Power** (auch Teststärke genannt) ist. Die Power wiederum hängt davon ab, wie groß der wahre Effekt tatsächlich ist, und wie viele Datenpunkte wir für unsere Analyse zur Verfügung haben. Einen großen Effekt können wir auch schon mit wenig Datenpunkten finden, während wir für einen kleinen Effekt viele Datenpunkte brauchen.
+
+**Power** \| Die Wahrscheinlichkeit, mit der wir in einem *einzelnen* Test korrekterweise die Nullhypothese zurückweisen, wenn es tatsächlich einen Effekt gibt; d.h. die Wahrscheinlichkeit für richtig-positive Befunde.
+
+#### Verschiedene Effektstärken
+
+Bleiben wir zunächst einmal bei unserer Stichprobengröße von $n = 25$ und schauen uns an, wie viele Tests bei verschiedenen zugrundeliegenden Effektstärken signifikant werden:
+
+```{r, fig.height = 3.5}
+lab <- df4 %>% 
+  generate_power_df() %>% 
+  filter(n == 25) %>%
+  mutate(sig_share_char = round(sig_share, 2) %>% 
+           format(nsmall = 2)) %>% 
+  mutate(lab = ifelse(true_beta == 0, 
+                      paste("FP-Rate\npro 1 Test =", sig_share_char), 
+                      paste("Power\npro 1 Test =", sig_share_char))) %>% 
+  mutate(power = ifelse(true_beta == 0, FALSE, TRUE))
+  
+
+df4 %>% generate_nsig_df(nsim) %>% 
+  filter(n == 25) %>%
+  plot_nsig(navs = 4, nsim) +
+  geom_text(aes(label = share_occurances %>% round(2) %>% format(nsmall = 2)),
+            nudge_y = 0.03, size = 3) +
+  geom_label(data = lab, 
+             aes(label = lab, y = 0.7, x = 3.5, color = power),
+             fill = "white", show.legend = FALSE, alpha = 0.5,
+             size = 3) +
+  labs(title = "Muster von Testergebnissen für verschiedene wahre Effektstärken.") +
+  labs(subtitle = "N = 25. Tests pro Simulation: 4. FP = Falsch-Positiv.") +
+  guides(fill = FALSE)
+```
+
+Wichtige Punkte dabei:
+
+- Das linke Panel zeigt noch einmal den Plot von oben zum Vergleich, mit einer aus der Simulation abgeleiteten Rat von falsch-positiven Befunden (ob man den Anteil signifikanter Ergebnisse "Power" oder "Falsch-Positiv-Rate" nennt, hängt davon ab, ob es einen wahren Effekt gibt).
+- Auch wenn es einen wahren Effekt gibt, kann es durchaus sein dass **keiner** von vier Tests zu einem signifikanten Ergebnis führt. Siehe dazu vor allem das Panel "beta = 0.2" im Plot. Dort ist es das mit 48 % *häufigste* Ergebnis, dass keiner der Tests signifikant wird. Das liegt an der sehr schwachen Power von 0.16.
+- Je größer die Effektstärke, desto häufiger kommt es selbst bei einer kleinen Stichprobe von $n = 25$ vor, dass zwei oder mehr Tests signifikant werden.
+
+#### Verschiedene Stichprobengrößen
+
+Jetzt gehen wir einen Schritt weiter, und schauen uns das Befundmuster noch für zwei zusätzliche Stichprobengrößen an, nämlich $n = 50$ und $n = 100$.
+
+```{r, fig.height = 7}
+lab <- df4 %>% 
+  generate_power_df() %>% 
+  mutate(sig_share_char = round(sig_share, 2) %>% 
+           format(nsmall = 2)) %>% 
+  mutate(lab = ifelse(true_beta == 0, 
+                      paste("FP-Rate\npro 1 Test =", sig_share_char), 
+                      paste("Power\npro 1 Test =", sig_share_char))) %>% 
+  mutate(power = ifelse(true_beta == 0, FALSE, TRUE))
+  
+
+df4 %>% generate_nsig_df(nsim) %>% 
+  plot_nsig(navs = 4, nsim) +
+  geom_text(aes(label = share_occurances %>% round(2) %>% format(nsmall = 2)),
+            nudge_y = 0.05, size= 3) +
+  geom_label(data = lab, 
+             aes(label = lab, y = 0.9, x = 3.5, color = power),
+             fill = "white", show.legend = FALSE, alpha = 0.5,
+             size = 3) +
+  guides(fill = FALSE)
+```
+
+Wichtige Punkte dabei:
+
+- Die linke Spalte (wahrer Effekt ist 0) zeigt sich unbeeindruckt von der Stichprobengröße: Die Alpha-Fehler Inflation bleibt konstant. (Aber Vorsicht! Sie ist nicht grundsätzlich konstant, sondern nur unabhängig von der Stichprobengröße. Doch je mehr Tests durchgeführt werden, desto stärker wird die Inflation.)
+- Mit größerer Stichprobe verschiebt sich das Befundmuster für alle Fälle, in denen es einen wahren Effekt gibt, nach rechts: Ein immer größerer Anteil der vier Tests "schlägt an". Das liegt an der mit der Stichprobengröße steigenden Power.
+- Auch wenn es einen wahren Effekt gibt und wir eine hohe Stichprobengröße gibt, gibt es längst keine Garantie dafür, dass jeder Test signifikant wird. Ein gutes Beispiel dafür ist die Spalte mit "beta = 0.2". Hier werden selbst bei einer Stichprobengröße von $n = 100$ in cs. 69 % der Fälle nur zwei oder weniger Tests signifikant.
+
+### Welchen Einfluss hat die Anzahl von Tests?
+
+Bisher haben wir die Anzahl von Tests konstant bei vier gehalten, damit unsere Simulation mit der Analyse von Paul und Marie vergleichbar bleibt. Doch was passiert, wenn wir nicht vier, sondern zehn Tests durchführen? Das können wir im nächsten Plot sehen. Wir beschränken uns dafür wieder auf eine Stichprobengröße von $n = 25$.
+
+```{r, fig.height=4}
 navs <- 10
-nsim <- 10
-df <- conduct_simulation(sample_sizes, effect_sizes, navs, nsim)
-df %>% generate_power_df() %>% plot_power(nsim)
-df %>% generate_nsig_df(nsim) %>% plot_nsig(navs=navs, nsim)
+
+lab <- df10 %>% 
+  generate_power_df() %>% 
+  mutate(sig_share_char = round(sig_share, 2) %>% 
+           format(nsmall = 2)) %>% 
+  mutate(lab = ifelse(true_beta == 0, 
+                      paste("FP-Rate\npro 1 Test =", sig_share_char), 
+                      paste("Power\npro 1 Test =", sig_share_char))) %>% 
+  mutate(power = ifelse(true_beta == 0, FALSE, TRUE)) %>% 
+  filter(n == 25)
+
+df10 %>% 
+  generate_nsig_df(nsim) %>% 
+  filter(n == 25) %>% 
+  ggplot() +
+  aes(x = factor(nsig), y = share_occurances) +
+  geom_bar(stat = "identity") +
+  aes(fill = n_f) +
+  scale_fill_brewer(palette = "Set2") +
+  geom_text(aes(label = share_occurances %>% round(2) %>% format(nsmall = 2)),
+            nudge_y = 0.05, size = 3) +
+  geom_label(data = lab, 
+             aes(label = lab, y = 0.5, x = 8.5, color = power),
+             fill = "white", show.legend = FALSE, alpha = 0.5,
+             size = 3) +
+  facet_wrap(~true_beta_f) +
+  # facet_grid(rows = vars(true_beta_f)) +
+  labs(x = "Anzahl von signifikanten Tests.",
+       y = "Anteil an der Gesamtzahl von Analysen",
+       title = "Muster von Testergebnissen für verschiedene wahre Effektstärken.",
+       subtitle = paste(nsim, "Simulationen. Pro Simulation wurden", navs, "Tests durchgeführt.\nIm oberen linken Panel (beta = 0) ist Alpha-Fehler-Inflation sichtbar."), 
+       fill = "Stichprobengröße") +
+  guides(fill = FALSE) +
+  theme(legend.position = "bottom")
+  
 ```
 
-Was heißt es eigentlich, wenn von vier Tests zwei signifikant werden?
+Wichtige Punkte dabei:
 
-Um darüber zu reden, müssen wir ein paar Konzepte auffrischen:
+- Die **Alpha-Fehler-Inflation** steigt mit steigender Testzahl. Mit 36 %-prozentiger Wahrscheinlichkeit ist hier *mindestens* ein Test signifikant, obwohl die wahre Effektstärke 0 ist. Wir können also wirklich nicht einfach viele Tests machen und "schauen, was funktioniert" - das führt uns in die Irre. Wir müssen das gesamt Muster betrachten.
 
--   Teststärke (Power)
+- Geringe Power führt dazu, dass trotz eines wahren Effekts > 0 nur ein Bruchteil unserer Tests signifikant wird. Umgekehrt bedeutet das: Wenn in einer Studie viele Tests für eine Hypothese berichtet werden, und trotz kleiner oder moderater Power *alle* oder *fast alle* Tests signifikant werden, ist das ein Grund, misstrauisch zu sein: Ein solches Muster ist bei vollständiger Berichterstattung extram unwahrscheinlich!
 
--   Alpha-Fehler-Niveau
+## Auf den Punkt gebracht
 
--   Alpha-Fehler-Inflation
+Ganz knapp zusammengefasst: **Marie liegt richtig**. Wenn es keinen wahren Effekt gäbe, dann wäre es sehr unwahrscheinlich, dass zwei von vier Tests signifikante Ergebnisse liefern. 
+
+<div class="alert alert-success">
+**Wir wissen jetzt genauer, worauf es dabei im Einzelnen ankommt**:
+
+Multiples Testen führt zu *Alpha-Fehler-Inflation*. Die ist problematisch, wenn mehrere Tests durchgeführt, aber nur signifikante Tests berichtet werden.
+
+Das genaue Befundmuster bei multiplem Testen hängt davon ab ...
+
+- ... wie groß der wahre Effekt ist (-> hängt mit Power zusammen, kann aber nicht von Forschenden beeinflusst werden.)
+- ... wie groß die Stichprobe ist (-> an diesem Punkt können Forschende ihre  Power beeinflussen!)
+- ... wie viele Tests durchgeführt werden
+</div>
+
+### Aus verschiedenen Perspektiven
+
+Die Informationen aus diesem Skript helfen uns, besser einzuschätzen, ob ein bestimmtes Befundmuster *für* oder *gegen* eine Hypothese spricht. Was das für Forschende und Praktiker für eine Bedeutung hat, haben wir in unserem Skript zu [Konfundierung](https://ctreffe.github.io/r-space/konfundierung.html) ausführlich dargelegt.
+
+## Zusatzinfos
+
+Wir haben bis hierher die wichtigsten Informationen vermittelt. Die Zusatzinfo-Kästen ab hier bieten die Möglichkeit zur Vertiefung.
+
+<div class="alert alert-info">
+**Zusatzinfo 1: Befundmuster und Meta-Analysen**
+
+Wir haben hier Befundmuster aus der Perspektive betrachtet, dass *mehrere, einzelne* Tests in *einer Studie* durchgeführt wurden und nebeneinander stehen. Ein anderer häufiger Fall, in dem die Interpretation von Befundmustern wichtig ist, ist die Interpretation der Ergebnisse von mehreren Studien. Dafür sind die Erkentnisse aus diesem Skript ebenfalls durchaus hilfreich!
+
+Doch wenn man wirklich ins Detail einsteigen möchte, dann bietet es sich an, mehrere Befunde in Form einer Meta-Analyse miteinander zu verrechnen. So können verschiedene Tests zusammengeführt und in einer einzigen Schätzung konzentriert werden. Im Ergebnis kann man also aus einem Befundmuster wieder einen einzigen Test errechnen.
+
+Meta-Analytisches Vorgehen ist vor allem üblich zur Zusammenführung der Ergebnisse aus mehreren verschiedenen Forschungsarbeiten, kann aber durchaus auch zur Zusammenführung der Ergebnisse mehrerer Studien in einem einzigen Paper verwendet werden.
+</div>
+
+<div class="alert alert-info">
+**Zusatzinfo 2: Simulationen und analytisches Vorgehen**
+
+Wir haben hier zu Veranschaulichung die Ergebnisse von Simulationsstudien vorgestellt, doch es ist durchaus möglich, die von uns hier vorgestellten Befunde rein mathematisch auszurechnen.
+
+Die Befundmuster unter der Nullhypothese folgen bspw. einer Binomialverteilung. Wir können die Wahrscheinlichkeit der verschiedenen Möglichkeiten mit der Formel der Binomialverteilung ausrechnen:
+
+$$P(k|n,p) = \binom{n}{k} p^k (1-p)^{n-k}$$
+Dabei ist 
+
+- $n$ die Anzahl der Versuche (in unserem Fall die Gesamtzahl von Tests)
+- $k$ die Anzahl der "Erfolge" (in unserem Fall die Zahl signifikanter Ergebnisse)
+- $p$ die Wahrscheinlichkeit eines "Erfolgs" (in unserem Fall das Alpha-Niveau, wenn es keinen wahren Effekt gibt, bzw. die Power, wenn es einen gibt)
+
+\
+Rechnen wir das einmal aus, für den Fall unseres Alpha-Niveaus von $\alpha = 0.05$ und $\beta_{1j} = 0$. Wie wahrscheinlich ist es, dass $k = 1$ von $n = 4$ Tests erfolgreich sind?
+
+$$\begin{array}{ll}
+P(k = 1|n=4,p=0.05) & = \binom{4}{1}0.05^1(1-0.05)^{4-1}\\
+ & = 4 \cdot 0.05 \cdot 0.95^3\\
+ & \approx 0.17
+\end{array}$$
+
+Damit sind wir mit unserem simulierten Ergebnis von $P(k=1)=0.19$ schon recht nah gekommen. Die noch recht große Abweichung von $0.02$ ergibt aus unserer Rundung auf zwei Nachkommastellen und dem für eine Simulationsstudie noch recht kleinen Umfang von 500 Simulationen.
+
+Wenn wir die gesamte Alpha-Fehler-Inflation berechnen wollen, rechnen wir
+$$\begin{array}{ll}
+P(k\neq0|n=4,p=0.05) & = P(k=1|n,p) + P(k=2|n,p) + P(k3|n,p) + P(k=4|n,p)\\
+ & = 0.171475 + 0.0135375 + 0.000475 + 0.000000625\\
+ & \approx 0.185 
+\end{array}$$
+
+Auch **Power-Berechnungen** können analytisch durchgeführt werden, aber das übersteigt nun doch den Horizont dieses Zusatzinfo-Kastens.
+
+</div>

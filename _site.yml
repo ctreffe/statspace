@@ -14,6 +14,8 @@ navbar:
           href: kausalitaet.html
         - text: "Multilevel Modelle"
           href: multilevel.html
+        - text: "Multiple Analysen und Befundmuster"
+          href: multiple_analyses.html
         
   right:
     - text: "Georg-Elias-Müller-Institut für Psychologie"
