@@ -326,7 +326,7 @@ $(document).ready(function () {
 
 
 <p>Paul und Marie arbeiten gemeinsam an ihrem Masterarbeitsprojekt. Sie haben insgesamt vier statistische Tests ihrer Hypothese durchgeführt, von denen zwei Tests ein signifikantes Ergebnis und zwei ein nicht signifikantes Ergebnis lieferten. Nun diskutieren Sie über die Interpretation.</p>
-<p>Marie sieht die Ergebnisse als Bestätigung der Hypothese an: „Wenn es keinen Effekt gäbe, dann wäre es ziemlich unwahrscheinlich, dass von vier Tests zwei signifikant werden. Ich finde, das spricht eher dafür, dass unsere Hypothese stimm."</p>
+<p>Marie sieht die Ergebnisse als Bestätigung der Hypothese an: „Wenn es keinen Effekt gäbe, dann wäre es ziemlich unwahrscheinlich, dass von vier Tests zwei signifikant werden. Ich finde, das spricht eher dafür, dass unsere Hypothese stimmt."</p>
 <p>Paul dagegen ist skeptisch: „Zwei von vier, das ist doch nur eine 50/50 Chance! Wenn unsere Hypothese stimmen würde, dann müssten das doch alle vier Tests zeigen. Ich glaube, das war reiner Zufall."</p>
 <div id="wer-hat-recht" class="section level2">
 <h2>Wer hat recht?</h2>
@@ -350,7 +350,7 @@ y_{i4} = &amp; \beta_{04} + \beta_{14} \cdot x_i + \epsilon_{i4}\\
 <p>Oder kompakt ausgedrückt:</p>
 <p><span class="math display">\[\begin{array}{ll}
 y_{ij} = &amp; \beta_{0j} + \beta_{1j} \cdot x_i + \epsilon_{ij}\\
-&amp; \text{mit} \ i=1, ..., 100 \\
+&amp; \text{mit} \ i=1, ..., n \\
 &amp; \text{und} \ j=1, ..., 4
 \end{array}\]</span></p>
 <p>Ein paar Anmerkungen dazu:</p>
@@ -424,7 +424,7 @@ y_{ij} = &amp; \beta_{0j} + \beta_{1j} \cdot x_i + \epsilon_{ij}\\
 </div>
 <div id="auf-den-punkt-gebracht" class="section level2">
 <h2>Auf den Punkt gebracht</h2>
-<p>Ganz knapp zusammengefasst: <strong>Marie liegt richtig</strong>. Wenn es keinen wahren Effekt gäbe, dann wäre es sehr unwahrscheinlich, dass zwei von vier Tests signifikante Ergebnisse liefern.</p>
+<p>Ganz knapp zusammengefasst: <strong>Marie liegt richtig</strong>. Wenn es keinen wahren Effekt gäbe, dann wäre es sehr unwahrscheinlich, dass zwei von vier Tests signifikante Ergebnisse liefern: Unsere Simulation ergab dafür nur eine Wahrscheinlichkeit von ca. 2 % für dieses Muster unter der Annahme von <span class="math inline">\(\beta=0\)</span>. Selbst im Minimal-Szenario mit kleinem Effekt und kleiner Stichprobengröße (<span class="math inline">\(\beta=0.2, n = 25\)</span>) war die Wahrscheinlichkeit mit 11 % um das 5.5-fache höher!</p>
 <div class="alert alert-success">
 <p><strong>Wir wissen jetzt genauer, worauf es dabei im Einzelnen ankommt</strong>:</p>
 <p>Multiples Testen führt zu <em>Alpha-Fehler-Inflation</em>. Die ist problematisch, wenn mehrere Tests durchgeführt, aber nur signifikante Tests berichtet werden.</p>
@@ -474,6 +474,15 @@ P(k\neq0|n=4,p=0.05) &amp; = P(k=1|n,p) + P(k=2|n,p) + P(k3|n,p) + P(k=4|n,p)\\
 \end{array}\]</span></p>
 <p>Auch <strong>Power-Berechnungen</strong> können analytisch durchgeführt werden, aber das übersteigt nun doch den Horizont dieses Zusatzinfo-Kastens.</p>
 </div>
+</div>
+<div id="daten-und-skript" class="section level1">
+<h1>Daten und Skript</h1>
+<p>Hier können die Daten und das Skript der Datensimulation heruntergeladen werden:</p>
+<ul>
+<li><a href="https://raw.githubusercontent.com/ctreffe/r-space/master/files/sim_4avs.csv">sim_4avs.csv (4 Tests)</a></li>
+<li><a href="https://raw.githubusercontent.com/ctreffe/r-space/master/files/sim_10avs.csv">sim_10avs.csv (10 Tests)</a></li>
+<li><a href="https://raw.githubusercontent.com/ctreffe/r-space/master/multiple_analyses.Rmd">multiple_analyses.Rmd (Skript)</a></li>
+</ul>
 </div>
 
 

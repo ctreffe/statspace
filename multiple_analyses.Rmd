@@ -5,18 +5,20 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
+# global RMarkdown options
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+# load packages
 library(tidyverse)
-library(ggthemes)
 
 # general settings for data simulation
 set.seed = 12345
-run_simulation <- FALSE
-
+run_simulation <- FALSE # determines, whether a new simulation is run
 sample_sizes <- c(25, 50, 100)
 effect_sizes <- c(0, 0.2, 0.35, 0.5)
 nsim <- 500
 
+# set global theme options for ggplot2
 theme_update(panel.background = element_rect(fill = NA, color = "#6baed6"))
 theme_update(panel.grid = element_blank())
 theme_update(strip.background = element_rect(fill = "#6baed6"))
@@ -26,7 +28,16 @@ theme_update(plot.background = element_rect(fill = "#deebf7"))
 
 ```{r}
 analyse <- function(n=100, navs=3, b = 0) {
-  # simulate independent variable
+  # run one simulation and analysis
+  
+  # Function Arguments
+  # n: Simulated number of observations
+  # navs: Number of dependent variables to create
+  # b: True effect size (beta1)
+  
+  # Returns
+  # List of models with fitted linear regression models (length 'navs')
+  
   uv <- rnorm(n)
   
   # simulate dependent variables
@@ -48,6 +59,16 @@ analyse <- function(n=100, navs=3, b = 0) {
 
 ```{r}
 simulate_data <- function(nsim = 1000, n = 100, navs = 3, b = 0) {
+  # run multiple simulations
+  
+  # Function Arguments
+  # nsim: Number of simulations
+  # n, navs, b: passed on to 'analyse()'
+  
+  # Returns
+  # List of length 'nsim'. Every entry is another list, containing the
+  # results of one simulation.
+  
   sims <- list()
   for (i in 1:nsim) {
     sims[[i]] <- analyse(n=n, navs=navs, b = b)
@@ -58,6 +79,14 @@ simulate_data <- function(nsim = 1000, n = 100, navs = 3, b = 0) {
 
 ```{r}
 extract_pvalues <- function(sims) {
+  # curate data to return p-values
+  
+  # Function Arguments
+  # sims: List of simulation results (return value of 'simulate_data()')
+  
+  # Returns
+  # Tibble df, with one row per simulation
+  
   res <- list()
   for (i in seq_along(sims)) {
     sim <- sims[[i]]
@@ -76,6 +105,15 @@ extract_pvalues <- function(sims) {
 
 ```{r}
 curate <- function(df, b, n) {
+  # Transform data
+  
+  # Function Arguments
+  # df: Dataframe (return value of 'extract_pvalues()')
+  
+  # Returns
+  # Tibble df, transformed to long format and 
+  # with added columns 'true_beta' and 'n'
+  
   df <- df %>% 
     mutate(true_beta = b, n = n) %>% 
     pivot_longer(starts_with("model"), names_to="model", values_to="p")
@@ -85,6 +123,23 @@ curate <- function(df, b, n) {
 
 ```{r}
 conduct_simulation <- function(sample_sizes, effect_sizes, navs, nsim) {
+  # Controls multiple simulation runs over grids of parameters
+  
+  # 'nsim' simulations will be run for all combinations of the values in
+  # 'sample_sizes' and 'effect_sizes'. The p-values for the effect estimation of
+  # beta1 will be exctracted and the data curated.
+  
+  
+  # Function parameters
+  # sample_sizes: Vector of sample sizes, to be passed as 'n' to 'analyse()'
+  # effect_sizes: Vector of effect sizes, to be passed as 'b' to 'analyse()'
+  # navs: Number of dependent variables to simulate and analyse 
+  #       (passed to 'analyse()')
+  # nsim: Number of simulations per run
+  
+  # Returns
+  # Tibble df in long format with all results in one dataframe
+  
   df_list <- list()
   i <- 1
   for (n in sample_sizes) {
@@ -110,7 +165,18 @@ conduct_simulation <- function(sample_sizes, effect_sizes, navs, nsim) {
 
 ```{r}
 generate_power_df <- function(df) {
-  # treating everything as single test (gives powers)
+  # Get an estimation of testpower 
+  
+  # Calculates testpower estimates for each combination of effect size and 
+  # sample size in the dataframe. In the case of b = 0, the number is the
+  # false positive rate.
+  
+  # Function Arguments
+  # df: A tibble, returned value from 'conduct_simulation()'
+  
+  # Returns
+  # A tibble df with aggregated results
+  
   power.df <- df %>% 
     group_by(true_beta, n, true_beta_f, n_f) %>% 
     summarise(nsig = sum(p < 0.05), sig_share = nsig / n())
@@ -119,11 +185,24 @@ generate_power_df <- function(df) {
 ```
 
 ```{r}
-generate_nsig_df <- function(df, nsim) {
-  # counting the number of significant results for each unit of tests
+generate_nsig_df <- function(df, alpha = 0.05) {
+  # Count number of significant results per scenario
+  
+  # One scenario includes all 'nsim' simulation runs of a value combination
+  # of effect_size, sample_size, and number of dependent variables
+  
+  # Function Arguments
+  # df: A tibble, returned value from 'conduct_simulation()'
+  # alpha: The alpha level to use
+  
+  # Returns
+  # A tibble df with aggregated results
+  
+  nsim <- df %>% pull(sim) %>% max()
+  
   nsig.df <- df %>%
     group_by(sim, true_beta, n, true_beta_f, n_f) %>% 
-    summarise(nsig = sum(p < 0.05)) %>% 
+    summarise(nsig = sum(p < alpha)) %>% 
     group_by(nsig, true_beta, n, true_beta_f, n_f) %>% 
     summarise(n_occurances = n(), share_occurances = n_occurances / nsim) %>% 
     arrange(n, true_beta, nsig)
@@ -132,8 +211,18 @@ generate_nsig_df <- function(df, nsim) {
 ```
 
 ```{r}
-generate_onesig_df <- function(df, nsim) {
-  # counting the number of analyses in which at least one of 4 tests was significant
+generate_onesig_df <- function(df) {
+  # Count number of analyses in which 1 or more tests were significant
+  
+  # This gives a better view of alpha-error-inflation
+  
+  # Function Arguments
+  # df: A tibble, returned value from 'conduct_simulation()'
+  
+  # Returns
+  # A tibble df with aggregated results
+  
+  nsim <- df %>% pull(sim) %>% max()
   onesig.df <- df %>% 
     filter(nsig != 0) %>% 
     group_by(true_beta, true_beta_f, n, n_f) %>% 
@@ -146,6 +235,15 @@ generate_onesig_df <- function(df, nsim) {
 
 ```{r}
 plot_power <- function(df, nsim) {
+  # Plots power estimates for different scenarios
+  
+  # Function Arguments
+  # df: A tibble, returned value from 'generate_power_df()'
+  # nsim: Number of simulation runs
+  
+  # Returns
+  # A ggplot2 plot object
+  
   power.plt <- df %>% 
     ggplot() +
     aes(x = n_f, y = sig_share) +
@@ -166,6 +264,16 @@ plot_power <- function(df, nsim) {
 
 ```{r}
 plot_nsig <- function(df, navs, nsim) {
+  # Plots number of significant test results
+  
+  # Function Arguments
+  # df: A tibble, returned value from 'generate_nsig_df()'
+  # navs: Number of dependent variables used
+  # nsim: Number of simulation runs
+  
+  # Returns
+  # A ggplot2 plot object
+  
   nsig.plt <- df %>% 
     ggplot() +
     aes(x = factor(nsig), y = share_occurances) +
@@ -196,7 +304,7 @@ if (run_simulation) {
 }
 
 power.plt4 <- df4 %>% generate_power_df() %>% plot_power(nsim)
-nsim.plt4 <- df4 %>% generate_nsig_df(nsim) %>% plot_nsig(navs = 4, nsim)
+nsim.plt4 <- df4 %>% generate_nsig_df() %>% plot_nsig(navs = 4, nsim)
 
 
 ggsave("files/nsim_plot4.png", nsim.plt4)
@@ -215,7 +323,7 @@ if (run_simulation) {
 }
 
 power.plt10 <- df10 %>% generate_power_df() %>% plot_power(nsim)
-nsim.plt10 <- df10 %>% generate_nsig_df(nsim) %>% plot_nsig(navs=10, nsim)
+nsim.plt10 <- df10 %>% generate_nsig_df() %>% plot_nsig(navs=10, nsim)
 
 ggsave("files/nsim_plot10.png", nsim.plt10)
 
@@ -226,7 +334,7 @@ ggsave("files/power_plot.png", power.plt10)
 
 Paul und Marie arbeiten gemeinsam an ihrem Masterarbeitsprojekt. Sie haben insgesamt vier statistische Tests ihrer Hypothese durchgeführt, von denen zwei Tests ein signifikantes Ergebnis und zwei ein nicht signifikantes Ergebnis lieferten. Nun diskutieren Sie über die Interpretation.
 
-Marie sieht die Ergebnisse als Bestätigung der Hypothese an: „Wenn es keinen Effekt gäbe, dann wäre es ziemlich unwahrscheinlich, dass von vier Tests zwei signifikant werden. Ich finde, das spricht eher dafür, dass unsere Hypothese stimm."
+Marie sieht die Ergebnisse als Bestätigung der Hypothese an: „Wenn es keinen Effekt gäbe, dann wäre es ziemlich unwahrscheinlich, dass von vier Tests zwei signifikant werden. Ich finde, das spricht eher dafür, dass unsere Hypothese stimmt."
 
 Paul dagegen ist skeptisch: „Zwei von vier, das ist doch nur eine 50/50 Chance! Wenn unsere Hypothese stimmen würde, dann müssten das doch alle vier Tests zeigen. Ich glaube, das war reiner Zufall."
 
@@ -259,7 +367,7 @@ Oder kompakt ausgedrückt:
 
 $$\begin{array}{ll}
 y_{ij} = & \beta_{0j} + \beta_{1j} \cdot x_i + \epsilon_{ij}\\
-& \text{mit} \ i=1, ..., 100 \\
+& \text{mit} \ i=1, ..., n \\
 & \text{und} \ j=1, ..., 4
 \end{array}$$
 
@@ -292,8 +400,8 @@ Die Frage, die uns interessiert ist: **Wie wahrscheinlich sind folgende Szenarie
 
 Wir simulieren dafür unsere vier Analysen 500 mal, jeweils mit einer Stichprobengröße von $n = 25$. Hier das Ergebnis:
 
-```{r, fig.width = 6, fig.height = 3, fig.align="center"}
-df4 %>% generate_nsig_df(nsim) %>% 
+```{r, fig.width = 6, fig.height = 3.25, fig.align="center"}
+df4 %>% generate_nsig_df() %>% 
   filter(n == 25, true_beta == 0) %>% 
   plot_nsig(navs = 4, nsim) +
   geom_text(aes(label = share_occurances %>% round(2) %>% format(nsmall = 2)),
@@ -301,6 +409,7 @@ df4 %>% generate_nsig_df(nsim) %>%
   labs(title = "Muster von Testergebnissen, wenn der wahre Effekt 0 ist.") +
   labs(subtitle = "N = 25. Tests pro Simulation: 4") +
   scale_x_discrete(limits = c("0", "1", "2", "3", "4")) +
+  lims(y = c(0, 0.9)) +
   guides(fill = FALSE)
 ```
 
@@ -332,7 +441,7 @@ lab <- df4 %>%
   mutate(power = ifelse(true_beta == 0, FALSE, TRUE))
   
 
-df4 %>% generate_nsig_df(nsim) %>% 
+df4 %>% generate_nsig_df() %>% 
   filter(n == 25) %>%
   plot_nsig(navs = 4, nsim) +
   geom_text(aes(label = share_occurances %>% round(2) %>% format(nsmall = 2)),
@@ -343,6 +452,7 @@ df4 %>% generate_nsig_df(nsim) %>%
              size = 3) +
   labs(title = "Muster von Testergebnissen für verschiedene wahre Effektstärken.") +
   labs(subtitle = "N = 25. Tests pro Simulation: 4. FP = Falsch-Positiv.") +
+  lims(y = c(0, 0.9)) +
   guides(fill = FALSE)
 ```
 
@@ -367,7 +477,7 @@ lab <- df4 %>%
   mutate(power = ifelse(true_beta == 0, FALSE, TRUE))
   
 
-df4 %>% generate_nsig_df(nsim) %>% 
+df4 %>% generate_nsig_df() %>% 
   plot_nsig(navs = 4, nsim) +
   geom_text(aes(label = share_occurances %>% round(2) %>% format(nsmall = 2)),
             nudge_y = 0.05, size= 3) +
@@ -388,7 +498,7 @@ Wichtige Punkte dabei:
 
 Bisher haben wir die Anzahl von Tests konstant bei vier gehalten, damit unsere Simulation mit der Analyse von Paul und Marie vergleichbar bleibt. Doch was passiert, wenn wir nicht vier, sondern zehn Tests durchführen? Das können wir im nächsten Plot sehen. Wir beschränken uns dafür wieder auf eine Stichprobengröße von $n = 25$.
 
-```{r, fig.height=4}
+```{r, fig.height=4.5}
 navs <- 10
 
 lab <- df10 %>% 
@@ -402,13 +512,14 @@ lab <- df10 %>%
   filter(n == 25)
 
 df10 %>% 
-  generate_nsig_df(nsim) %>% 
+  generate_nsig_df() %>% 
   filter(n == 25) %>% 
   ggplot() +
   aes(x = factor(nsig), y = share_occurances) +
   geom_bar(stat = "identity") +
   aes(fill = n_f) +
   scale_fill_brewer(palette = "Set2") +
+  lims(y = c(0, 0.75)) +
   geom_text(aes(label = share_occurances %>% round(2) %>% format(nsmall = 2)),
             nudge_y = 0.05, size = 3) +
   geom_label(data = lab, 
@@ -435,7 +546,7 @@ Wichtige Punkte dabei:
 
 ## Auf den Punkt gebracht
 
-Ganz knapp zusammengefasst: **Marie liegt richtig**. Wenn es keinen wahren Effekt gäbe, dann wäre es sehr unwahrscheinlich, dass zwei von vier Tests signifikante Ergebnisse liefern. 
+Ganz knapp zusammengefasst: **Marie liegt richtig**. Wenn es keinen wahren Effekt gäbe, dann wäre es sehr unwahrscheinlich, dass zwei von vier Tests signifikante Ergebnisse liefern: Unsere Simulation ergab dafür nur eine Wahrscheinlichkeit von ca. 2 % für dieses Muster unter der Annahme von $\beta=0$. Selbst im Minimal-Szenario mit kleinem Effekt und kleiner Stichprobengröße ($\beta=0.2, n = 25$) war die Wahrscheinlichkeit mit 11 % um das 5.5-fache höher!
 
 <div class="alert alert-success">
 **Wir wissen jetzt genauer, worauf es dabei im Einzelnen ankommt**:
@@ -502,3 +613,11 @@ P(k\neq0|n=4,p=0.05) & = P(k=1|n,p) + P(k=2|n,p) + P(k3|n,p) + P(k=4|n,p)\\
 Auch **Power-Berechnungen** können analytisch durchgeführt werden, aber das übersteigt nun doch den Horizont dieses Zusatzinfo-Kastens.
 
 </div>
+
+# Daten und Skript
+
+Hier können die Daten und das Skript der Datensimulation heruntergeladen werden:
+
+- [sim_4avs.csv (4 Tests)](https://raw.githubusercontent.com/ctreffe/r-space/master/files/sim_4avs.csv) 
+- [sim_10avs.csv (10 Tests)](https://raw.githubusercontent.com/ctreffe/r-space/master/files/sim_10avs.csv) 
+- [multiple_analyses.Rmd (Skript)](https://raw.githubusercontent.com/ctreffe/r-space/master/multiple_analyses.Rmd)
