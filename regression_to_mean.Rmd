@@ -173,27 +173,6 @@ mint <- df %>%
   lm(value ~ time*group_t1, data = .)
 ```
 
-<!-- Regression tables -->
-
-<!-- <center> -->
-<!-- ```{r} -->
-<!-- sjPlot::tab_model(mhigh) -->
-<!-- ``` -->
-<!-- </center> -->
-
-
-<!-- <center> -->
-<!-- ```{r} -->
-<!-- sjPlot::tab_model(mlow) -->
-<!-- ``` -->
-<!-- </center> -->
-
-<!-- <center> -->
-<!-- ```{r} -->
-<!-- sjPlot::tab_model(mint) -->
-<!-- ``` -->
-<!-- </center> -->
-
 ```{r}
 plt.overall <- df %>% 
   filter(time != "true") %>% 
@@ -334,4 +313,55 @@ Hier können die Daten und das Skript der Datensimulation heruntergeladen werden
 
 
 
+# Anhang: Regressionstabellen
 
+<div style="margin-bottom: 2rem; margin-top: 2rem;">
+**Tabelle 1: Interaktion**
+
+```{r}
+sjPlot::tab_model(mint, 
+                  show.se = TRUE, 
+                  show.stat = TRUE, 
+                  show.fstat = TRUE,
+                  string.est = "Beta",
+                  string.se = "SE",
+                  string.stat = "t",
+                  ci.hyphen = ", "
+                  )
+```
+</div>
+<hr>
+<div style="margin-bottom: 2rem; margin-top: 2rem;">
+**Tabelle 2: Unterschied von t1 zu t2 in der Gruppe "hohe Angst"**
+
+
+```{r}
+sjPlot::tab_model(mhigh, 
+                  show.se = TRUE, 
+                  show.stat = TRUE, 
+                  show.fstat = TRUE,
+                  string.est = "Beta",
+                  string.se = "SE",
+                  string.stat = "t",
+                  ci.hyphen = ", "
+                  )
+```
+</div>
+<hr>
+<div style="margin-bottom: 2rem; margin-top: 2rem;">
+**Tabelle 3: Unterschied von t1 zu t2 in der Gruppe "geringe Angst"**
+
+
+```{r}
+sjPlot::tab_model(mlow, 
+                  show.se = TRUE, 
+                  show.stat = TRUE, 
+                  show.fstat = TRUE,
+                  string.est = "Beta",
+                  string.se = "SE",
+                  string.stat = "t",
+                  ci.hyphen = ", "
+                  )
+```
+
+</div>
