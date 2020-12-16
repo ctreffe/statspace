@@ -325,7 +325,12 @@ Doch so dramatisch das klingt, wir sind nicht schutzlos gegen diese Denkfehler. 
 - Dahingehend treffen die gleichen, detaillierteren Überlegungen zu, die wir in unserem Artikel zu [Konfundierung](https://ctreffe.github.io/r-space/konfundierung.html#warum-ist-der-haken-wichtig) geschildert haben.
 
 
+# Daten und Skript
 
+Hier können die Daten und das Skript der Datensimulation heruntergeladen werden:
+
+- [regtomean.csv](https://raw.githubusercontent.com/ctreffe/r-space/master/files/regtomean.csv) 
+- [regression_to_mean.Rmd (Skript)](https://raw.githubusercontent.com/ctreffe/r-space/master/regression_to_mean.Rmd)
 
 
 
