@@ -243,7 +243,7 @@ Wikipedia macht einen recht guten Job in dem  Versuch, [Regression zur Mitte](ht
 
 >„Regression zur Mitte ist ein Begriff der Statistik; er bezeichnet das Phänomen, dass nach einem extrem ausgefallenen Messwert die nachfolgende Messung wieder näher am Durchschnitt liegt, falls der Zufall einen Einfluss auf die Messgröße hat. Dies gilt immer, wenn die beiden Messungen korrelieren, aber nicht zu 100 %.“
 
-Aber was heißt das eigentlich? Wir holen zunächst kurz etwas aus und beschreiben eine Studie, in der aufgrund der Regression zur Mitte ein Denkfehler gemacht wurde.
+Aber was heißt das eigentlich? Wir holen zunächst kurz etwas aus und beschreiben eine Studie, in der aufgrund der Regression zur Mitte ein Denkfehler gemacht wurde. Die Studie ist fiktiv, wir haben die Daten dazu simuliert.
 
 ### Beispiel: Die Tagebuch-Intervention
 
