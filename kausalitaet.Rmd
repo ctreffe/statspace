@@ -149,7 +149,7 @@ Wir betrachten hier kurz sowohl die wissenschaftliche, als auch die Praktiker-Pe
 
 -   Solche Daten sollten deshalb nicht als einzige Evidenz zur Bedrüngung von praktischen Entscheidungen verwendet werden. Vielmehr sollten sich Praktiker als Risikomanager:innen verstehen und die theoretische Plausibilität und empirische Evidenz ganzheitlich betrachten. Auf dieser Basis können sie verschiedene Szenarien abwägen und eine bestmöglich fundierte Entscheidung treffen.
 
--   Dahingehend treffen die gleichen, detaillierteren Überlegungen zu, die wir in unserem Artikel zu [Konfundierung](https://ctreffe.github.io/r-space/konfundierung.html) (siehe "Warum ist der Haken wichtig?") geschildert haben.
+-   Dahingehend treffen die gleichen, detaillierteren Überlegungen zu, die wir in unserem Artikel zu [Konfundierung](https://ctreffe.github.io/r-space/konfundierung.html#warum-ist-der-haken-wichtig) (siehe "Warum ist der Haken wichtig?") geschildert haben.
 
 ::: {.alert .alert-info}
 #### **Studierenden-Perspektive**

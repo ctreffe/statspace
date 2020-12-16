@@ -16,7 +16,8 @@ navbar:
           href: multilevel.html
         - text: "Multiple Analysen und Befundmuster"
           href: multiple_analyses.html
-        
+        - text: "Regression zur Mitte"
+          href: regression_to_mean.html
   right:
     - text: "Georg-Elias-Müller-Institut für Psychologie"
 output:

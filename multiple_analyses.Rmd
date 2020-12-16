@@ -312,6 +312,28 @@ ggsave("files/nsim_plot4.png", nsim.plt4)
 
 ```{r}
 # conduct simulation and plot results
+# 6 dependent variables
+
+if (run_simulation) {
+  df6 <- conduct_simulation(c(sample_sizes, 250), effect_sizes, navs = 6, nsim)  
+  write_csv(df6, "files/sim_6avs.csv")
+  saveRDS(df6, file = "files/sim_6avs.rds")
+} else {
+  df10 <- readRDS("files/sim_6avs.rds")
+}
+
+power.plt6 <- df6 %>% generate_power_df() %>% plot_power(nsim)
+nsim.plt6 <- df6 %>% generate_nsig_df() %>% plot_nsig(navs= 6, nsim)
+
+ggsave("files/nsim_plot6.png", nsim.plt6)
+
+# save power plot of this simulation
+# because it has by far the biggest sample size
+ggsave("files/power_plot6.png", power.plt6) 
+```
+
+```{r}
+# conduct simulation and plot results
 # 10 dependent variables
 
 if (run_simulation) {
@@ -323,7 +345,7 @@ if (run_simulation) {
 }
 
 power.plt10 <- df10 %>% generate_power_df() %>% plot_power(nsim)
-nsim.plt10 <- df10 %>% generate_nsig_df() %>% plot_nsig(navs=10, nsim)
+nsim.plt10 <- df10 %>% generate_nsig_df() %>% plot_nsig(navs= 10, nsim)
 
 ggsave("files/nsim_plot10.png", nsim.plt10)
 

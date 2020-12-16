@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Regression zur Mitte</title>
+
+<script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">R-Space</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Methoden-Skripte
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="konfundierung.html">Konfundierung</a>
+    </li>
+    <li>
+      <a href="kausalitaet.html">Kausalität und Korrelation</a>
+    </li>
+    <li>
+      <a href="multilevel.html">Multilevel Modelle</a>
+    </li>
+    <li>
+      <a href="multiple_analyses.html">Multiple Analysen und Befundmuster</a>
+    </li>
+    <li>
+      <a href="regression_to_mean.html">Regression zur Mitte</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown-header">Georg-Elias-Müller-Institut für Psychologie</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Regression zur Mitte</h1>
+
+</div>
+
+
+<!-- Regression tables -->
+<!-- <center> -->
+<!-- ```{r} -->
+<!-- sjPlot::tab_model(mhigh) -->
+<!-- ``` -->
+<!-- </center> -->
+<!-- <center> -->
+<!-- ```{r} -->
+<!-- sjPlot::tab_model(mlow) -->
+<!-- ``` -->
+<!-- </center> -->
+<!-- <center> -->
+<!-- ```{r} -->
+<!-- sjPlot::tab_model(mint) -->
+<!-- ``` -->
+<!-- </center> -->
+<div id="was-ist-regression-zur-mitte" class="section level2">
+<h2>Was ist Regression zur Mitte?</h2>
+<p>Wikipedia macht einen recht guten Job in dem Versuch, <a href="https://de.wikipedia.org/wiki/Regression_zur_Mitte#:~:text=Regression%20zur%20Mitte%20ist%20ein,Einfluss%20auf%20die%20Messgr%C3%B6%C3%9Fe%20hat.">Regression zur Mitte</a> kurz und bündig zu erklären:</p>
+<blockquote>
+<p>„Regression zur Mitte ist ein Begriff der Statistik; er bezeichnet das Phänomen, dass nach einem extrem ausgefallenen Messwert die nachfolgende Messung wieder näher am Durchschnitt liegt, falls der Zufall einen Einfluss auf die Messgröße hat. Dies gilt immer, wenn die beiden Messungen korrelieren, aber nicht zu 100 %.“</p>
+</blockquote>
+<p>Aber was heißt das eigentlich? Wir holen zunächst kurz etwas aus und beschreiben eine Studie, in der aufgrund der Regression zur Mitte ein Denkfehler gemacht wurde.</p>
+<div id="beispiel-die-tagebuch-intervention" class="section level3">
+<h3>Beispiel: Die Tagebuch-Intervention</h3>
+<p>Ein Forscher:innen-Team möchte eine neue Methode zur Behandlung von generalisierten Angstzuständen untersuchen. Die Methode: Über einen Zeitraum von mehreren Monaten schreiben die Patient:innen einmal wöchentlich in ein Tagebuch alle Dinge auf, die ihnen Angst einflößen. Dadurch, so die Theorie, können sie sich von der Angst lösen.</p>
+<p>Die konnten eine herausragende Stichprobe gewinnen: 300 Menschen nehmen teil. Die generelle Ängstlichkeit der Teilnehmenden wird einmal zu Beginn der Intervention und einmal 6 Monate nach der Intervention erhoben.</p>
+<p>Die Ergebnisse scheinen zunächst nicht vielversprechend zu sein: Die durchschnittliche Ängstlichkeit veränderte sich vom ersten zum zweiten Messzeitpunkt praktisch gar nicht:</p>
+<p><img src="regression_to_mean_files/figure-html/unnamed-chunk-15-1.png" width="672" /> <strong>Anmerkung</strong>: In diesen Plots ist jeder kleine Punkt der Wert einer Versuchsperson.</p>
+<p>Doch das kann nicht das Ende der Geschichte gewesen sein - ein tüchtiger Doktorand macht sich daran, die Daten genauer zu analysieren. Er stellt sich die Frage: <em>„Was, wenn unsere Intervention unterschiedlich wirkt, je nachdem wie groß die Belastung zu Beginn war?“</em>. Ausgehend von dieser Frage schaut unser Doktorand sich an, wie die Entwicklung in zwei Subgruppen verläuft: In der Gruppe “hohe Angst” sind diejenigen, die zu Beginn ein hohes Angstlevel (höher als der Median) aufwiesen, und in der Gruppe “geringe Angst” sind diejenigen, die zu Beginn ein niedriges Angstlevel (niedriger als der Median) aufwiesen.</p>
+<p>Schauen wir uns an, was die Daten hier sagen:</p>
+<p><img src="regression_to_mean_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>Es scheint eindeutig zu sein: Unser Doktorand war etwas wichtigem auf der Spur. Menschen mit hohem ursprünglichem Angstlevel scheinen durch die Tagebuchintervention tatsächlich ihr Angstlevel reduzieren zu können. Bei denjenigen allerdings, deren Angstlevel zu Beginn niedrig war, stieg die Ängstlichkeit an. Eine Regressionsanalyse bestätigt diesen Eindruck: Es gibt eine signifikante Interaktion zwischen der Gruppenzugehörigkeit am ersten Zeitpunkt und dem Zeitpunkt der Messung. (<em>Wir belassen es an dieser Stelle dabei und zeigen die zugehörigen Regressionstabellen nur im Anhang.</em>)</p>
+</div>
+<div id="der-haken" class="section level3">
+<h3>Der Haken</h3>
+<p>Aufmerksame Leser vermuten an dieser Stelle bereits, dass es einen Haken an der Analyse unseres Doktoranden gibt. Um diesen Haken aufzudecken, machen wir uns zunutze, dass wir die Daten, über die wir hier sprechen, simuliert haben. Deshalb kennen wir den wahren Wert der Ängstlichkeit unserer Versuchspersonen und den wahren Effekt der Tagebuchintervention. <em>Dieser Effekt ist als Null-Effekt simuliert</em>, das heißt in unserer Datensimulation hat die Tagebuchintervention keine Wirkung. Das bedeutet auch, dass sie <em>in den Subgruppen</em> keine unterschiedliche Wirkung hat. Doch warum scheint es trotzdem so zu sein?</p>
+<p><strong>Der Median-Split</strong>. Der Grund für den Schein-Effekt ist unsere Gruppeneinteilung auf Basis eines Median-Splits zum ersten Messzeitpunkt. Schauen wir uns dazu zwei weitere Plots an, in denen wir jeweils den wahren Wert mit abbilden. Plot <strong>A</strong> zeigt den Verlauf unserer zu t1 eingeteilten Gruppen. Plot <strong>B</strong> zeigt den Verlauf der echten Gruppen: Deren Einteilung wurde nicht auf Basis eines gemessenen Wertes vorgenommen, sondern auf Basis des <em>wahren</em> Werts (ein Luxus, den wir nur in einer Simulation haben).</p>
+<p><img src="regression_to_mean_files/figure-html/unnamed-chunk-17-1.png" width="672" /> Wir können deutlich sehen, dass die Mittelwerte der <em>wahren</em> Subgruppen zu jedem Messzeitpunkt gleich bleiben, währen unsere zum ersten Messzeitpunkt eingeteilten Gruppen Bumerang-förmig schwanken. Warum ist das so?</p>
+<ul>
+<li>Unsere Messung der Ängstlichkeit ist unperfekt: Wir können den wahren Wert nicht genau erfassen. Die Korrelation zwischen wahrem Wert und Messung in unserem simulierten Beispiel liegt etwa zwischen .45 und .48. Wegen dieses <em>Messfehlers</em> machen wir Fehler in der Einteilung: In unserer Gruppe “hohe Angst” zu t1 befinden sich einige Menschen, die eigentlich zur Gruppe “niedrige Angst” gehören. Diese falsch eingeteilten Versuchspersonen landen mit recht hoher Wahrscheinlichkeit bei der nächsten Messung nicht wieder in der falschen Gruppe.</li>
+<li>Wenn wir nun aber die Entwicklung der in der Gruppe “hohe Angst” eingeteilten Menschen verfolgen, dann finden wir durch diesen Effekt eine Abnahme des Mittelwerts. Umgekehrt funktioniert es genauso für die Gruppe “geringer Angst”.</li>
+</ul>
+<p>Die nächste Abbildung zeigt das gleiche Phänomen mit einzelnen Plots für die jeweiligen Subgruppen. Wir können daran wunderbar sehen, dass die Mittelwerte der <em>wahren</em> Subgruppen trotz Messfehler über die Zeit unverändert bleiben, während die Mittelwerte unserer zu t1 eingeteilten Subgruppen stark Schwanken.</p>
+<p><img src="regression_to_mean_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+</div>
+</div>
+<div id="was-tun-gegen-regression-zur-mitte" class="section level2">
+<h2>Was tun gegen Regression zur Mitte?</h2>
+<p>Regression zur Mitte ist ein notorisch schwierig zu greifendes Phänomen. So schwierig sogar, dass der oben erähnte Wikipedia-Artikel diese Aussage enthält:</p>
+<blockquote>
+<p>„Da dieser Effekt intuitiv nicht zu verstehen ist, führt er zu verschiedenen Denkfehlern.“</p>
+</blockquote>
+<p>Doch so dramatisch das klingt, wir sind nicht schutzlos gegen diese Denkfehler. Die wichtigsten Dinge, die wir tun können:</p>
+<ul>
+<li><strong>Kontrollgruppen benutzen</strong>. Das Forschungsteam aus unserem Beispiel wäre nicht auf die Regression zur Mitte hereingefallen, wenn sie eine Kontrollgruppe in ihr Studiendesign integriert hätten. Daran hätte man erkennen können, dass das Muster in Experimental- und Kontrollgruppe das gleiche ist und daher nicht auf die Tagebuch-Intervention zurückgeführt werden kann.</li>
+<li><strong>Median-Splits vermeiden</strong>. Es ist nicht immer möglich, Kontrollgruppen zu verwenden, bspw. wenn wir vorhandene Querschnittsdaten auswerten. Solche Daten können trotzdem analysiert werden, dabei sollte man aber tunlichst vermeiden, Subgruppen durch Median-Splits in der abhängigen Variable zu bilden. Solche Median-Splits sind ein Rezept für Interpretations-Chaos. Sie führen außerdem dazu, dass ernom viel Information weggeschmissen wird.</li>
+</ul>
+</div>
+<div id="warum-ist-der-haken-wichtig" class="section level2">
+<h2>Warum ist der Haken wichtig?</h2>
+<p><strong>Wissenschaftliche Perspektive</strong></p>
+<ul>
+<li><p>Wenn Regression zur Mitte eine Rolle spielt, dann ist die Gefahr groß, dass wir falsche Schlussfolgerungen ziehen. Unser Effekt könnte einfach ein statistisches Artefakt sein.</p></li>
+<li><p>Wenn eine Studie ohne Kontrollgruppe durchgeführt, oder ein Median-Split in der abhängigen Variable durchgeführt wurde, dann bedeutet das aber nicht automatisch, dass es den gefundenen Effekt <em>nicht</em> gibt. Es bedeutet nur, dass die Alternativerklärung “Regression zur Mitte” nicht ausgeschlossen werden kann, und die Studie deshalb keinen starken Test der Hypothese darstellt. Siehe dazu auch mehr im <a href="https://ctreffe.github.io/r-space/kausalitaet.html#wie-umgehen-mit-dem-haken">Skript zu Korrelation und Kausalität</a>.</p></li>
+</ul>
+<p><strong>Praktiker-Perspektive</strong></p>
+<ul>
+<li><p>Wenn wir Studien als Entscheidungsgrundlage benutzen, deren Ergebnis auf Regression zur Mitte zurückzuführen ist, dann kann es sein, dass der gewünschte Effekt einer Intervention ausbleibt: Vielleicht handelte es sich einfach um statistisches Artefakt.</p></li>
+<li><p>Auch hier gilt: Entscheidungsträger in der Praxis sollten sich als Risikomanager:innen verstehen und die theoretische Plausibilität und empirische Evidenz ganzheitlich betrachten. Auf dieser Basis können sie verschiedene Szenarien abwägen und eine bestmöglich fundierte Entscheidung treffen.</p></li>
+<li><p>Dahingehend treffen die gleichen, detaillierteren Überlegungen zu, die wir in unserem Artikel zu <a href="https://ctreffe.github.io/r-space/konfundierung.html#warum-ist-der-haken-wichtig">Konfundierung</a> geschildert haben.</p></li>
+</ul>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

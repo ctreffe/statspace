@@ -1,0 +1,386 @@
+---
+title: "Burnout-Forschung"
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+# global RMarkdown options
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+# load packages
+library(MASS)
+library(tidyverse)
+library(corrplot)
+```
+
+```{r}
+simdata <- function(n = 500, r = 0.55, mu = c(0, 0), names = c("exh", "cyn")) {
+  s = matrix(c(1, r, r, 1), ncol = 2)
+  x <- matrix(rep(NA, times = n*2), ncol = 2)
+  id <- rep(NA, times = n)
+  
+ if (is.vector(mu)) {
+    x <- mvrnorm(mu = mu, Sigma = s, n = n)
+    id <- 1:n
+ } else if (nrow(mu) == n) {
+   
+    for (i in 1:n) {
+      tmu <- c(mu[[i,1]], mu[[i, 2]])
+      x[i,] <- mvrnorm(mu = tmu, Sigma = s, n = 1)
+      id[i] <- i
+    }  
+  }
+  colnames(x) <- names
+  d <- as_tibble(x)
+  d$id <- id
+  
+  return(d)
+}
+```
+
+```{r}
+sim_covariate <- function(n = 500, r = 0.6) {
+  s = matrix(c(1, r, r^2, r, 1, r^2, r^2, r, 1), ncol = 3)
+  x <- mvrnorm(mu = c(0, 0, 0), Sigma = s, n = n)
+  colnames(x) <- c("t0", "t1", "t2")
+  d <- as_tibble(x) %>% 
+    mutate(id = 1:n()) %>% 
+    pivot_longer(t0:t2, names_to = "time") %>% 
+    arrange(time)
+  return(d %>% pull("value"))
+}
+```
+
+```{r}
+true <- simdata()
+t1 <- simdata(mu = true)
+t2 <- simdata(mu = true)
+true$time <- "t0"
+t1$time <- "t1"
+t2$time <- "t2"
+```
+
+
+```{r}
+corrdat <- bind_rows(true, t1, t2) %>% 
+  pivot_wider(names_from = "time", values_from = c("exh", "cyn")) %>% 
+  dplyr::select(-id) 
+
+corrmat <- corrdat %>% cor()
+
+corrmat %>% round(2)
+```
+
+```{r}
+corrdat %>% psych::pairs.panels(hist.col = "skyblue", stars = TRUE)
+```
+
+
+```{r}
+values <- bind_rows(true, t1, t2) %>% 
+  
+  group_by(time) %>% 
+  mutate(median.exh = median(exh)) %>% 
+  mutate(median.cyn = median(cyn)) %>% 
+  ungroup() %>% 
+  
+  mutate(exh.status = ifelse(exh < median.exh, "low", "high")) %>% 
+  mutate(cyn.status = ifelse(cyn < median.cyn, "low", "high")) %>% 
+  mutate(exh.status = factor(exh.status, levels = c("low", "high"), 
+                             ordered = TRUE)) %>%
+  mutate(cyn.status = factor(cyn.status, levels = c("low", "high"),
+                             ordered = TRUE)) %>% 
+  
+  mutate(pattern = case_when(
+    (exh < median.exh) & (cyn < median.cyn) ~ "engagement",
+    exh.status != cyn.status ~ "inconsistent",
+    (exh > median.exh) & (cyn > median.cyn) ~ "burnout"
+  ))
+
+values
+```
+
+```{r}
+df <- values %>% 
+  mutate(workload = sim_covariate()) %>% 
+  mutate(control = sim_covariate()) %>% 
+  mutate(reward = sim_covariate()) %>% 
+  mutate(community = sim_covariate()) %>% 
+  mutate(fairness = sim_covariate()) %>% 
+  mutate(values = sim_covariate())
+```
+
+```{r}
+jitter <- runif(n = nrow(df), min = -0.05, max = 0.05)
+
+df <- df %>% 
+  mutate(time.int = recode(time, "t0" = 1, "t1" = 2, "t2" = 3)) %>% 
+  mutate(time.jit = time.int + jitter)
+
+df
+```
+
+```{r}
+status_wide <- df %>% 
+  dplyr::select(id, time, exh.status, cyn.status) %>% 
+  pivot_wider(names_from = "time", values_from = c("exh.status", "cyn.status"))
+
+df <- left_join(df, status_wide, by = "id")
+
+status_wide  
+```
+```{r}
+pattern_wide <- df %>% 
+  dplyr::select(id, time, pattern) %>% 
+  pivot_wider(names_from = "time", values_from = pattern, names_glue="{.value}_{time}")
+
+df <- left_join(df, pattern_wide, by = "id")
+
+pattern_wide  
+```
+
+
+```{r}
+df %>% 
+  mutate(group.exh = exh.status_t1) %>% 
+  ggplot() +
+  aes(x = time.jit, y = exh) +
+  geom_line(aes(group = id, color = group.exh), alpha = 0.1) +
+  geom_point(alpha = 0.05) +
+  scale_color_brewer(palette = "Set1") +
+  # geom_hline(yintercept = medians$median.exh_t1, linetype = "dashed") +
+  scale_x_continuous(limits = c(0.5, 3.5), breaks = 1:3, 
+                     labels = c("True value", "t1", "t2")) +
+  labs(x = "Measurement", y = "Exhaustion", color = "Group at t1",
+       title = "Development of Exhaustion") +
+  guides(colour = guide_legend(override.aes = list(alpha = 1, size=2))) +
+  stat_summary(fun = "mean", 
+               aes(x = time.int, group = group.exh), 
+               geom = "line", size = 1) +
+  stat_summary(fun = "mean", 
+               aes(x = time.int, group = group.exh), 
+               geom = "point", size = 3) +
+  NULL
+```
+```{r}
+df %>% 
+  mutate(group.cyn = cyn.status_t1) %>% 
+  ggplot() +
+  aes(x = time.jit, y = cyn) +
+  geom_line(aes(group = id, color = group.cyn), alpha = 0.1) +
+  geom_point(alpha = 0.05) +
+  # scale_color_brewer(palette = "Set2") +
+  # geom_hline(yintercept = medians$median.exh_t1, linetype = "dashed") +
+  scale_x_continuous(limits = c(0.5, 3.5), breaks = 1:3, 
+                     labels = c("True value", "t1", "t2")) +
+  labs(x = "Measurement", y = "Cynicism", color = "Group at t1",
+       title = "Development of Cynicsm") +
+  guides(colour = guide_legend(override.aes = list(alpha = 1, size=2))) +
+  stat_summary(fun = "mean", 
+               aes(x = time.int, group = group.cyn), 
+               geom = "line", size = 1) +
+  stat_summary(fun = "mean", 
+               aes(x = time.int, group = group.cyn), 
+               geom = "point", size = 3) +
+  NULL
+```
+
+```{r}
+df %>% 
+  ggplot() +
+  aes(x = exh, y = cyn) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "lm", se = F) +
+  facet_wrap(~time, labeller = label_both)
+```
+
+```{r}
+df %>% 
+  ggplot() +
+  aes(x = exh, y = cyn) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "lm", se = F) +
+  facet_wrap(~pattern_t0, labeller = label_both)
+```
+```{r}
+df %>% 
+  ggplot() +
+  aes(x = exh, y = cyn) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "lm", se = F) +
+  facet_wrap(~pattern_t1, labeller = label_both)
+```
+
+```{r}
+df %>% 
+  ggplot() +
+  aes(x = exh, y = cyn, color = pattern_t1) +
+  geom_point(alpha = 0.3) +
+  facet_wrap(~time, labeller = label_both) +
+  facet_wrap(pattern_t1~time, labeller = label_both) +
+  scale_color_brewer(palette = "Set1") +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(override.aes = list(alpha = 1, size=2))) +
+  labs(x = "Exhaustion", y = "Cynicsm", color = "Pattern at t1",
+       title = "Development of pattern at t1")
+```
+
+```{r}
+df %>% 
+  ggplot() +
+  aes(x = exh, y = cyn, color = pattern_t0) +
+  geom_point(alpha = 0.5) +
+  facet_wrap(pattern_t1~time, labeller = label_both) +
+  scale_color_brewer(palette = "Set2") +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(override.aes = list(alpha = 1, size=2))) +
+  labs(x = "Exhaustion", y = "Cynicsm", color = "True pattern",
+       title = "Development of patterns at t0 and t1")
+```
+```{r}
+df %>% 
+  ggplot() +
+  aes(x = exh, y = cyn, color = pattern_t0) +
+  geom_point(alpha = 0.5) +
+  facet_wrap(pattern_t0~time, labeller = label_both) +
+  scale_color_brewer(palette = "Set2") +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(override.aes = list(alpha = 1, size=2))) +
+  labs(x = "Exhaustion", y = "Cynicsm", color = "True pattern",
+       title = "Development of pattern at t0")
+```
+```{r}
+df %>% 
+  ggplot() +
+  aes(x = exh, y = cyn, color = pattern_t2) +
+  geom_point(alpha = 0.4) +
+  facet_wrap(pattern_t1~time, labeller = label_both) +
+  scale_color_brewer(palette = "Dark2") +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(override.aes = list(alpha = 1, size=2))) +
+  labs(x = "Exhaustion", y = "Cynicsm", color = "Pattern at t2",
+       title = "Development of patterns at t1 and t2")
+```
+
+## Reasons for development of this pattern over time
+
+- Measurement error
+- Actual change in values of exhaustion and cynicsm (not the case in this simulation)
+
+## Statistical analysis
+
+- Target: People who are inconsistent at t1 and have a burnout or engagement status at t2
+  
+  - 6 comparisons in this subgroup
+
+- Targets could have been many other questions
+
+  - what is the factor that makes people change from burnout t1 to engagement t2 instead of swapping to inconsistent or staying at burnout? *6 comparisons*
+  - what is the factor that makes people change from burnout to any other status? *6 comparisons*
+  
+  - what is the factor that makes people change from engagement t1 to burnout t2 instead of swapping to inconsistent or staying at engagement? *6 comparisons*
+  - what is the factor that makes people change from engagement to any other status? *6 comparisons*
+  
+  - what is the factor that makes people stay inconsistent instead of changing to any other status? *6 comparisons*
+  
+  - That makes 36 comparisons at t2 in total. Even more, if both inconsistent states are counted individually.
+  - By using ANOVA, the number can be reduced, but is still at 6 * 3 = 18
+  - Even more tests, if the covariates are looked at both at t1 and t2 (the number doubles)
+
+  - general prediction of engagement or cynicsm via covariates
+  - incorporation of third burnout criterium
+
+
+## Sum score
+
+
+
+
+```{r eval=FALSE, include=FALSE}
+df2 <- df %>% 
+  dplyr::select(id, exh.status, cyn.status, time) %>% 
+  filter(time != "t0") %>% 
+  pivot_wider(names_from = "time", 
+              names_sep = ".",
+              values_from = c("exh.status", "cyn.status"))
+
+df3 <- df2 %>% 
+  mutate(pattern.t1 = ifelse(exh.status.t1 == cyn.status.t1, 
+                             "consistent", "inconsistent")) %>% 
+  mutate(pattern.t2 = ifelse(exh.status.t2 == cyn.status.t2, 
+                             "consistent", "inconsistent")) %>% 
+  mutate(ex.change = ifelse(exh.status.t1 == exh.status.t2, 
+                          "unchanged", "changed")) %>% 
+  mutate(cyn.change = ifelse(cyn.status.t1 == cyn.status.t2, 
+                             "unchanged", "changed")) %>% 
+  mutate(pattern.change = ifelse(pattern.t1 == pattern.t2,
+                                 "unchanged", "changed")) %>% 
+  mutate(burnout.t1 = ifelse(exh.status.t1 == "high" & cyn.status.t1 == "high",
+                             TRUE, FALSE)) %>% 
+  mutate(burnout.t2= ifelse(exh.status.t2 == "high" & cyn.status.t2 == "high",
+                             TRUE, FALSE)) %>% 
+    mutate(engagement.t1= ifelse(exh.status.t1 == "low" & cyn.status.t1 == "low",
+                             TRUE, FALSE)) %>% 
+  mutate(engagement.t2= ifelse(exh.status.t2 == "low" & cyn.status.t2 == "low",
+                             TRUE, FALSE)) %>% 
+  mutate(inconsistent.t1= ifelse(exh.status.t1 != cyn.status.t1,
+                             TRUE, FALSE)) %>% 
+  mutate(inconsistent.t2 = ifelse(exh.status.t2 != cyn.status.t2,
+                             TRUE, FALSE)) %>% 
+  mutate(status.dev = case_when(
+    (burnout.t1 == burnout.t2) & (burnout.t1 == TRUE) ~ "stable.burnout",
+    (engagement.t1 == engagement.t2) & (engagement.t1 == TRUE) ~ "stable.engagement",
+    (inconsistent.t1 == inconsistent.t2) & (inconsistent.t1 == TRUE) & (ex.change == "unchanged") ~ "stable.inconsistent",
+    (inconsistent.t1 == inconsistent.t2) & (inconsistent.t1 == TRUE) & (ex.change == "changed" | cyn.change == "changed") ~ "swap.inconsistent",
+    (pattern.t1 == pattern.t2) & (pattern.t1 == "consistent") & burnout.t1 == TRUE & burnout.t2 == FALSE ~ "fullswap.to_engagement",
+    (pattern.t1 == pattern.t2) & (pattern.t1 == "consistent") & burnout.t1 == FALSE & burnout.t2 == TRUE ~ "fullswap.to_burnout",
+    ((inconsistent.t1 == TRUE) & (inconsistent.t2 == FALSE)) & burnout.t2 ~ "swap.to_burnout",
+    ((inconsistent.t1 == TRUE) & (inconsistent.t2 == FALSE)) & engagement.t2 ~ "swap.to_engagement",
+    (inconsistent.t1 == FALSE) & (inconsistent.t2 == TRUE) ~ "swap.to_inconsistent"
+  ))
+
+df4 <- df3 %>% 
+  # dplyr::select("id":"pattern.change", "status.dev") %>% 
+  group_by(pattern.change, exh.status.t1, exh.status.t2, cyn.status.t1, cyn.status.t2, pattern.t1, pattern.t2, status.dev) %>% 
+  summarise(n = n())
+  
+df4
+
+df4 %>% 
+  filter(cyn.status.t1 == "high", exh.status.t1 == "high") %>% 
+  filter(cyn.status.t2 == "high", exh.status.t2 == "high") %>%
+  pull(n)
+
+df3 %>% group_by(cyn.status.t1, exh.status.t1, cyn.status.t2, exh.status.t2) %>% 
+  summarise(n = n())
+  
+  filter(cyn.status.t1 == "low", exh.status.t1 == "low") %>% pull(n) %>% sum()
+
+df4 %>% 
+  filter(cyn.status.t1 == "high", exh.status.t1 == "low") %>% pull(n) %>% sum()
+
+df4 %>% 
+  filter(cyn.status.t1 == "low", exh.status.t1 == "high") %>% pull(n) %>% sum()
+
+df4 %>% 
+  filter(cyn.status.t1 == "high", exh.status.t1 == "high") %>% pull(n) %>% sum()
+
+df4 %>% 
+  filter(cyn.status.t2 == "low", exh.status.t2 == "low") %>% pull(n) %>% sum()
+
+df4 %>% 
+  filter(cyn.status.t2 == "high", exh.status.t2 == "low") %>% pull(n) %>% sum()
+
+df4 %>% 
+  filter(cyn.status.t2 == "low", exh.status.t2 == "high") %>% pull(n) %>% sum()
+
+df4 %>% 
+  filter(cyn.status.t2 == "high", exh.status.t2 == "high") %>% pull(n) %>% sum()
+```
+
+
+
+
+
+

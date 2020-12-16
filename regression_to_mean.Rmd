@@ -1,0 +1,332 @@
+---
+title: "Regression zur Mitte"
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+# global RMarkdown options
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+# load packages
+library(tidyverse)
+library(ggpubr)
+
+# set global theme options for ggplot2
+theme_update(panel.background = element_rect(fill = NA, color = "#153268"))
+theme_update(legend.background = element_blank())
+theme_update(panel.grid = element_blank())
+theme_update(strip.background = element_rect(fill = "#153268"))
+theme_update(strip.text = element_text(color = "white"))
+theme_update(plot.background = element_rect(fill = "#f6f4f0"))
+```
+
+```{r}
+simdata <- function(n_timements = 2, 
+                    n = 400, 
+                    truemeans, 
+                    sd = 2) {
+  
+  timements <- matrix(NA, nrow=n, ncol=n_timements)
+  for (i in 1:n_timements) {
+  timements[,i] <- rnorm(n, mean = truemeans, sd = sd)
+  }
+  colnames(timements) <- paste0("t", 1:n_timements)
+  df <- as_tibble(timements)
+  df$true <- truemeans
+  df$id <- 1:n
+  return(df)
+}
+```
+
+```{r}
+longify <- function(df) {
+  ldf <- df %>% 
+  mutate(median_t1 = median(t1)) %>% 
+  mutate(median_true = median(true)) %>% 
+  mutate(group_t1 = ifelse(t1 < median_t1, "Geringe Angst", "Hohe Angst")) %>%
+  mutate(group_true = ifelse(true < median_true, "Geringe Angst", "Hohe Angst")) %>%
+    mutate(group_t1 = factor(group_t1, levels = c("Geringe Angst", "Hohe Angst"), ordered = TRUE)) %>% 
+    mutate(group_true = factor(group_true, levels = c("Geringe Angst", "Hohe Angst"), ordered = TRUE)) %>% 
+  pivot_longer(c(t1:t2, true), names_to="time") 
+  
+  return(ldf)
+}
+```
+
+```{r}
+set.seed(12345)
+df <- simdata(n = 300, truemeans = rnorm(300)) %>% longify()
+write_csv(df, "files/regtomean.csv")
+```
+
+```{r}
+pdf <- df %>% 
+  mutate(time_number = recode(time, "true" = 1, "t1" = 2, "t2" = 3)) %>% 
+  mutate(time_jitter = time_number + runif(n = n(), min = -0.05, max = 0.05))
+```
+
+
+```{r}
+median_t1 <- df %>% filter(time == "t1") %>% pull(value) %>%  median()
+
+baseplot <- pdf %>% 
+  ggplot() + 
+  aes(x = time_jitter, y = value) +
+  geom_line(alpha = 0.1, aes(color=group_t1, group = id)) +
+  geom_point(alpha = 0.2, aes(color = group_t1)) +
+  # geom_hline(yintercept = median_t1 %>% unique(), linetype = "dashed") +
+  scale_x_continuous(limits = c(0.5, 3.5), breaks = 1:3, 
+                     labels = c("Wahrer Wert", "t1", "t2")) +
+  labs(color = "Gruppe zu t1", x = "Messung", y = "Ängstlichkeit") +
+  scale_color_brewer(palette = "Set1") +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(override.aes = list(alpha = 1, size=2)))
+```
+
+```{r}
+means <- pdf %>% 
+  group_by(group_t1, time, ) %>% 
+  summarise(m = mean(value)) %>% 
+  mutate(time_number = recode(time, "true" = 1, "t1" = 2, "t2" = 3)) 
+
+groub_by_t1.plt <- baseplot + 
+  stat_summary(fun = "mean", geom = "line", aes(x = time_number, group=group_t1)) +
+  stat_summary(fun = "mean", geom = "point", 
+               fill = "white", color = "black",
+               aes(group=group_t1, shape = group_t1, x = time_number), size = 4) +
+  scale_shape_manual(values = c(22, 24))
+
+gt1.combined <- groub_by_t1.plt + 
+  # annotate(geom = "text", x = 3.3, y = 0.5, label = "Median t1") +
+    labs(title="Entwicklung der beobachteten Subgruppen",
+         subtitle = "Markierte Punkte zeigen Mittelwerte der Gruppen zum jeweiligen Zeitpunkt\nnach Gruppierung per Median-Split auf Basis der Daten zu t1",
+         shape = "Gruppe zu t1")
+```
+
+```{r}
+gt1.facets <- groub_by_t1.plt + 
+  facet_wrap(~group_t1, labeller = label_both) +
+  geom_hline(yintercept = median_t1 %>% unique(), linetype = "dashed") +
+  annotate(geom = "text", x = 1, y = 6, label = "-- Median t1") +
+  labs(title="Entwicklung der beobachteten Subgruppen",
+         subtitle = "Markierte Punkte zeigen Mittelwerte der Gruppen zum jeweiligen Zeitpunkt\nnach Gruppierung per Median-Split auf Basis der Daten zu t1",
+       shape = "Gruppe zu t1")
+```
+
+```{r}
+groub_by_true.plt <- pdf %>% 
+  ggplot() + 
+  aes(x = time_jitter, y = value) +
+  geom_line(alpha = 0.1, aes(color=group_true, group = id)) +
+  geom_point(alpha = 0.2, aes(color = group_true)) +
+  # geom_hline(yintercept = median_t1 %>% unique(), linetype = "dashed") +
+  scale_x_continuous(limits = c(0.5, 3.5), breaks = 1:3, 
+                     labels = c("True value", "t1", "t2")) +
+  labs(color = "Wahre Gruppe", x = "Messung", y = "Ängstlichkeit", shape = "Wahre Gruppe") +
+  scale_color_brewer(palette = "Dark2") +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(override.aes = list(alpha = 1, size=2))) +
+  stat_summary(fun = "mean", geom = "line", aes(x = time_number, group=group_true)) +
+  stat_summary(fun = "mean", geom = "point", 
+               fill = "white", color = "black",
+               aes(group=group_true, shape = group_true, x = time_number), size = 4) +
+  scale_shape_manual(values = c(22, 24))
+
+gtrue.combined <- groub_by_true.plt + 
+  # annotate(geom = "text", x = 3.3, y = 0.5, label = "Median t1") +
+  labs(title="Entwicklung der wahren Subgruppen",
+       subtitle = "Markierte Punkte zeigen Mittelwerte der Gruppen zum jeweiligen Zeitpunkt\nnach wahrer Gruppierung (Median-Split auf Basis des wahren Werts)",
+       shape = "Wahre Gruppe"
+       )
+```
+
+```{r}
+gtrue.facets <- groub_by_true.plt + 
+  geom_hline(yintercept = median_t1 %>% unique(), linetype = "dashed") +
+  annotate(geom = "text", x = 1, y = 6, label = "-- Median t1") +
+  facet_wrap(~group_true, labeller = label_both) +
+  # annotate(geom = "text", x = 1, y = 6, label = "-- Median t1") +
+  labs(title="Entwicklung der wahren Subgruppen",
+         subtitle = "Markierte Punkte zeigen Mittelwerte der Gruppen zum jeweiligen Zeitpunkt\nnach wahrer Gruppierung (Median-Split auf Basis des wahren Werts)",
+       shape = "Wahre Gruppe") +
+  NULL
+```
+
+```{r}
+mhigh <- df %>% 
+  filter(time != "true") %>% 
+  filter(group_t1 == "Hohe Angst") %>% 
+  lm(value ~ time, data = .) 
+```
+
+```{r}
+mlow <- df %>% 
+  filter(time != "true") %>% 
+  filter(group_t1 == "Geringe Angst") %>% 
+  lm(value ~ time, data = .)
+```
+
+```{r}
+mint <- df %>% 
+  filter(time != "true") %>% 
+  lm(value ~ time*group_t1, data = .)
+```
+
+<!-- Regression tables -->
+
+<!-- <center> -->
+<!-- ```{r} -->
+<!-- sjPlot::tab_model(mhigh) -->
+<!-- ``` -->
+<!-- </center> -->
+
+
+<!-- <center> -->
+<!-- ```{r} -->
+<!-- sjPlot::tab_model(mlow) -->
+<!-- ``` -->
+<!-- </center> -->
+
+<!-- <center> -->
+<!-- ```{r} -->
+<!-- sjPlot::tab_model(mint) -->
+<!-- ``` -->
+<!-- </center> -->
+
+```{r}
+plt.overall <- df %>% 
+  filter(time != "true") %>% 
+  ggplot() + 
+  aes(x = time, y = value) +
+  geom_jitter(width = 0.05, alpha = 0.2) +
+  # geom_point(alpha = 0.02) +
+  stat_summary(fun = "mean", geom = "line", aes(group=1)) +
+  stat_summary(fun = "mean", 
+               geom = "point", 
+               shape = 21, 
+               size = 4.5,
+               fill = "white") +
+  labs(x = "Messung", y = "Ängstlichkeit") +
+  labs(title = "Vergleich der Messzeitpunkte", 
+       subtitle = "Markierte Punkte mit Linien zeigen Mittelwerte zum jeweiligen Messzeitpunkt") +
+  NULL
+```
+
+```{r}
+plt.subgroups <- df %>% 
+  filter(time != "true") %>% 
+  ggplot() + 
+  aes(x = time, y = value) +
+  geom_line(alpha = 0.1, aes(group=id, color = group_t1)) +
+  geom_jitter(width = 0.05, alpha = 0.2, aes(color = group_t1)) +
+  scale_color_brewer(palette = "Set1") +
+  # geom_point(alpha = 0.02) +
+  stat_summary(fun = "mean", geom = "line", aes(group=group_t1)) +
+  stat_summary(fun = "mean", 
+               geom = "point", 
+               size = 4.5,
+               fill = "white", aes(shape = group_t1)) +
+  scale_shape_manual(values = c(22, 24)) +
+  labs(x = "Messung", y = "Ängstlichkeit", color = "Gruppe zu t1") +
+  labs(title="Entwicklung der beobachteten Subgruppen",
+       shape = "Gruppe zu t1", 
+       subtitle = "Markierte Punkte zeigen Mittelwerte der Gruppen zum jeweiligen Zeitpunkt\nnach Gruppierung per Median-Split auf Basis der Daten zu t1") +
+  guides(colour = guide_legend(override.aes = list(alpha = 1, size=2))) +
+  theme(legend.position = "bottom") +
+  NULL
+```
+
+## Was ist Regression zur Mitte?
+
+Wikipedia macht einen recht guten Job in dem  Versuch, [Regression zur Mitte](https://de.wikipedia.org/wiki/Regression_zur_Mitte#:~:text=Regression%20zur%20Mitte%20ist%20ein,Einfluss%20auf%20die%20Messgr%C3%B6%C3%9Fe%20hat.) kurz und bündig zu erklären:
+
+>„Regression zur Mitte ist ein Begriff der Statistik; er bezeichnet das Phänomen, dass nach einem extrem ausgefallenen Messwert die nachfolgende Messung wieder näher am Durchschnitt liegt, falls der Zufall einen Einfluss auf die Messgröße hat. Dies gilt immer, wenn die beiden Messungen korrelieren, aber nicht zu 100 %.“
+
+Aber was heißt das eigentlich? Wir holen zunächst kurz etwas aus und beschreiben eine Studie, in der aufgrund der Regression zur Mitte ein Denkfehler gemacht wurde.
+
+### Beispiel: Die Tagebuch-Intervention
+
+Ein Forscher:innen-Team möchte eine neue Methode zur Behandlung von generalisierten Angstzuständen untersuchen. Die Methode: Über einen Zeitraum von mehreren Monaten schreiben die Patient:innen einmal wöchentlich in ein Tagebuch alle Dinge auf, die ihnen Angst einflößen. Dadurch, so die Theorie, können sie sich von der Angst lösen. 
+
+Die konnten eine herausragende Stichprobe gewinnen: 300 Menschen nehmen teil. Die generelle Ängstlichkeit der Teilnehmenden wird einmal zu Beginn der Intervention und einmal 6 Monate nach der Intervention erhoben.
+
+Die Ergebnisse scheinen zunächst nicht vielversprechend zu sein: Die durchschnittliche Ängstlichkeit veränderte sich vom ersten zum zweiten Messzeitpunkt praktisch gar nicht:
+
+```{r}
+plt.overall
+```
+**Anmerkung**: In diesen Plots ist jeder kleine Punkt der Wert einer Versuchsperson.
+
+
+Doch das kann nicht das Ende der Geschichte gewesen sein - ein tüchtiger Doktorand macht sich daran, die Daten genauer zu analysieren. Er stellt sich die Frage: *„Was, wenn unsere Intervention unterschiedlich wirkt, je nachdem wie groß die Belastung zu Beginn war?“*. Ausgehend von dieser Frage schaut unser Doktorand sich an, wie die Entwicklung in zwei Subgruppen verläuft: In der Gruppe "hohe Angst" sind diejenigen, die zu Beginn ein hohes Angstlevel (höher als der Median) aufwiesen, und in der Gruppe "geringe Angst" sind diejenigen, die zu Beginn ein niedriges Angstlevel (niedriger als der Median) aufwiesen.
+
+Schauen wir uns an, was die Daten hier sagen:
+
+```{r}
+plt.subgroups
+```
+
+Es scheint eindeutig zu sein: Unser Doktorand war etwas wichtigem auf der Spur. Menschen mit hohem ursprünglichem Angstlevel scheinen durch die Tagebuchintervention tatsächlich ihr Angstlevel reduzieren zu können. Bei denjenigen allerdings, deren Angstlevel zu Beginn niedrig war, stieg die Ängstlichkeit an. Eine Regressionsanalyse bestätigt diesen Eindruck: Es gibt eine signifikante Interaktion zwischen der Gruppenzugehörigkeit am ersten Zeitpunkt und dem Zeitpunkt der Messung. (*Wir belassen es an dieser Stelle dabei und zeigen die zugehörigen Regressionstabellen nur im Anhang.*)
+
+### Der Haken
+
+Aufmerksame Leser vermuten an dieser Stelle bereits, dass es einen Haken an der Analyse unseres Doktoranden gibt. Um diesen Haken aufzudecken, machen wir uns zunutze, dass wir die Daten, über die wir hier sprechen, simuliert haben. Deshalb kennen wir den wahren Wert der Ängstlichkeit unserer Versuchspersonen und den wahren Effekt der Tagebuchintervention. *Dieser Effekt ist als Null-Effekt simuliert*, das heißt in unserer Datensimulation hat die Tagebuchintervention keine Wirkung. Das bedeutet auch, dass sie *in den Subgruppen* keine unterschiedliche Wirkung hat. Doch warum scheint es trotzdem so zu sein?
+
+**Der Median-Split**. Der Grund für den Schein-Effekt ist unsere Gruppeneinteilung auf Basis eines Median-Splits zum ersten Messzeitpunkt. Schauen wir uns dazu zwei weitere Plots an, in denen wir jeweils den wahren Wert mit abbilden. Plot **A** zeigt den Verlauf unserer zu t1 eingeteilten Gruppen. Plot **B** zeigt den Verlauf der echten Gruppen: Deren Einteilung wurde nicht auf Basis eines gemessenen Wertes vorgenommen, sondern auf Basis des *wahren* Werts (ein Luxus, den wir nur in einer Simulation haben).
+
+```{r fig.height=9}
+ggarrange(gt1.combined, gtrue.combined, nrow = 2, labels = "AUTO")
+```
+Wir können deutlich sehen, dass die Mittelwerte der *wahren* Subgruppen zu jedem Messzeitpunkt gleich bleiben, währen unsere zum ersten Messzeitpunkt eingeteilten Gruppen Bumerang-förmig schwanken. Warum ist das so?
+
+```{r include=FALSE}
+pdf %>% dplyr::select(id, time, value) %>% 
+  pivot_wider(names_from = "time", values_from = "value") %>% 
+  dplyr::select(-id) %>% 
+  cor() %>% round(2)
+```
+
+
+- Unsere Messung der Ängstlichkeit ist unperfekt: Wir können den wahren Wert nicht genau erfassen. Die Korrelation zwischen wahrem Wert und Messung in unserem simulierten Beispiel liegt etwa zwischen .45 und .48. Wegen dieses *Messfehlers* machen wir Fehler in der Einteilung: In unserer Gruppe "hohe Angst" zu t1 befinden sich einige Menschen, die eigentlich zur Gruppe "niedrige Angst" gehören. Diese falsch eingeteilten Versuchspersonen landen mit recht hoher Wahrscheinlichkeit bei der nächsten Messung nicht wieder in der falschen Gruppe.
+- Wenn wir nun aber die Entwicklung der in der Gruppe "hohe Angst" eingeteilten Menschen verfolgen, dann finden wir durch diesen Effekt eine Abnahme des Mittelwerts. Umgekehrt funktioniert es genauso für die Gruppe "geringer Angst".
+
+Die nächste Abbildung zeigt das gleiche Phänomen mit einzelnen Plots für die jeweiligen Subgruppen. Wir können daran wunderbar sehen, dass die Mittelwerte der *wahren* Subgruppen trotz Messfehler über die Zeit unverändert bleiben, während die Mittelwerte unserer zu t1 eingeteilten Subgruppen stark Schwanken.
+
+```{r fig.height = 9}
+ggarrange(gt1.facets, gtrue.facets, nrow = 2, labels = "AUTO")
+```
+
+## Was tun gegen Regression zur Mitte?
+
+Regression zur Mitte ist ein notorisch schwierig zu greifendes Phänomen. So schwierig sogar, dass der oben erähnte Wikipedia-Artikel diese Aussage enthält:
+
+>„Da dieser Effekt intuitiv nicht zu verstehen ist, führt er zu verschiedenen Denkfehlern.“
+
+Doch so dramatisch das klingt, wir sind nicht schutzlos gegen diese Denkfehler. Die wichtigsten Dinge, die wir tun können:
+
+- **Kontrollgruppen benutzen**. Das Forschungsteam aus unserem Beispiel wäre nicht auf die Regression zur Mitte hereingefallen, wenn sie eine Kontrollgruppe in ihr Studiendesign integriert hätten. Daran hätte man erkennen können, dass das Muster in Experimental- und Kontrollgruppe das gleiche ist und daher nicht auf die Tagebuch-Intervention zurückgeführt werden kann.
+- **Median-Splits vermeiden**. Es ist nicht immer möglich, Kontrollgruppen zu verwenden, bspw. wenn wir vorhandene Querschnittsdaten auswerten. Solche Daten können trotzdem analysiert werden, dabei sollte man aber tunlichst vermeiden, Subgruppen durch Median-Splits in der abhängigen Variable zu bilden. Solche Median-Splits sind ein Rezept für Interpretations-Chaos. Sie führen außerdem dazu, dass ernom viel Information weggeschmissen wird.
+
+## Warum ist der Haken wichtig?
+
+**Wissenschaftliche Perspektive** 
+
+- Wenn Regression zur Mitte eine Rolle spielt, dann ist die Gefahr groß, dass wir falsche Schlussfolgerungen ziehen. Unser Effekt könnte einfach ein statistisches Artefakt sein.
+
+- Wenn eine Studie ohne Kontrollgruppe durchgeführt, oder ein Median-Split in der abhängigen Variable durchgeführt wurde, dann bedeutet das aber nicht automatisch, dass es den gefundenen Effekt *nicht* gibt. Es bedeutet nur, dass die Alternativerklärung "Regression zur Mitte" nicht ausgeschlossen werden kann, und die Studie deshalb keinen starken Test der Hypothese darstellt. Siehe dazu auch mehr im [Skript zu Korrelation und Kausalität](https://ctreffe.github.io/r-space/kausalitaet.html#wie-umgehen-mit-dem-haken).
+
+**Praktiker-Perspektive**
+
+- Wenn wir Studien als Entscheidungsgrundlage benutzen, deren Ergebnis auf Regression zur Mitte zurückzuführen ist, dann kann es sein, dass der gewünschte Effekt einer Intervention ausbleibt: Vielleicht handelte es sich einfach um statistisches Artefakt.
+
+- Auch hier gilt: Entscheidungsträger in der Praxis sollten sich als Risikomanager:innen verstehen und die theoretische Plausibilität und empirische Evidenz ganzheitlich betrachten. Auf dieser Basis können sie verschiedene Szenarien abwägen und eine bestmöglich fundierte Entscheidung treffen.
+
+- Dahingehend treffen die gleichen, detaillierteren Überlegungen zu, die wir in unserem Artikel zu [Konfundierung](https://ctreffe.github.io/r-space/konfundierung.html#warum-ist-der-haken-wichtig) geschildert haben.
+
+
+
+
+
+
+
