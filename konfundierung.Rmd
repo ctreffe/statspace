@@ -136,7 +136,7 @@ Ein norwegisches Forschungsteam hat kürzlich eine Pressekonferenz abgehalten, i
 Hier zunächst ein Blick auf die Daten der ersten beiden Versuchspersonen. Die Spalte `id` enthält eine Zahl zur identifizierung der Versuchsperson, `time` zeigt den Messzeitpunkt ("pre" = vor der Behandlung, "post" = nach der Behandlung) und `bdi` enthält den BDI-Summenscore, der Versuchsperson zum jeweiligen Zeitpunkt. Es gibt zwei Zeitpunkte und daher bei diesem Datenformat ("long" Format genannt) zwei Zeilen pro Person.
 
 ```{r echo=FALSE}
-d %>% select(-sunhours, -group) %>% print(n=4)
+d %>% dplyr::select(-sunhours, -group) %>% print(n=4)
 ```
 
 Das Forschungsteam analysierte die Daten mit einer einfachen linearen Regression (in diesem Fall äquivalent zum t-Test). Hier die Ergebnisse:

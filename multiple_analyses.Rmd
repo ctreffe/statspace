@@ -321,15 +321,15 @@ if (run_simulation) {
 } else {
   df10 <- readRDS("files/sim_6avs.rds")
 }
-
-power.plt6 <- df6 %>% generate_power_df() %>% plot_power(nsim)
-nsim.plt6 <- df6 %>% generate_nsig_df() %>% plot_nsig(navs= 6, nsim)
-
-ggsave("files/nsim_plot6.png", nsim.plt6)
-
-# save power plot of this simulation
-# because it has by far the biggest sample size
-ggsave("files/power_plot6.png", power.plt6) 
+# 
+# power.plt6 <- df6 %>% generate_power_df() %>% plot_power(nsim)
+# nsim.plt6 <- df6 %>% generate_nsig_df() %>% plot_nsig(navs= 6, nsim)
+# 
+# ggsave("files/nsim_plot6.png", nsim.plt6)
+# 
+# # save power plot of this simulation
+# # because it has by far the biggest sample size
+# ggsave("files/power_plot6.png", power.plt6) 
 ```
 
 ```{r}

@@ -174,7 +174,7 @@ Um Multilevel-Modelle zu erklären, holen wir in diesem Skript anhand eines Beis
 
 ```{r}
 data %>% 
-  select(pupil_id, realm, school, mindfulness, class, reading_skill) %>% 
+  dplyr::select(pupil_id, realm, school, mindfulness, class, reading_skill) %>% 
   sample_n(5) %>% 
   knitr::kable()
 ```
@@ -236,11 +236,9 @@ Wir sehen, dass $\hat{\beta}_1$ auf ca. -2.3 geschätzt wird, und dass dieses Er
 ggpubr::ggarrange(bars, violins, labels="auto")
 ```
 
-<div class ="alert alert-info">
-
+::: {.alert .alert-info}
 Nebenbei bemerkt: Unsere Darstellung mit Standardabweichungen als "Pointrange"/Fehlerbalken und Konfidenzintervallen als gestrichelten Linien ist etwas ungewöhnlich. Häufig findet man Darstellungen der Konfidenzintervalle oder Standardfehler als Fehlerbalken. Wir wählen die hier gezeigte Darstellung, da sie unserer Ansicht nach einen vollständigeren Eindruck der Daten vermittelt: Das Konfidenzintervall gibt einen Eindruck über die Schätzunsicherheit (es ersetzt damit eine Darstellung des Standardfehlers und ist besser verständlich) und die Standardabweichung gibt einen Eindruck über die Varianz der zugrundeliegenden Daten. Mehr dazu hier: [Uncertainty and variation as distinct concepts](https://statmodeling.stat.columbia.edu/2020/05/10/uncertainty-and-variation-as-distinct-concepts/)
-
-</div>
+:::
 
 ### Der Haken
 
@@ -266,11 +264,9 @@ panels
 
 Die Analyse per Multilevel-Regression bestätigt den Eindruck aus den Plots: Wir bekommen eine Schätzung von $\hat{\beta}_1$ = 4.7, d.h. im Mittel sind Achtsamkeitsübungen mit einer um etwa 4.7 Punkte *besseren* Lesefähigkeit assoziiert.
 
-<div class="alert alert-info">
-
+::: {.alert .alert-info}
 Wir zeigen an dieser Stelle bewusst nicht die Details der Spezifikation. Ziel dieses Skriptes ist, auf grober Ebene das *Konzept* von Multilevel-Analysen zu verdeutlichen. Die praktische Durchführung wird bspw. in *Field (2012)* besprochen.
-
-</div>
+:::
 
 ```{r}
 m2_sum
@@ -292,8 +288,7 @@ Jetzt noch einmal eingeordnet in unsere Perspektiven:
 
 -   Dahingehend treffen die gleichen, detaillierteren Überlegungen zu, die wir in unserem Artikel zu [Konfundierung](https://ctreffe.github.io/r-space/konfundierung.html#warum-ist-der-haken-wichtig) (siehe "Warum ist der Haken wichtig?") geschildert haben.
 
-<div class="alert alert-warning">
-
+::: {.alert .alert-warning}
 **Ein paar Hinweise zu Multilevel-Modellen**
 
 -   Hier haben wir als Beispiel nicht-experimentelle Querschnittsdaten zur Veranschaulichung eines Multilevel-Modells genommen. Je nach Versuchsdesign kann es aber auch in randomisierten Experimenten durchaus sein, dass hierarchische Daten entstehen, bspw. wenn Versuchspersonen in Untergruppen eingeteilt werden. Das sollte bei der Analyse berücksichtigt werden!
@@ -303,11 +298,9 @@ Jetzt noch einmal eingeordnet in unsere Perspektiven:
 -   Es gibt keine objektive, immer zutreffende Regel dafür, um zu entscheiden, welche Effekt als *fixed* und welche als *random* Effekte modelliert werden. Hier müssen theoriegeleitete Entscheidungen getroffen werden. Die Leitfrage, um diese Entscheidung zu treffen ist: „Welcher Effekt ist von wissenschaftlichem Interesse für mich?" Das ist tendenziell ein *fixed* Effekt. Auch die umgekehrte Frage ist hilfreich: „Welcher Effekt hat möglicherweise einen verzerrenden Einfluss, den ich 'herausrechnen' möchte?" Das ist tendenziell ein *random* Effekt.
 
 -   Es kann durchaus sein, dass Daten eine hierarchische Struktur ähnlich der hier vorgestellten aufweisen, ohne dass eine Modellierung in einem Multilevel-Modell notwendig ist. Dafür kann z.B. die *Intraclass Correlation (ICC)* berechnet werden; eine Korrelation, die angibt, wie ähnlich sich Beobachtungen *innerhalb einer Gruppe* sind. Eine hohe ICC deutet darauf hin, dass eine Multilevel-Analyse sinnvoll ist. Für Details verweisen wir auf Field (2012).
+:::
 
-</div>
-
-<div class="alert alert-info">
-
+::: {.alert .alert-info}
 **Begriffliche Verwirrungen bei Multilevel-Modellen**
 
 -   Daten mit Hierarchischen Strukturen werden oft auch als *genestete* Daten bezeichnet. Im hier behandelten Beispiel würde man sagen, dass Beobachtungen von Schüler:innen in Schulen und Schulen in Ländern genestet sind.
@@ -319,10 +312,9 @@ Jetzt noch einmal eingeordnet in unsere Perspektiven:
     -   Hierarchical linear models. **Achtung**: Hier besteht Verwechslungsgefahr zum Schrittweisen vorgehen bei Regressionsanalysen (Modellvergleichende Tests zur Identifikation des am besten passenden Modells). Dieses Schrittweise Vorgehen wird gerade unter Psycholog:innen auch häufig "Hierarchical Regression" genannt, beinhaltet aber nicht notwendigerweise Multilevel Regressionen.
 
     -   Multilevel models.
-
-</div>
+:::
 
 ## Quellen und Links
 
-- Der simulierte Datensatz zu diesem Skript kann für eigene Analysen hier heruntergeladen werden: [link](https://raw.githubusercontent.com/ctreffe/r-space/master/files/schools_middle_earth.csv)
+-   Der simulierte Datensatz zu diesem Skript kann für eigene Analysen hier heruntergeladen werden: [link](https://raw.githubusercontent.com/ctreffe/r-space/master/files/schools_middle_earth.csv)
 -   *Field (2012) Discovering Statistics Using R, Kapitel 19: Multilevel linear models. SAGE Publication*
