@@ -6,12 +6,20 @@ editor_options:
 
 ```{r setup, include=FALSE}
 # global RMarkdown options
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 # load packages
 library(MASS)
 library(tidyverse)
 library(corrplot)
+
+# set global theme options for ggplot2
+theme_update(panel.background = element_rect(fill = NA, color = "#153268"))
+theme_update(legend.background = element_blank())
+theme_update(panel.grid = element_blank())
+theme_update(strip.background = element_rect(fill = "#153268"))
+theme_update(strip.text = element_text(color = "white"))
+theme_update(plot.background = element_rect(fill = "#f6f4f0"))
 ```
 
 ```{r}
@@ -53,6 +61,7 @@ sim_covariate <- function(n = 500, r = 0.6) {
 ```
 
 ```{r}
+set.seed(12345)
 true <- simdata()
 t1 <- simdata(mu = true)
 t2 <- simdata(mu = true)
@@ -69,7 +78,7 @@ corrdat <- bind_rows(true, t1, t2) %>%
 
 corrmat <- corrdat %>% cor()
 
-corrmat %>% round(2)
+corrmat %>% round(2)  %>% knitr::kable()
 ```
 
 ```{r}
@@ -98,7 +107,7 @@ values <- bind_rows(true, t1, t2) %>%
     (exh > median.exh) & (cyn > median.cyn) ~ "burnout"
   ))
 
-values
+values %>% sample_n(10)  %>% knitr::kable()
 ```
 
 ```{r}
@@ -117,8 +126,6 @@ jitter <- runif(n = nrow(df), min = -0.05, max = 0.05)
 df <- df %>% 
   mutate(time.int = recode(time, "t0" = 1, "t1" = 2, "t2" = 3)) %>% 
   mutate(time.jit = time.int + jitter)
-
-df
 ```
 
 ```{r}
@@ -128,7 +135,7 @@ status_wide <- df %>%
 
 df <- left_join(df, status_wide, by = "id")
 
-status_wide  
+status_wide %>% sample_n(10)  %>% knitr::kable()
 ```
 ```{r}
 pattern_wide <- df %>% 
@@ -137,53 +144,47 @@ pattern_wide <- df %>%
 
 df <- left_join(df, pattern_wide, by = "id")
 
-pattern_wide  
+pattern_wide %>% sample_n(10)  %>% knitr::kable()
 ```
 
 
 ```{r}
-df %>% 
-  mutate(group.exh = exh.status_t1) %>% 
+plt.single <- function(df) {
+  plt <- df %>% 
   ggplot() +
-  aes(x = time.jit, y = exh) +
-  geom_line(aes(group = id, color = group.exh), alpha = 0.1) +
-  geom_point(alpha = 0.05) +
+  aes(x = time.jit, y = y) +
+  geom_line(aes(group = id, color = gr), alpha = 0.1) +
+  geom_point(alpha = 0.1, aes(color = gr)) +
+  # geom_hline(yintercept = medians$median.exh_t1, linetype = "dashed") +
+  scale_x_continuous(limits = c(0.5, 3.5), breaks = 1:3, 
+                     labels = c("True value", "t1", "t2")) +
+  guides(colour = guide_legend(override.aes = list(alpha = 1, size=2))) +
+  stat_summary(fun = "mean", 
+               aes(x = time.int, group = gr), 
+               geom = "line", size = 1) +
+  stat_summary(fun = "mean", 
+               aes(x = time.int, group = gr, shape = gr), 
+               geom = "point", size = 3, fill = "white") +
+  scale_shape_manual(values = c(22, 24)) +
+  NULL
+  
+  return(plt)
+}
+```
+
+```{r}
+df %>% mutate(gr = exh.status_t1, y = exh) %>% 
+  plt.single() +
   scale_color_brewer(palette = "Set1") +
-  # geom_hline(yintercept = medians$median.exh_t1, linetype = "dashed") +
-  scale_x_continuous(limits = c(0.5, 3.5), breaks = 1:3, 
-                     labels = c("True value", "t1", "t2")) +
   labs(x = "Measurement", y = "Exhaustion", color = "Group at t1",
-       title = "Development of Exhaustion") +
-  guides(colour = guide_legend(override.aes = list(alpha = 1, size=2))) +
-  stat_summary(fun = "mean", 
-               aes(x = time.int, group = group.exh), 
-               geom = "line", size = 1) +
-  stat_summary(fun = "mean", 
-               aes(x = time.int, group = group.exh), 
-               geom = "point", size = 3) +
-  NULL
+       title = "Development of Exhaustion", shape = "Group at t1")
 ```
+
 ```{r}
-df %>% 
-  mutate(group.cyn = cyn.status_t1) %>% 
-  ggplot() +
-  aes(x = time.jit, y = cyn) +
-  geom_line(aes(group = id, color = group.cyn), alpha = 0.1) +
-  geom_point(alpha = 0.05) +
-  # scale_color_brewer(palette = "Set2") +
-  # geom_hline(yintercept = medians$median.exh_t1, linetype = "dashed") +
-  scale_x_continuous(limits = c(0.5, 3.5), breaks = 1:3, 
-                     labels = c("True value", "t1", "t2")) +
+df %>% mutate(gr = cyn.status_t1, y = cyn) %>% 
+  plt.single() +
   labs(x = "Measurement", y = "Cynicism", color = "Group at t1",
-       title = "Development of Cynicsm") +
-  guides(colour = guide_legend(override.aes = list(alpha = 1, size=2))) +
-  stat_summary(fun = "mean", 
-               aes(x = time.int, group = group.cyn), 
-               geom = "line", size = 1) +
-  stat_summary(fun = "mean", 
-               aes(x = time.int, group = group.cyn), 
-               geom = "point", size = 3) +
-  NULL
+       title = "Development of Cynicsm")
 ```
 
 ```{r}
@@ -218,6 +219,31 @@ df %>%
   aes(x = exh, y = cyn, color = pattern_t1) +
   geom_point(alpha = 0.3) +
   facet_wrap(~time, labeller = label_both) +
+  scale_color_brewer(palette = "Set1") +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(override.aes = list(alpha = 1, size=2))) +
+  labs(x = "Exhaustion", y = "Cynicsm", color = "Pattern at t1",
+       title = "Development of pattern at t1")
+```
+```{r}
+df %>% 
+  ggplot() +
+  aes(x = exh, y = cyn, color = pattern_t0) +
+  geom_point(alpha = 0.3) +
+  facet_wrap(~time, labeller = label_both) +
+  scale_color_brewer(palette = "Set2") +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(override.aes = list(alpha = 1, size=2))) +
+  labs(x = "Exhaustion", y = "Cynicsm", color = "Pattern at t1",
+       title = "Development of pattern at t1")
+```
+
+
+```{r fig.height=8}
+df %>% 
+  ggplot() +
+  aes(x = exh, y = cyn, color = pattern_t1) +
+  geom_point(alpha = 0.3) +
   facet_wrap(pattern_t1~time, labeller = label_both) +
   scale_color_brewer(palette = "Set1") +
   theme(legend.position = "bottom") +
@@ -226,7 +252,7 @@ df %>%
        title = "Development of pattern at t1")
 ```
 
-```{r}
+```{r fig.height=8}
 df %>% 
   ggplot() +
   aes(x = exh, y = cyn, color = pattern_t0) +
@@ -238,7 +264,7 @@ df %>%
   labs(x = "Exhaustion", y = "Cynicsm", color = "True pattern",
        title = "Development of patterns at t0 and t1")
 ```
-```{r}
+```{r fig.height=8}
 df %>% 
   ggplot() +
   aes(x = exh, y = cyn, color = pattern_t0) +
@@ -250,6 +276,7 @@ df %>%
   labs(x = "Exhaustion", y = "Cynicsm", color = "True pattern",
        title = "Development of pattern at t0")
 ```
+
 ```{r}
 df %>% 
   ggplot() +
@@ -292,95 +319,131 @@ df %>%
   - incorporation of third burnout criterium
 
 
-## Sum score
+```{r}
+df %>% 
+  group_by(pattern, time) %>% 
+  summarise(n = n()) %>% 
+  pivot_wider(names_from = time, values_from = n, 
+              names_glue = "{.value}_{time}")  %>% 
+  knitr::kable()
 
+```
 
-
-
-```{r eval=FALSE, include=FALSE}
-df2 <- df %>% 
-  dplyr::select(id, exh.status, cyn.status, time) %>% 
-  filter(time != "t0") %>% 
-  pivot_wider(names_from = "time", 
-              names_sep = ".",
-              values_from = c("exh.status", "cyn.status"))
-
-df3 <- df2 %>% 
-  mutate(pattern.t1 = ifelse(exh.status.t1 == cyn.status.t1, 
-                             "consistent", "inconsistent")) %>% 
-  mutate(pattern.t2 = ifelse(exh.status.t2 == cyn.status.t2, 
-                             "consistent", "inconsistent")) %>% 
-  mutate(ex.change = ifelse(exh.status.t1 == exh.status.t2, 
-                          "unchanged", "changed")) %>% 
-  mutate(cyn.change = ifelse(cyn.status.t1 == cyn.status.t2, 
-                             "unchanged", "changed")) %>% 
-  mutate(pattern.change = ifelse(pattern.t1 == pattern.t2,
-                                 "unchanged", "changed")) %>% 
-  mutate(burnout.t1 = ifelse(exh.status.t1 == "high" & cyn.status.t1 == "high",
-                             TRUE, FALSE)) %>% 
-  mutate(burnout.t2= ifelse(exh.status.t2 == "high" & cyn.status.t2 == "high",
-                             TRUE, FALSE)) %>% 
-    mutate(engagement.t1= ifelse(exh.status.t1 == "low" & cyn.status.t1 == "low",
-                             TRUE, FALSE)) %>% 
-  mutate(engagement.t2= ifelse(exh.status.t2 == "low" & cyn.status.t2 == "low",
-                             TRUE, FALSE)) %>% 
-  mutate(inconsistent.t1= ifelse(exh.status.t1 != cyn.status.t1,
-                             TRUE, FALSE)) %>% 
-  mutate(inconsistent.t2 = ifelse(exh.status.t2 != cyn.status.t2,
-                             TRUE, FALSE)) %>% 
-  mutate(status.dev = case_when(
-    (burnout.t1 == burnout.t2) & (burnout.t1 == TRUE) ~ "stable.burnout",
-    (engagement.t1 == engagement.t2) & (engagement.t1 == TRUE) ~ "stable.engagement",
-    (inconsistent.t1 == inconsistent.t2) & (inconsistent.t1 == TRUE) & (ex.change == "unchanged") ~ "stable.inconsistent",
-    (inconsistent.t1 == inconsistent.t2) & (inconsistent.t1 == TRUE) & (ex.change == "changed" | cyn.change == "changed") ~ "swap.inconsistent",
-    (pattern.t1 == pattern.t2) & (pattern.t1 == "consistent") & burnout.t1 == TRUE & burnout.t2 == FALSE ~ "fullswap.to_engagement",
-    (pattern.t1 == pattern.t2) & (pattern.t1 == "consistent") & burnout.t1 == FALSE & burnout.t2 == TRUE ~ "fullswap.to_burnout",
-    ((inconsistent.t1 == TRUE) & (inconsistent.t2 == FALSE)) & burnout.t2 ~ "swap.to_burnout",
-    ((inconsistent.t1 == TRUE) & (inconsistent.t2 == FALSE)) & engagement.t2 ~ "swap.to_engagement",
-    (inconsistent.t1 == FALSE) & (inconsistent.t2 == TRUE) ~ "swap.to_inconsistent"
-  ))
-
-df4 <- df3 %>% 
-  # dplyr::select("id":"pattern.change", "status.dev") %>% 
-  group_by(pattern.change, exh.status.t1, exh.status.t2, cyn.status.t1, cyn.status.t2, pattern.t1, pattern.t2, status.dev) %>% 
-  summarise(n = n())
+```{r}
+dev_pattern <- df %>% 
+  dplyr::select(id, time, pattern, exh.status_t1, exh.status_t2, cyn.status_t1, cyn.status_t2) %>% 
+  pivot_wider(names_from = "time", names_glue = "{.value}_{time}",
+  values_from = "pattern") %>% 
+  group_by(exh.status_t1, exh.status_t2, cyn.status_t1, cyn.status_t2, 
+           pattern_t1, pattern_t2) %>% 
+  summarise(n = n()) %>% ungroup()
   
-df4
+dev_pattern  %>% knitr::kable()
+```
 
-df4 %>% 
-  filter(cyn.status.t1 == "high", exh.status.t1 == "high") %>% 
-  filter(cyn.status.t2 == "high", exh.status.t2 == "high") %>%
-  pull(n)
+```{r}
+dev_pattern %>% group_by(pattern_t1, pattern_t2) %>% 
+  summarise(n = sum(n))  %>% knitr::kable()
+```
 
-df3 %>% group_by(cyn.status.t1, exh.status.t1, cyn.status.t2, exh.status.t2) %>% 
-  summarise(n = n())
-  
-  filter(cyn.status.t1 == "low", exh.status.t1 == "low") %>% pull(n) %>% sum()
+```{r}
+dev_pattern %>% group_by(exh.status_t1, exh.status_t2) %>% 
+  summarise(n = sum(n))  %>% knitr::kable()
+```
 
-df4 %>% 
-  filter(cyn.status.t1 == "high", exh.status.t1 == "low") %>% pull(n) %>% sum()
-
-df4 %>% 
-  filter(cyn.status.t1 == "low", exh.status.t1 == "high") %>% pull(n) %>% sum()
-
-df4 %>% 
-  filter(cyn.status.t1 == "high", exh.status.t1 == "high") %>% pull(n) %>% sum()
-
-df4 %>% 
-  filter(cyn.status.t2 == "low", exh.status.t2 == "low") %>% pull(n) %>% sum()
-
-df4 %>% 
-  filter(cyn.status.t2 == "high", exh.status.t2 == "low") %>% pull(n) %>% sum()
-
-df4 %>% 
-  filter(cyn.status.t2 == "low", exh.status.t2 == "high") %>% pull(n) %>% sum()
-
-df4 %>% 
-  filter(cyn.status.t2 == "high", exh.status.t2 == "high") %>% pull(n) %>% sum()
+```{r}
+dev_pattern %>% group_by(cyn.status_t1, cyn.status_t2) %>% 
+  summarise(n = sum(n))  %>% knitr::kable()
 ```
 
 
 
+```{r}
+dif.df <- df %>% 
+  mutate(dif = exh - cyn) %>% 
+  group_by(time) %>% 
+  mutate(dif.med = median(dif)) %>% 
+  mutate(dif.q25 = quantile(dif, 0.25)) %>% 
+  mutate(dif.q75 = quantile(dif, 0.75)) %>% 
+  ungroup() %>% 
+
+  mutate(dif.status1 = ifelse(dif < dif.med, "low", "high")) %>% 
+  mutate(dif.status = case_when(
+    dif < dif.q25 ~ "low",
+    (dif.q25 < dif) & (dif < dif.q75) ~ "medium",
+    dif.q75 < dif ~ "high"
+    ))
+
+dif.status_t1 <- dif.df %>% 
+  filter(time == "t1") %>% 
+  select(id, dif.status) %>% 
+  rename(dif.status_t1 = dif.status)
+  
+dif.df <- left_join(dif.df, dif.status_t1, by = "id")
+
+dif.t1 <- dif.df %>% 
+  filter(time == "t1") %>% 
+  select(id, dif) %>% 
+  rename(dif.t1 = dif)
+
+dif.df <- left_join(dif.df, dif.t1, by = "id")
+
+dif.df %>% dplyr::select(id, time, dif, pattern, dif.med, dif.status)
+```
+
+```{r}
+pattern_dif <- dif.df %>% 
+  group_by(pattern_t1, dif.status_t1) %>% 
+  summarise(n = n()) %>% ungroup()
+ 
+pattern_dif
+```
+
+```{r}
+pattern_dif %>% 
+  mutate(dif_extreme = ifelse(dif.status_t1 == "high" | dif.status_t1 == "low","yes", "no")) %>% 
+  group_by(dif_extreme, pattern_t1) %>% 
+  summarise(n = sum(n))
+```
 
 
+```{r}
+plt.dif_combined <- dif.df %>% 
+  ggplot() +
+  aes(x = time.jit, y = dif) +
+  geom_line(aes(group = id, color = dif.t1), alpha = 0.2) +
+  geom_point(alpha = 0.1) +
+  scale_color_gradient2(low = "#0571b0", high = "#ca0020", mid = "#ffffbf") +
+  scale_x_continuous(breaks = 1:3, labels = c("True value", "t1", "t2")) +
+  labs(x = "Measurement", y = "Difference: Exh. - Cyn.") +
+  theme(legend.position = "bottom") +
+  NULL
+```
 
+```{r}
+plt.dif_combined + 
+  stat_summary(fun = "mean", geom = "line",
+               aes(x = time.int, group = dif.status_t1)
+               ) +
+  stat_summary(fun = "mean", geom = "point", 
+               size = 3,
+               fill = "white",
+               aes(shape = dif.status_t1, x = time.int)) +
+  # scale_shape_manual(values = c(22, 24))
+  scale_shape_manual(values = c(21, 22, 24))
+```
+
+```{r}
+plt.dif_combined + 
+  facet_wrap(~dif.status_t1, labeller = label_both) +
+  stat_summary(fun = "mean", geom = "line",
+               aes(x = time.int, group = dif.status_t1)
+               ) +
+  stat_summary(fun = "mean", geom = "point", 
+               size = 3,
+               fill = "white",
+               aes(shape = dif.status_t1, x = time.int)) +
+  scale_shape_manual(values = c(21, 22, 24)) +
+  # scale_shape_manual(values = c(21, 22, 24)) +
+  NULL
+```
