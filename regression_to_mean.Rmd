@@ -299,7 +299,7 @@ ggarrange(gt1.facets, gtrue.facets, nrow = 2, labels = "AUTO")
 
 ## Was tun gegen Regression zur Mitte?
 
-Regression zur Mitte ist ein notorisch schwierig zu greifendes Phänomen. So schwierig sogar, dass der oben erähnte Wikipedia-Artikel diese Aussage enthält:
+Regression zur Mitte ist ein notorisch schwierig zu greifendes Phänomen. So schwierig sogar, dass der oben erwähnte Wikipedia-Artikel diese Aussage enthält:
 
 >„Da dieser Effekt intuitiv nicht zu verstehen ist, führt er zu verschiedenen Denkfehlern.“
 
