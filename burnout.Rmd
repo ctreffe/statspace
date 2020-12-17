@@ -22,8 +22,28 @@ theme_update(strip.text = element_text(color = "white"))
 theme_update(plot.background = element_rect(fill = "#f6f4f0"))
 ```
 
+# Data simulation
+
+## Function definition
+
 ```{r}
+
 simdata <- function(n = 500, r = 0.55, mu = c(0, 0), names = c("exh", "cyn")) {
+  # Random sampling of two variables from multivariate normal distribution
+  # allows for input of a complete vector of mu  
+  
+  # Function arguments
+  # n: Number of observations per variable
+  # r: Correlation between the sampled variables
+  # mu: Vector of true means. Can be a vector of length two, or a matrix
+  #     with two columns and *n* rows, giving true means individually for 
+  #     each observation
+  # names: Names of the variables in the output
+  
+  # Returns
+  # tibble: A 3-column tibble, with an ID column going from 1 to *n* and 
+  #     the two sampled variables, named as indicated in *names*
+  
   s = matrix(c(1, r, r, 1), ncol = 2)
   x <- matrix(rep(NA, times = n*2), ncol = 2)
   id <- rep(NA, times = n)
@@ -49,6 +69,17 @@ simdata <- function(n = 500, r = 0.55, mu = c(0, 0), names = c("exh", "cyn")) {
 
 ```{r}
 sim_covariate <- function(n = 500, r = 0.6) {
+  # Simulates correlated values for one covariate at three time points
+  
+  # Function arguments
+  # n: Number of observations per time point
+  # r: Correlation between values at adjacent time points
+  
+  # Returns
+  # double: A vector of length n*3, in which the first n observations correspond to
+  #       time 1, the next n observations to time 2 and the last n observations to
+  #       time 3.
+  
   s = matrix(c(1, r, r^2, r, 1, r^2, r^2, r, 1), ncol = 3)
   x <- mvrnorm(mu = c(0, 0, 0), Sigma = s, n = n)
   colnames(x) <- c("t0", "t1", "t2")
@@ -60,6 +91,10 @@ sim_covariate <- function(n = 500, r = 0.6) {
 }
 ```
 
+## Executing data simulation
+
+Main dependent variables
+
 ```{r}
 set.seed(12345)
 true <- simdata()
@@ -68,23 +103,12 @@ t2 <- simdata(mu = true)
 true$time <- "t0"
 t1$time <- "t1"
 t2$time <- "t2"
+
+values <- bind_rows(true, t1, t2) 
+values %>% sample_n(10) %>% knitr::kable()
 ```
 
-
-```{r}
-corrdat <- bind_rows(true, t1, t2) %>% 
-  pivot_wider(names_from = "time", values_from = c("exh", "cyn")) %>% 
-  dplyr::select(-id) 
-
-corrmat <- corrdat %>% cor()
-
-corrmat %>% round(2)  %>% knitr::kable()
-```
-
-```{r}
-corrdat %>% psych::pairs.panels(hist.col = "skyblue", stars = TRUE)
-```
-
+# Data curation
 
 ```{r}
 values <- bind_rows(true, t1, t2) %>% 
@@ -110,8 +134,10 @@ values <- bind_rows(true, t1, t2) %>%
 values %>% sample_n(10)  %>% knitr::kable()
 ```
 
+Adding covariates
+
 ```{r}
-df <- values %>% 
+values <- values %>% 
   mutate(workload = sim_covariate()) %>% 
   mutate(control = sim_covariate()) %>% 
   mutate(reward = sim_covariate()) %>% 
@@ -120,13 +146,16 @@ df <- values %>%
   mutate(values = sim_covariate())
 ```
 
-```{r}
-jitter <- runif(n = nrow(df), min = -0.05, max = 0.05)
+Adding numeric time variable and jittered time variable for plotting
 
-df <- df %>% 
+```{r}
+jitter <- runif(n = nrow(values), min = -0.05, max = 0.05)
+
+df <- values %>% 
   mutate(time.int = recode(time, "t0" = 1, "t1" = 2, "t2" = 3)) %>% 
   mutate(time.jit = time.int + jitter)
 ```
+Broadcasting the status of cynicism and exhaustion for each time point to the full length of the data
 
 ```{r}
 status_wide <- df %>% 
@@ -135,8 +164,14 @@ status_wide <- df %>%
 
 df <- left_join(df, status_wide, by = "id")
 
-status_wide %>% sample_n(10)  %>% knitr::kable()
+# print
+df %>% 
+  dplyr::select(id, time, exh.status, exh.status_t1) %>%
+  sample_n(10)  %>% knitr::kable()
 ```
+
+Broadcasting the pattern for each time point to the full length of the data
+
 ```{r}
 pattern_wide <- df %>% 
   dplyr::select(id, time, pattern) %>% 
@@ -144,8 +179,29 @@ pattern_wide <- df %>%
 
 df <- left_join(df, pattern_wide, by = "id")
 
-pattern_wide %>% sample_n(10)  %>% knitr::kable()
+# print
+df %>% 
+  dplyr::select(id, time, pattern, pattern_t1) %>% 
+  sample_n(10)  %>% knitr::kable()
 ```
+
+# Descriptive exploration of data
+
+```{r}
+corrdat <- bind_rows(true, t1, t2) %>% 
+  pivot_wider(names_from = "time", values_from = c("exh", "cyn")) %>% 
+  dplyr::select(-id) 
+
+corrmat <- corrdat %>% cor()
+
+corrmat %>% round(2)  %>% knitr::kable()
+```
+
+```{r}
+corrdat %>% psych::pairs.panels(hist.col = "skyblue", stars = TRUE)
+```
+
+# Main Plots
 
 
 ```{r}
@@ -172,6 +228,8 @@ plt.single <- function(df) {
 }
 ```
 
+## Regression to mean in exhaustion and cynicism
+
 ```{r}
 df %>% mutate(gr = exh.status_t1, y = exh) %>% 
   plt.single() +
@@ -187,13 +245,17 @@ df %>% mutate(gr = cyn.status_t1, y = cyn) %>%
        title = "Development of Cynicsm")
 ```
 
+## Correlation of exhaustion and cyniciscm
+
 ```{r}
 df %>% 
   ggplot() +
   aes(x = exh, y = cyn) +
   geom_point(alpha = 0.3) +
   geom_smooth(method = "lm", se = F) +
-  facet_wrap(~time, labeller = label_both)
+  facet_wrap(~time, labeller = label_both) +
+  labs(x = "Exhaustion", y = "Cynicism") +
+  labs(title = "Correlation of exhaustion and cynicism across measurements")
 ```
 
 ```{r}
@@ -202,7 +264,9 @@ df %>%
   aes(x = exh, y = cyn) +
   geom_point(alpha = 0.3) +
   geom_smooth(method = "lm", se = F) +
-  facet_wrap(~pattern_t0, labeller = label_both)
+  facet_wrap(~pattern_t0, labeller = label_both) +
+  labs(x = "Exhaustion", y = "Cynicism") +
+  labs(title = "Correlation of exhaustion and cynicism across true patterns")
 ```
 ```{r}
 df %>% 
@@ -210,8 +274,12 @@ df %>%
   aes(x = exh, y = cyn) +
   geom_point(alpha = 0.3) +
   geom_smooth(method = "lm", se = F) +
-  facet_wrap(~pattern_t1, labeller = label_both)
+  facet_wrap(~pattern_t1, labeller = label_both) +
+  labs(x = "Exhaustion", y = "Cynicism") +
+  labs(title = "Correlation of exhaustion and cynicism across t1 patterns")
 ```
+
+## Pattern development
 
 ```{r}
 df %>% 
@@ -222,8 +290,10 @@ df %>%
   scale_color_brewer(palette = "Set1") +
   theme(legend.position = "bottom") +
   guides(colour = guide_legend(override.aes = list(alpha = 1, size=2))) +
-  labs(x = "Exhaustion", y = "Cynicsm", color = "Pattern at t1",
-       title = "Development of pattern at t1")
+  labs(x = "Exhaustion", 
+       y = "Cynicsm", 
+       color = "Pattern at t1",
+       title = "Development of t1 pattern across measurements")
 ```
 ```{r}
 df %>% 
@@ -235,7 +305,7 @@ df %>%
   theme(legend.position = "bottom") +
   guides(colour = guide_legend(override.aes = list(alpha = 1, size=2))) +
   labs(x = "Exhaustion", y = "Cynicsm", color = "Pattern at t1",
-       title = "Development of pattern at t1")
+       title = "Development of true pattern across measurements")
 ```
 
 
@@ -249,7 +319,7 @@ df %>%
   theme(legend.position = "bottom") +
   guides(colour = guide_legend(override.aes = list(alpha = 1, size=2))) +
   labs(x = "Exhaustion", y = "Cynicsm", color = "Pattern at t1",
-       title = "Development of pattern at t1")
+       title = "Development of t1 across measurements, faceted")
 ```
 
 ```{r fig.height=8}
@@ -262,7 +332,8 @@ df %>%
   theme(legend.position = "bottom") +
   guides(colour = guide_legend(override.aes = list(alpha = 1, size=2))) +
   labs(x = "Exhaustion", y = "Cynicsm", color = "True pattern",
-       title = "Development of patterns at t0 and t1")
+       title = "Development of t1 pattern across measurements",
+       subtitle = "With color-coding of true pattern")
 ```
 ```{r fig.height=8}
 df %>% 
@@ -274,7 +345,7 @@ df %>%
   theme(legend.position = "bottom") +
   guides(colour = guide_legend(override.aes = list(alpha = 1, size=2))) +
   labs(x = "Exhaustion", y = "Cynicsm", color = "True pattern",
-       title = "Development of pattern at t0")
+       title = "Development of t0 pattern across measurements")
 ```
 
 ```{r}
@@ -287,37 +358,13 @@ df %>%
   theme(legend.position = "bottom") +
   guides(colour = guide_legend(override.aes = list(alpha = 1, size=2))) +
   labs(x = "Exhaustion", y = "Cynicsm", color = "Pattern at t2",
-       title = "Development of patterns at t1 and t2")
+       title = "Development of t1 patterns across measurements",
+       subtitle = "With color-coding of t2 pattern")
 ```
 
-## Reasons for development of this pattern over time
+# Replicating paper results
 
-- Measurement error
-- Actual change in values of exhaustion and cynicsm (not the case in this simulation)
-
-## Statistical analysis
-
-- Target: People who are inconsistent at t1 and have a burnout or engagement status at t2
-  
-  - 6 comparisons in this subgroup
-
-- Targets could have been many other questions
-
-  - what is the factor that makes people change from burnout t1 to engagement t2 instead of swapping to inconsistent or staying at burnout? *6 comparisons*
-  - what is the factor that makes people change from burnout to any other status? *6 comparisons*
-  
-  - what is the factor that makes people change from engagement t1 to burnout t2 instead of swapping to inconsistent or staying at engagement? *6 comparisons*
-  - what is the factor that makes people change from engagement to any other status? *6 comparisons*
-  
-  - what is the factor that makes people stay inconsistent instead of changing to any other status? *6 comparisons*
-  
-  - That makes 36 comparisons at t2 in total. Even more, if both inconsistent states are counted individually.
-  - By using ANOVA, the number can be reduced, but is still at 6 * 3 = 18
-  - Even more tests, if the covariates are looked at both at t1 and t2 (the number doubles)
-
-  - general prediction of engagement or cynicsm via covariates
-  - incorporation of third burnout criterium
-
+Marginal counts of pattern frequency across measurements
 
 ```{r}
 df %>% 
@@ -328,6 +375,8 @@ df %>%
   knitr::kable()
 
 ```
+
+Counts for all 16 combinations of exhaustion and cynicism status across t1 and t2 measurements. Replicates Table 5 from Maslach & Leiter (2008).
 
 ```{r}
 dev_pattern <- df %>% 
@@ -341,22 +390,32 @@ dev_pattern <- df %>%
 dev_pattern  %>% knitr::kable()
 ```
 
+Marginal counts for the development of patterns from t1 to t2.
+
 ```{r}
 dev_pattern %>% group_by(pattern_t1, pattern_t2) %>% 
   summarise(n = sum(n))  %>% knitr::kable()
 ```
+
+Counts for development of exhaustion pattern from t1 to t2.
 
 ```{r}
 dev_pattern %>% group_by(exh.status_t1, exh.status_t2) %>% 
   summarise(n = sum(n))  %>% knitr::kable()
 ```
 
+Counts for development of cynicism pattern from t1 to t2.
+
 ```{r}
 dev_pattern %>% group_by(cyn.status_t1, cyn.status_t2) %>% 
   summarise(n = sum(n))  %>% knitr::kable()
 ```
 
+# Difference between exhaustion and cynicism
 
+By looking at the difference between exhaustion and cynicism, we can see more clearly how regression to the mean is causing the observed pattern.
+
+## Data curation
 
 ```{r}
 dif.df <- df %>% 
@@ -381,6 +440,13 @@ dif.status_t1 <- dif.df %>%
   
 dif.df <- left_join(dif.df, dif.status_t1, by = "id")
 
+dif.status_t0 <- dif.df %>% 
+  filter(time == "t0") %>% 
+  select(id, dif.status) %>% 
+  rename(dif.status_t0 = dif.status)
+  
+dif.df <- left_join(dif.df, dif.status_t0, by = "id")
+
 dif.t1 <- dif.df %>% 
   filter(time == "t1") %>% 
   select(id, dif) %>% 
@@ -390,6 +456,9 @@ dif.df <- left_join(dif.df, dif.t1, by = "id")
 
 dif.df %>% dplyr::select(id, time, dif, pattern, dif.med, dif.status)
 ```
+## Desription
+
+Counts for combinations of patterns and height of difference between exhaustion and cynicism. Medium differences are associated more frequently with either engagement or burnout, while very low or very high differences are associated more frequently with an inconsistent pattern.
 
 ```{r}
 pattern_dif <- dif.df %>% 
@@ -399,13 +468,15 @@ pattern_dif <- dif.df %>%
 pattern_dif
 ```
 
+Summing very low and very high differences to one category to see the above-mentioned effect more clearly.
+
 ```{r}
 pattern_dif %>% 
   mutate(dif_extreme = ifelse(dif.status_t1 == "high" | dif.status_t1 == "low","yes", "no")) %>% 
   group_by(dif_extreme, pattern_t1) %>% 
   summarise(n = sum(n))
 ```
-
+## Plots
 
 ```{r}
 plt.dif_combined <- dif.df %>% 
@@ -430,7 +501,9 @@ plt.dif_combined +
                fill = "white",
                aes(shape = dif.status_t1, x = time.int)) +
   # scale_shape_manual(values = c(22, 24))
-  scale_shape_manual(values = c(21, 22, 24))
+  scale_shape_manual(values = c(21, 22, 24)) +
+  labs(title = "Development of difference Exh. - Cyn. across measurements",
+       subtitle = "Color-coding of difference measured at t1")
 ```
 
 ```{r}
@@ -445,5 +518,96 @@ plt.dif_combined +
                aes(shape = dif.status_t1, x = time.int)) +
   scale_shape_manual(values = c(21, 22, 24)) +
   # scale_shape_manual(values = c(21, 22, 24)) +
+  labs(title = "Development of difference Exh. - Cyn. across measurements, faceted",
+       subtitle = "Color-coding of difference measured at t1") +
   NULL
 ```
+
+```{r}
+plt.dif_combined + 
+  facet_wrap(~dif.status_t0, labeller = label_both) +
+  stat_summary(fun = "mean", geom = "line",
+               aes(x = time.int, group = dif.status_t1)
+               ) +
+  stat_summary(fun = "mean", geom = "point", 
+               size = 3,
+               fill = "white",
+               aes(shape = dif.status_t1, x = time.int)) +
+  scale_shape_manual(values = c(21, 22, 24)) +
+  # scale_shape_manual(values = c(21, 22, 24)) +
+  labs(title = "Development of difference Exh. - Cyn. across measurements, faceted",
+       subtitle = "Color-coding of difference measured at t1") +
+  NULL
+```
+
+
+## Reasons for development of this pattern over time
+
+- Measurement error
+- Actual change in values of exhaustion and cynicsm (not the case in this simulation)
+
+### Statistical analysis
+
+- Target: People who are inconsistent at t1 and have a burnout or engagement status at t2
+  
+  - 6 comparisons in this subgroup
+
+- Targets could have been many other questions
+
+  - what is the factor that makes people change from burnout t1 to engagement t2 instead of swapping to inconsistent or staying at burnout? *6 comparisons*
+  - what is the factor that makes people change from burnout to any other status? *6 comparisons*
+  
+  - what is the factor that makes people change from engagement t1 to burnout t2 instead of swapping to inconsistent or staying at engagement? *6 comparisons*
+  - what is the factor that makes people change from engagement to any other status? *6 comparisons*
+  
+  - what is the factor that makes people stay inconsistent instead of changing to any other status? *6 comparisons*
+  
+  - That makes 36 comparisons at t2 in total. Even more, if both inconsistent states are counted individually.
+  - By using ANOVA, the number can be reduced, but is still at 6 * 3 = 18
+  - Even more tests, if the covariates are looked at both at t1 and t2 (the number doubles)
+
+  - general prediction of engagement or cynicsm via covariates
+  - incorporation of third burnout criterium
+
+
+# Recreating tests for hypothesis 4
+
+```{r}
+h4 <- df %>% 
+  filter(time != "t0") %>% 
+  filter(pattern_t1 == "inconsistent") %>% 
+  filter(pattern_t2 != "inconsistent") %>% 
+  mutate(pattern_t2 = factor(pattern_t2)) %>% 
+  dplyr::select(id, time, pattern, exh, cyn, exh.status_t1, pattern_t1, pattern_t2, workload:values)
+
+h4
+```
+
+```{r}
+h4_dfs <- h4 %>% split(.$exh.status_t1)
+```
+
+```{r}
+run_lms <- function(df, dvs, predictor = "pattern_t2") {
+  output <- list()
+  for (i in seq_along(dvs)) {
+    f = as.formula(paste(dvs[i], "~", predictor))  
+    output[[dvs[i]]] <- lm(f, data = df)
+  }
+  return(output)
+}
+```
+
+```{r}
+dvs = c("workload", "control", "reward", "community", "fairness", "values")
+models <- h4_dfs %>% map(~run_lms(df = ., dvs = dvs))
+```
+
+```{r}
+models$low %>% map(summary)
+```
+
+```{r}
+models$high %>% map(summary)
+```
+
