@@ -348,7 +348,7 @@ df %>%
        title = "Development of t0 pattern across measurements")
 ```
 
-```{r}
+```{r fig.height = 8}
 df %>% 
   ggplot() +
   aes(x = exh, y = cyn, color = pattern_t2) +
@@ -389,6 +389,25 @@ dev_pattern <- df %>%
   
 dev_pattern  %>% knitr::kable()
 ```
+
+```{r}
+dev_pattern %>% 
+  
+  filter(exh.status_t1 == "high") %>% 
+  filter(cyn.status_t1 == "high") %>% 
+  
+  filter(exh.status_t2 == "high") %>% 
+  filter(cyn.status_t2 == "high") %>% 
+  
+  pull(n)
+```
+
+
+```{r}
+dev_pattern %>% group_by(exh.status_t2, cyn.status_t2) %>% 
+  summarise(n = sum(n))
+```
+
 
 Marginal counts for the development of patterns from t1 to t2.
 
