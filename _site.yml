@@ -18,6 +18,8 @@ navbar:
           href: multiple_analyses.html
         - text: "Regression zur Mitte"
           href: regression_to_mean.html
+        - text: "Signifikanz und Effektstärke"
+          href: effektstaerke.html
   right:
     - text: "Georg-Elias-Müller-Institut für Psychologie"
 output:

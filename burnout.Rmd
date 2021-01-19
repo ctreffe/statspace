@@ -454,21 +454,21 @@ dif.df <- df %>%
 
 dif.status_t1 <- dif.df %>% 
   filter(time == "t1") %>% 
-  select(id, dif.status) %>% 
+  dplyr::select(id, dif.status) %>% 
   rename(dif.status_t1 = dif.status)
   
 dif.df <- left_join(dif.df, dif.status_t1, by = "id")
 
 dif.status_t0 <- dif.df %>% 
   filter(time == "t0") %>% 
-  select(id, dif.status) %>% 
+  dplyr::select(id, dif.status) %>% 
   rename(dif.status_t0 = dif.status)
   
 dif.df <- left_join(dif.df, dif.status_t0, by = "id")
 
 dif.t1 <- dif.df %>% 
   filter(time == "t1") %>% 
-  select(id, dif) %>% 
+  dplyr::select(id, dif) %>% 
   rename(dif.t1 = dif)
 
 dif.df <- left_join(dif.df, dif.t1, by = "id")
