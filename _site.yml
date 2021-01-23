@@ -20,6 +20,8 @@ navbar:
           href: regression_to_mean.html
         - text: "Signifikanz und Effektstärke"
           href: effektstaerke.html
+        - text: "Moderation und Mediation"
+          href: moderation_mediation.html
   right:
     - text: "Georg-Elias-Müller-Institut für Psychologie"
 output:
