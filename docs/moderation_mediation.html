@@ -385,7 +385,7 @@ Abbildung 2. Schematische Darstellung einer Mediation.
 <div class="alert alert-warning">
 <p><strong>Fallstricke</strong></p>
 <ul>
-<li><p>Die <em>Sums of Squares</em>. Werden Interaktionseffekte durch ANOVA-Verfahren untersucht, ist es wichtig, die richtige Berechnungsmethode für die “Sums of Squares” in der Modellschätzung zu verwenden. Praktische Hinweise dazu gibt es bei Field (2012), Kapitel 11 (“Jane Superbrain 11.1”)</p></li>
+<li><p>Die <em>Sums of Squares</em>. Werden Interaktionseffekte durch ANOVA-Verfahren untersucht, ist es wichtig, die richtige Berechnungsmethode für die “Sums of Squares” in der Modellschätzung zu verwenden. In der Praxis bedeutet das häufig eine Entscheidung darüber, ob eine Typ-I-, Typ-II, oder Typ-III-ANOVA berechnet wird. Weitere praktische Hinweise dazu gibt es bei Field (2012), Kapitel 11 (“Jane Superbrain 11.1”)</p></li>
 <li><p>Die statistischer Power für die Schätzung von Interaktionseffekten ist ggf. sehr gering - siehe dazu bspw. diesen <a href="https://statmodeling.stat.columbia.edu/2018/03/15/need-16-times-sample-size-estimate-interaction-estimate-main-effect/">Blogpost des Statistikers Andrew Gelman</a>.</p></li>
 </ul>
 </div>
@@ -428,22 +428,31 @@ Abbildung 4. ‘Totaler Effekt’.
 </ol>
 <ul>
 <li><p>3a) Schätzung von <strong>b</strong>: Damit finden wir heraus, wie der Einfluss des Mediators auf die AV aussieht. Wenn hier <em>kein</em> Effekt vorliegt, dann ist eine notwendige Bedingung für Mediation nicht erfüllt!</p></li>
-<li><p>3b) Schätzung von <strong>c’</strong>: Damit finden wir heraus, welchen Einfluss die UV auf anderen Pfaden als über unseren betrachteten Mediator auf die AV ausübt. Wenn dieser Effekt 0 ist, sprechen wir von <em>kompletter Mediation</em>. Andernfalls sprechen wir von <em>teilweiser</em> Mediation. <em>Wird oft als eigener (dann vierter) Schritt im Vorgehen aufgeführt</em>.</p></li>
+<li><p>3b) Schätzung von <strong>c’</strong>: Damit finden wir heraus, welchen Einfluss die UV auf anderen Pfaden als über unseren betrachteten Mediator auf die AV ausübt. Wenn dieser Effekt 0 ist, sprechen wir von <em>vollständiger Mediation</em>. Andernfalls sprechen wir von <em>teilweiser</em> Mediation. <em>Wird oft als eigener (dann vierter) Schritt im Vorgehen aufgeführt</em>.</p></li>
 </ul>
 <ol start="4" style="list-style-type: decimal">
 <li><strong>Schätzung des gesamten indirekten Effekts</strong>. Hier wird der gemeinsame Pfad von <strong>a</strong> und <strong>b</strong> geschätzt. Dafür eignen sich bspw. Bootstrapping-Verfahren, die im R-Paket <em>mediation</em> verfügbar sind (Tingley et al., 2014) . Damit finden wir heraus, wir stark die Mediation insgesamt ist. Damit wir sagen können, dass Mediation vorliegt, muss dieser indirekte Effekt signifikant verschieden von 0 sein.</li>
 </ol>
+<ul>
+<li>Als Bootstrapping-Verfahren noch nicht einfach verfügbar waren, wurde für diesen Schritt in der Regel der Sobel-Test durchgeführt (<a href="http://davidakenny.net/cm/mediate.htm">siehe Website von David Kenny</a>). Der Test ist allerdings konservativer als nötig, hat also eine geringer Power (d.h. eine geringe Wahrscheinlichkeit, einen Effekt tatsächlich zu erkennen, wenn er da ist).</li>
+</ul>
 <div class="alert alert-warning">
 <p><strong>Aufgepasst!</strong></p>
-<p>Der Unterpunkt 3a) wird oft als eigener, vierter Schritt aufgeführt, während Schritt vier nicht mit in die Aufzählung aufgenommen wird. Mit der hier gewählten Darstellung wollen wir sicherstellen, dass klar wird, dass die Schritte 3a) und 3b) im gleichen statistischen Modell geschätzt werden, und dass Schritt 4 nichr vergessen werden darf.</p>
+<p>Der Unterpunkt 3b) wird oft als eigener, vierter Schritt aufgeführt, während Schritt vier nicht mit in die Aufzählung aufgenommen wird. Mit der hier gewählten Darstellung wollen wir sicherstellen, dass klar wird, dass die Schritte 3a) und 3b) im gleichen statistischen Modell geschätzt werden, und dass Schritt 4 nichr vergessen werden darf.</p>
+<p>Es ist häufig problematisch, von <strong>vollständiger Mediation</strong> zu sprechen, denn diese Art von Mediation liegt streng genommen nur vor, wenn der direkte Effekt null ist. Durch das klassische Nullhypothesentesten testen wir allerdings in der Regel nur die Hypothese, ob der direkte Effekt <em>ungleich</em> null ist. Wenn ein solcher Test nicht signifikant wird, dann bedeutet das, dass wir keine ausreichende Evidenz haben, um die Nullhypothese <em>abzulehnen</em> - wir haben aber auch nicht zwangsläufig ausreichende Evidenz dafür, die Nullhypothese <em>anzunehmen</em>. Das ist also ein unbefriedigendes Ergebnis, mit dem wir keine klare Aussage treffen können. Für <strong>partielle Mediation</strong> reicht es dagegen aus, wenn der Test für den indirekten Effekt zeigt, dass dieser Effekt signifikant von 0 verschieden ist.</p>
 </div>
 <div class="alert alert-info">
 <p><strong>Mediationsanalyse impliziert kausale Hypothesen</strong></p>
 <p>Da die Mediationsanalyse kausale Hypothesen impliziert, müssen für alle drei Pfade (a, b und c’) die notwendigen Bedingungen für Kausilität erfüllen (siehe <a href="https://ctreffe.github.io/r-space/kausalitaet.html">Skript zu Kausalität</a>):</p>
 <ol style="list-style-type: decimal">
-<li>Korrelation: Veränderungen in der angenommenen <em>Ursache</em> (unabhängige Variable, UV) müssen in einem systematischen Zusammenhang mit veränderungen in der <em>Wirkung</em> (abhängige Variable, AV) stehen.</li>
-<li>Zeitliche Abfolge: Die Ursache muss zeitlich <em>vor</em> der Wirkung geschehen.</li>
-<li>Keine <a href="https://ctreffe.github.io/r-space/konfundierung.html">Konfundierung</a> durch Alternativerklärungen: Die UV ist der einzige Faktor, der die beobachtete Veränderung in der AV ausgelöst haben kann.</li>
+<li><p>Korrelation: Veränderungen in der angenommenen <em>Ursache</em> (unabhängige Variable, UV) müssen in einem systematischen Zusammenhang mit veränderungen in der <em>Wirkung</em> (abhängige Variable, AV) stehen.</p></li>
+<li><p>Zeitliche Abfolge: Die Ursache muss zeitlich <em>vor</em> der Wirkung geschehen.</p></li>
+<li><p>Keine <a href="https://ctreffe.github.io/r-space/konfundierung.html">Konfundierung</a> durch Alternativerklärungen: Die UV ist der einzige Faktor, der die beobachtete Veränderung in der AV ausgelöst haben kann.</p></li>
+</ol>
+<p>In der Praxis finden sich zwei gängige Designs, die häufig zur Untersuchung von Mediationshypothesen verwendet werden:</p>
+<ol style="list-style-type: decimal">
+<li><p>Der Mediator wird gleichzeitig mit der AV erhoben. In diesem Fall ist nicht sichergestellt, dass die zeitliche Abfolge (Mediator liegt zeitlich vor der AV) den strikten Bedingungen für einen kausalen Effekt genügt. Zumindest ein schwacher Test der Hypothese kann so aber durchgeführt werden.</p></li>
+<li><p>Der Effekt des Mediators auf die AV wird experimentell getestet, indem der Mediator experimentell manipuliert wird. Wenn der Mediator keinen kausalen Einfluss auf die AV hat, spricht das gegen die Mediationshypothese.</p></li>
 </ol>
 </div>
 </div>
@@ -461,13 +470,12 @@ Abbildung 5. Mediierte Moderation
 <p>Das grundlegende Muster ist dabei eine Moderation: Der Effekt der UV auf die AV wird durch den Moderator beeinflusst. Und genau diese Beeinflussung ist es, die mediiert wird: Der Moderator beeinflusst eine vierte Variable, den Mediator. Dieser Mediator wiederum beeinflusst die Wirkung der UV auf die AV.</p>
 <p>In Abbildung 6 ist eine <strong>moderierte Mediation</strong> dargestellt:</p>
 <div class="figure" style="text-align: center">
-<img src="files/slides/Folie8.png" alt="Abbildung 6. Moderierte Mediation" width="80%" />
+<img src="files/slides/Folie8.png" alt="Abbildung 6. Moderierte Mediation. Eine Moderation ist natürlich auch auf dem Pfad von der UV zum Mediator möglich." width="80%" />
 <p class="caption">
-Abbildung 6. Moderierte Mediation
+Abbildung 6. Moderierte Mediation. Eine Moderation ist natürlich auch auf dem Pfad von der UV zum Mediator möglich.
 </p>
 </div>
 <p>Das grundlegende Muster ist dabei eine Mediation: Der Effekt der UV auf die AV wird durch den Mediator vermittelt. In diesem Mediationspfad gibt es eine Moderation, und zwar beeinflusst eine vierte Variable die Wirkung des Mediators auf die AV. Wird in der Analyse der <em>Mediator</em> weggelassen, sieht das Modell aus wie ein gewöhnliche <em>Moderationsmodell</em>, da der indirekte Effekt Teil nur noch als nicht eigens identifizierter Teil des totalen Effekts berücksichtigt wird. Damit scheint es, als würde der Moderator direkt den totalen Effekt beeinflussen.</p>
-<p>Eine Moderation ist natürlich auch auf dem Pfad von der UV zum Mediator möglich.</p>
 <div class="alert alert-danger">
 <p><strong>Achtung, Verwirrungsgefahr</strong></p>
 <p>Die beiden Begriffe können zu Verwirrung führen. Das beste Gegenmittel dagegen ist, die Struktur von Modellen konsequent aufzuzeichnen, mit schematischen Darstellungen wie denen, die wir in diesem Skript verwendet haben. Darstellungen dieser Art werden <em>Directed Acyclic Graphs</em> (DAC) genannt.</p>
