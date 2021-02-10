@@ -1,5 +1,6 @@
 ---
 title: "Moderation und Mediation"
+author: Johannes Brachem (Autor), Dr. Christian Treffenstädt (Projektleitung)
 ---
 
 ```{r setup, include=FALSE}

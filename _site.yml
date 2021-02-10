@@ -22,6 +22,8 @@ navbar:
           href: effektstaerke.html
         - text: "Moderation und Mediation"
           href: moderation_mediation.html
+        - text: "Nullhypothesentesten"
+          href: nhst.html
   right:
     - text: "Georg-Elias-Müller-Institut für Psychologie"
 output:

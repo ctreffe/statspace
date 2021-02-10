@@ -1,0 +1,263 @@
+---
+title: "Nullhypothesen-Signifikanztesten"
+author: Johannes Brachem (Autor), Dr. Christian Treffenstädt (Projektleitung)
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE, fig.align="center")
+
+library(tidyverse)
+
+# set global theme options for ggplot2
+theme_update(panel.background = element_rect(fill = NA, color = "#153268"))
+theme_update(legend.background = element_blank())
+theme_update(panel.grid = element_blank())
+theme_update(strip.background = element_rect(fill = "#153268"))
+theme_update(strip.text = element_text(color = "white"))
+theme_update(plot.background = element_rect(fill = "#f6f4f0"))
+```
+
+Es gibt verschiedene Paradigmen, in denen wir Statistik betreiben können. Das in 
+der Psychologie und vielen anderen Sozialwissenschaften am weitesten verbreitete 
+ist das *Nullhypothesen-Signifikanztesten* (NHST, auch 
+*frequentistische Statistik* genannt, genau genommen bezeichnet der Begriff der
+frequentistischen Statistik aber ein noch etwas weiteres Feld als NHST). 
+
+Dieses Paradigma wird in den vergangenen Jahren zunehmend kontrovers diskutiert - und 
+mit der Bayesschen Statistik gibt es eine starke alternative Herangehensweise. 
+Nichtsdestotrotz ist das NHST aktuell der häufigste Ansatz. Ohne NHST zu 
+verstehen können wir weder psychologische Forschung verstehen, noch eine 
+sinnvolle Einschätzung der Debatte um NHST vs. Bayes entwickeln. Deshalb gehen 
+wir in diesem Skript ein wenig näher auf die Logik des NHST ein. Das Skript 
+steht in engem Zusammenhang zu unseren vorherigen Ausführungen zu 
+[Signifikanz und Effektsärke](https://ctreffe.github.io/r-space/effektstaerke.html) 
+und zur [Interpretation von Befundmustern](https://ctreffe.github.io/r-space/multiple_analyses.html).
+
+```{r fig.cap="Abbildung 1. XKCD-Comic zum Nullhypothesentesten.", out.width="35%"}
+knitr::include_graphics("files/xkcd_null-hypothesis.png")
+```
+
+## Die Logik des Testens von Nullhypothesen
+
+Wenn wir eine Vermutung (Hypothese, H1) über die Welt haben, dann sammeln wir 
+Daten, um diese Vermutung zu überprüfen. Im Rahmen des NHST findet diese 
+Überprüfung indirekt statt, indem wir unserer Vermutung die sogenannte 
+*Nullhypothese (H0)* gegenüberstellen. Wenn wir dann also unsere Daten sammeln 
+und auswerten, schauen wir nach bestimmten Mustern (bspw., dass ein Mittelwert 
+in einer Gruppe größer ist als in einer anderen). Wir berechnen dann, wie 
+wahrscheinlich es wäre, dieses Muster zu finden, wenn die Nullhypothese stimmen 
+würde. Das ist der *p-Wert*. Im Vorhinein definieren wir, wie unwahrscheinlich 
+ein Muster unter der Nullhypothese sein muss, damit wir sie *verwerfen*. Das ist 
+das *Alpha-Niveau* $\alpha$, das per sozialer Norm oft auf 5 %, bzw. $\alpha = 0.05$ 
+gesetzt wird. Wenn die Wahrscheinlichkeit unserer Daten bei Annahme der 
+Nullhypothese unter dem Alpha-Niveau liegt, verwerfen wir also die Nullhypothese 
+und werten unsere Daten als Evidenz für die H1, auch *Alternativhypothese* genannt.
+
+Die Argumentation ist in diesem Fall die Folgende:
+
+>"Wenn kein Effekt vorliegen würde (H0 stimmt), dann wäre es sehr unwahrscheinlich, 
+>dass sich ein Muster wie in unseren Ergebnissen zeigen würde. Deshalb ist es nicht 
+>vernünftig, anzunehmen, dass kein Effekt vorliegt. Wir verwerfen also die H0 und 
+>nehmen stattdessen an, dass ein Effekt vorliegt, der zumindest irgendwie 
+>verschieden von 0 ist."
+
+### Schlussfolgerungen über die H1
+
+Wir können dabei **in Bezug auf die H1** vier Arten von Schlussfolgerungen ziehen, 
+die in Tabelle 1 aufgezeigt werden: Richtig positiv, falsch positiv, Richtig 
+negativ und falsch negativ. Durch das Alpha-Niveau können wir kontrollieren, wie 
+häufig wir falsch positive Entscheidungen treffen, im üblichen Fall von 
+$\alpha = 0,5$ werten wir mit NHST-Tests also in 5 % oder einem von 20 Fällen 
+eine Studie als Evidenz für eine Hypothese, die nicht stimmt.
+
+| Wirklichkeit | Test-Entscheidung | Schlussfolgerung | Bezeichnung | Wahrscheinlichkeit |
+| --- | --- | --- | --- | --- |
+| H0 stimmt | H0 beibehalten | Richtig negativ | Spezifität | $1-\alpha$ |
+| H0 stimmt | H0 verwerfen | Falsch positiv | Typ 1 Fehler | $\alpha$ |
+| H1 stimmt | H0 verwerfen | Richtig positiv | Power/Teststärke | $1-\beta$ |
+| H1 stimmt | H0 beibehalten | Falsch negativ | Typ 2 Fehler | $\beta$ |
+
+Neben dem Alpha-Niveau $\alpha$ ist auch $\beta$, die Wahrscheinlichkeit, dass 
+wir einen tatsächlich vorhandenen Effekt nicht entdecken, eine wichtige Größe, 
+wobei meistens über den umgekehrten Fall $1 - \beta$ gesprochen wird, also die 
+Power: die Wahrscheinlichkeit, einen tatsächlich vorhandenen Effekt zu entdecken. 
+Während $\alpha$ in der Regel von den Forscher:innen einfach festgelegt wird, 
+ist die Power von mehreren Faktoren abhängig: Von $\alpha$, von der betrachteten 
+Effektstärke, und von der Stichprobengröße 
+([siehe "Effektstärke und Signifikanz hängen zusammen"](https://ctreffe.github.io/r-space/effektstaerke.html)). 
+
+In der Praxis müssen wir wegen des Zusammenhangs von Power und Alpha-Niveau 
+häufig zwischen beiden abwägen; vor allem dann, wenn wir keine unendlich großen 
+Stichproben zur Verfügung haben. Wir können ein größeres Risiko für 
+falsch-positive Befunde eingehen und dadurch unser Risiko für falsch-negative 
+Befunde senken, indem wir ein höheren Alpha-Niveau ansetzen, bspw. 
+$\alpha = 0.10$. Wir können umgekehrt unser Risiko für falsch-positive Befunde 
+verringern und ein höheres Risiko für falsch-negative Befunde eingehen, indem 
+wir das Alpha-Niveau verringern, bspw. auf $\alpha = 0.01$. Wenn wir allerdings 
+unsere Stichprobengröße erhöhen können, dann können wir die Power steigern, 
+*ohne* dafür mit Alpha-Niveau zu "bezahlen".
+
+Die unten stehenden Boxen zeigen mögliche qualitative Überlegungen zur Abwägung 
+von Alpha-Niveau und Power auf. Dabei nennen wir keine konkreten Zahlen, denn 
+der Punkt dieser Beispiele ist es, deutlich zu machen, dass qualitative 
+Risikoabschätzungen und Werturteile eine wesentliche Rolle bei der Abwägung von 
+Alpha-Niveau und Power spielen.
+
+<div class="alert alert-info">
+#### Beispiel 1: Die Wirkung eines Medikaments
+
+Nehmen wir als Beispiel eine Studie, in der die Wirkung des (fiktiven) 
+Krebs-Medikaments *Cancipex* untersucht werden soll. Wir fragen uns, welches 
+Alpha-Niveau wir ansetzen sollten. Wir haben nur eine feste, begrenzte Stichprobe 
+zur Verfügung, deshalb müssen wir Überlegungen zu sinnvollen Effektstärken 
+anstellen und mit der Festsetzung des Alpha-Niveaus eine Balance aus Power und 
+falsch-positiv-Rate finden. Dazu stellen wir folgende Überlegungen an: 
+
+- Wenn wir eine falsch-positives Schlussfolgerung ziehen, gehen wir das Risiko ein, dass Patient:innen mit unwirksamen Medikamenten behandelt werden. Das bedeutet gleichzeitig, dass sie in dem Zeitraum, in dem sie *Cancipex* erhalten, andere Medikamente nicht erhalten. Bei Krebs kann das den Unterschied zwischen Leben und Tod ausmachen. Ein falsch-positives Ergebnis wäre furchtbar, deshalb sollten wir nicht leichtfertig das Alpha-Niveau erhöhen.
+
+- Wenn wir eine falsch-negative Schlussfolgerung ziehen, gehen wir das Risiko ein, dass Patient:innen ein wirksames Mittel *nicht* erhalten. Das ist vor allem dann schlimm, wenn *Cancipex* wirksamer als herkömmliche Mittel ist. In unsere Überlegungen zur Power können wir die Effektstärke der besten Alternative zu *Cancipex* einbeziehen: Wenn die Wirkung der Alternative einer großen Effektstärke entspricht, dann reicht es für uns aus, mit einer hohen Wahrscheinlichkeit eine *stärkere* Wirksamkeit von *Cancipex* zu entdecken.
+</div>
+
+<div class="alert alert-info">
+#### Beispiel 2: Die Umweltschädlichkeit eines Unkrautvernichtungsmittels
+
+Nehmen wir als zweites Beispiel eine Studie, in der die Umweltschädlichkeit eines 
+Unkrautvernichtungsmittels untersucht werden soll. Auch hier fragen wir uns, 
+welches Alpha-Niveau wir ansetzen sollten und haben nur eine feste, begrenzte 
+Menge von Daten zur Verfügung. Wir stellen folgende Überlegungen an:
+
+- Wenn wir eine falsch-positive Schlussfolgerung ziehen (d.h. wir folgern fälschlicherweise, dass das Mittel umwelt*schädlich* ist), gehen wir das Risiko ein, dass ein umweltverträgliches Mittel verboten wird und damit der Landwirtschaft nicht zur Verfügung steht. Das könnte negative wirtschaftliche Konsequenzen haben. Andererseits sind eine Menge Alternativen verfügbar, so dass wir keinen allzu großen Schaden von einem falsch-positiven Ergebnis erwarten würden. Wir sind also in Bezug auf das Alpha-Niveau hier flexibler als beim Krebs-Medikament.
+
+- Wir wir eine falsch-negative Schlussfolgerung ziehen, gehen wir das Risiko ein, dass ein umweltschädliches Mittel zugelassen wird. Der Einsatz eines solchen Mittels kann ungeahnte Konsequenzen für die komplexen Ökosysteme haben, von denen wir umgeben sind. Der Einsatz solcher Mittel spielt möglicherweise eine Rolle dabei, dass die Biomasse an Insekten in Deutschland seit 1989 um erschreckende 78 % zurückgegangen ist ([Quelle](https://www.sciencemag.org/news/2017/05/where-have-all-insects-gone)). Das ist also ein enormes Risiko, bei dem sich Vorsicht lohnt.
+</div>
+
+### Schlussfolgerungen über die H0
+
+In unseren bisherigen Ausführungen haben wir dargelegt, wie wir auf Basis der H0 
+indirekt Schlussfolgerungen über die Plausibilität der H1 zu ziehen versuchen. 
+Können wir gleichzeitig auch Schlussfolgerungen über die H0 ziehen? Immerhin wäre 
+es sehr interessant, wenn wir schlüssig argumentieren könnten, dass die H0 stimmt. 
+Leider ist die Sache nicht so einfach. Nehmen wir 
+als Ausgangspunkt für diesen Abschnitt einen prägnanten Merksatz:
+
+>"Absence of evidence is not evidence of absence"
+
+Dieser Merksatz enthält eine wichtige Einsicht über das Testen der Nullhypothese: 
+Wenn wir die Nullhypothese *nicht verwerfen können*, also keine Evidenz *für* die 
+H1 finden, dann bedeutet das nicht automatisch, dass wir Evidenz *für* die H0 
+vorliegen haben. Ein solches Ergebnis sagt lediglich aus, dass die vorliegenden
+Daten unter der Annahme der Nullhypothese nicht besonders unwahrscheinlich 
+wären. Das reicht als Evidenz für die H0 nicht aus, denn es ist häufig der Fall,
+dass die Power des Tests schlicht nicht ausreichte, um einen Effekt mit guter
+Wahrscheinlichkeit finden zu können. Deshalb nennen wir einen Befund, bei dem wir die 
+Nullhypothese nicht verwerfen können, einen *Nullbefund*, oder einfach 
+*nicht aussagekräftig*.
+
+**Trotzdem** sollten wir diesen Merksatz nicht als absolute Wahrheit überhöhen,
+denn es gibt durchaus wertvolle Informationen, die in einem Nullbefund stecken 
+können. Das wird klarer, wenn wir uns die Konfidenzintervalle der Effektschätzung
+ansehen. Die 95 %-Konfidenzintervalle zeigen uns einen Bereich um die 
+Punktschätzung eines Effekts, der mit 95 %iger Wahrscheinlichkeit den echten 
+Effekt beinhaltet. Wenn das Konfidenzintervall den Wert "0" nicht einschließt,
+ist das gleichbedeutend mit einem signifikanten Testergebnis (es ist sogar 
+rechnerisch genau das selbe!). Wenn das Konfidenzintervall nun aber den Wert 0
+einschließt, dann können wir aus dem Intervall ablesen, in welchem Bereich
+wahrscheinliche Werte liegen. So können wir eine zusätzlich Aussage darüber treffen,
+ob der Effekt signifikant kleiner als ein Referenzwert ist. Dieser Referenzwert 
+kann, bzw. sollte die kleinste Effektstärke sein, die für uns von Bedeutung ist.
+ In diesem Fall können wir davon reden, dass ein Effekt 
+*praktisch äquivalent* zu 0 ist. Abbildung 2 zeigt vier Beispielszenarien für den 
+Fall eines arbiträren Referenzwerts von 0.5.
+
+```{r fig.cap="Abbildung 2. Beispielszenarien bei der Untersuchung von Konfidenzintervallen. Horizontale Linien zeigen 95 % Konfidenzintervalle. Die Darstellung ist entlehnt von Lakens (2017).", fig.height=3, out.width="75%"}
+library(tidyverse)
+set.seed(12345)
+
+a <- rnorm(100, mean = -0.1)
+b <- rnorm(100, mean = 0.4)
+c <- rnorm(100, 0.3, 1)
+d <- rnorm(100, -0.1, 1.6)
+
+df <- tibble(a, b, c, d) %>% pivot_longer(a:d) %>% 
+  arrange(desc(name))
+
+df %>% ggplot(aes(x = value, y = fct_inorder(name))) +
+  geom_vline(xintercept = 0.5, color = "red", linetype = "dashed") +
+  geom_vline(xintercept = 0, color = "grey", linetype = "dashed") +
+#  stat_summary(fun = "mean", geom = "point") +
+  #stat_summary(fun.data = "mean_cl_normal", geom = "linerange", fun.args = list(conf.int = .9), size=1.25) +
+  stat_summary(fun.data = "mean_cl_normal", geom = "linerange", size = 1) +
+  stat_summary(fun = mean, geom = "point", size = 3) +
+  scale_x_continuous(breaks = c(-0.5, 0, 0.5)) +
+  labs(x = "Effektstärke", y = "") +
+  NULL
+  
+
+```
+
+Gehen wir die vier Szenarien Schritt für Schritt durch:
+
+- **Szenario a**: Der Effekt ist *nicht* signifikant *verschieden* von 0, da das Konfidenzintervall 0 einschließt. Zusätzlich ist der Effekt auch *praktisch äquivalent* zu 0, da das Konfidenzintervall den Referenzwert 0.5 *nicht* einschließt.
+- **Szenario b**: Der Effekt ist signifikant *verschieden* von 0, da das Konfidenzintervall 0 *nicht* einschließt. Zusätzlich ist der Effekt auch *praktisch nicht äquivalent* zu 0, da das Konfidenzintervall den Referenzwert 0.5 einschließt.
+- **Szenario c**: Der Effekt ist signifikant *verschieden* von 0, da das Konfidenzintervall 0 *nicht* einschließt. Er ist aber *praktisch äquivalent* zu 0, da das Konfidenzintervall den Referenzwert 0.5 ebenfalls *nicht* einschließt. Das ist der Fall eines signifikanten Effekts, der so klein ist, dass er uns praktisch nicht interessiert (siehe [Effektstärke und Signifikanz](https://ctreffe.github.io/r-space/effektstaerke.html)).
+- **Szenario d**: Der Effekt ist *nicht* signifikant verschieden von 0, da das Konfidenzintervall 0 einschließt. Er ist aber auch *nicht praktisch äquivalent* zu 0, da das Konfidenzintervall den Referenzwert 0.5 ebenfalls einschließt.
+
+Diese Überlegungen liegen den sogenannten *Äquivalenztests* zugrunde. Sie sind in der Psychologie noch nicht weit verbreitet, aber Lakens bietet eine gute Erklärung (Lakens, 2017) und ein Tutorial (Lakens, Scheel & Isager, 2018).
+
+**Neben den Konfidenzintervallen** kann es sich lohnen, die **Power** zu 
+berücksichtigen. Wenn wir eine gute Power haben, dann bedeutet das, dass wir mit
+hoher Wahrscheinlichkeit einen Effekt entdecken können, wenn es einen gibt. In 
+diesem Fall können wir einen Nullbefund als Evidenz dafür werten, dass ein Effekt
+einer bestimmten Stärke vermutlich nicht vorliegt.
+
+<div class="alert alert-info">
+#### Studierenden-Perspektive
+
+**Was wird von mir erwartet, wenn ich nach der Interpretation von Nullbefunden gefragt werde?**
+
+Folgende Punkte sind besonders wichtig:
+
+1. *Evidence of absence is not absence of evidence*. Man sollte nicht automatisch von einem Nullbefund auf eine "Bestätigung"
+der Nullhypothese zu schließen. 
+
+2. Der Satz aus 1) gilt nicht absolut. Insbesondere sollte man beachten, wie groß die statistische Power ist. Auch ein Blick auf die Konfidenzintervalle zu geschätzten Effekten kann hier sehr informativ sein.
+
+</div>
+
+## Die Bayessche Kritik am Nullhypothesentesten
+
+In diesem Skript haben wir viel über das klassische Nullhypothesentesten geschrieben. 
+Es ist wichtig, das NHST-Denken zu verstehen, um einen Großteil der 
+psychologischen Forschung der vergangenen Jahrzehnte einordnen zu können. Doch
+unser Horizont sollte nicht auf das NHST-Denken beschränkt bleiben, da es wichtige
+Kritikpunkte und mächtige Alternativen gibt, allen voran die Bayessche Statistik.
+
+An dieser Stelle können wir leider nicht in die Tiefe dieser Debatte gehen, doch
+wir möchten das Thema zumindest anreißen.
+
+Ein Kern der bayesschen Kritik lautet: NHST betrachtet nur die Wahrscheinlichkeit 
+der Daten in Anbetracht der Nullhypothese, nicht aber die Wahrscheinlichkeit der
+untersuchten Hypothesen in Anbetracht der Daten. Letzteres ist aber der eigentliche
+Faktor, der uns interessiert. Das NHST-Denken kann zu absurden Irrtümern führen,
+die im XKCD-Comic in Abbildung 3 auf die Schippe genommen werden. Für weitere,
+tiefergehende Informationen verweisen wir zunächst auf Wagenmakers et al. (2011)
+und Rouder et al. (2016).
+
+```{r fig.cap="Abbildung 3. XKCD-Comic zur NHST-vs-Bayes Debatte", out.width="50%"}
+knitr::include_graphics("files/xkcd-nhst_vs_bayes.png")
+```
+
+## Literatur
+
+**Äquivalenztests: Evidenz für die Nullhypothese im NHST Paradigma**
+
+-   Lakens, D. (2017). Equivalence Tests: A Practical Primer for t Tests, Correlations, and Meta-Analyses. Social Psychological and Personality Science, 8(4), 355--362. <https://doi.org/10.1177/1948550617697177>
+- Lakens, D., Scheel, A. M., & Isager, P. M. (2018). Equivalence Testing for Psychological Research: A Tutorial. Advances in Methods and Practices in Psychological Science, 1(2), 259–269. https://doi.org/10.1177/2515245918770963
+
+**Debatte über NHST vs. Bayes**
+
+-   Rouder, J. N., Morey, R. D., Verhagen, J., Province, J. M., & Wagenmakers, E. J. (2016). Is There a Free Lunch in Inference? Topics in Cognitive Science, 8(3), 520--547. <https://doi.org/10.1111/tops.12214>
+
+-   Wagenmakers, E. J., Wetzels, R., Borsboom, D., & van der Maas, H. L. J. (2011). Why Psychologists Must Change the Way They Analyze Their Data: The Case of Psi: Comment on Bem (2011). Journal of Personality and Social Psychology, 100(3), 426--432. <https://doi.org/10.1037/a0022790>

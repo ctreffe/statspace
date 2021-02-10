@@ -1,5 +1,6 @@
 ---
 title: "Kausalität und Korrelation"
+author: Johannes Brachem (Autor), Dr. Christian Treffenstädt (Projektleitung)
 ---
 
 ```{=html}

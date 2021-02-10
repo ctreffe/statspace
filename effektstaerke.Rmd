@@ -1,5 +1,6 @@
 ---
 title: "Signifikanz und Effektstärke"
+author: Johannes Brachem (Autor), Dr. Christian Treffenstädt (Projektleitung)
 ---
 
 ```{r setup, include=FALSE}

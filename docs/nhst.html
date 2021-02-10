@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Johannes Brachem (Autor), Dr. Christian Treffenstädt (Projektleitung)" />
+
+
+<title>Nullhypothesen-Signifikanztesten</title>
+
+<script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">R-Space</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Methoden-Skripte
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="konfundierung.html">Konfundierung</a>
+    </li>
+    <li>
+      <a href="kausalitaet.html">Kausalität und Korrelation</a>
+    </li>
+    <li>
+      <a href="multilevel.html">Multilevel Modelle</a>
+    </li>
+    <li>
+      <a href="multiple_analyses.html">Multiple Analysen und Befundmuster</a>
+    </li>
+    <li>
+      <a href="regression_to_mean.html">Regression zur Mitte</a>
+    </li>
+    <li>
+      <a href="effektstaerke.html">Signifikanz und Effektstärke</a>
+    </li>
+    <li>
+      <a href="moderation_mediation.html">Moderation und Mediation</a>
+    </li>
+    <li>
+      <a href="nhst.html">Nullhypothesentesten</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown-header">Georg-Elias-Müller-Institut für Psychologie</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Nullhypothesen-Signifikanztesten</h1>
+<h4 class="author">Johannes Brachem (Autor), Dr. Christian Treffenstädt (Projektleitung)</h4>
+
+</div>
+
+
+<p>Es gibt verschiedene Paradigmen, in denen wir Statistik betreiben können. Das in der Psychologie und vielen anderen Sozialwissenschaften am weitesten verbreitete ist das <em>Nullhypothesen-Signifikanztesten</em> (NHST, auch <em>frequentistische Statistik</em> genannt, genau genommen bezeichnet der Begriff der frequentistischen Statistik aber ein noch etwas weiteres Feld als NHST).</p>
+<p>Dieses Paradigma wird in den vergangenen Jahren zunehmend kontrovers diskutiert - und mit der Bayesschen Statistik gibt es eine starke alternative Herangehensweise. Nichtsdestotrotz ist das NHST aktuell der häufigste Ansatz. Ohne NHST zu verstehen können wir weder psychologische Forschung verstehen, noch eine sinnvolle Einschätzung der Debatte um NHST vs. Bayes entwickeln. Deshalb gehen wir in diesem Skript ein wenig näher auf die Logik des NHST ein. Das Skript steht in engem Zusammenhang zu unseren vorherigen Ausführungen zu <a href="https://ctreffe.github.io/r-space/effektstaerke.html">Signifikanz und Effektsärke</a> und zur <a href="https://ctreffe.github.io/r-space/multiple_analyses.html">Interpretation von Befundmustern</a>.</p>
+<div class="figure" style="text-align: center">
+<img src="files/xkcd_null-hypothesis.png" alt="Abbildung 1. XKCD-Comic zum Nullhypothesentesten." width="35%" />
+<p class="caption">
+Abbildung 1. XKCD-Comic zum Nullhypothesentesten.
+</p>
+</div>
+<div id="die-logik-des-testens-von-nullhypothesen" class="section level2">
+<h2>Die Logik des Testens von Nullhypothesen</h2>
+<p>Wenn wir eine Vermutung (Hypothese, H1) über die Welt haben, dann sammeln wir Daten, um diese Vermutung zu überprüfen. Im Rahmen des NHST findet diese Überprüfung indirekt statt, indem wir unserer Vermutung die sogenannte <em>Nullhypothese (H0)</em> gegenüberstellen. Wenn wir dann also unsere Daten sammeln und auswerten, schauen wir nach bestimmten Mustern (bspw., dass ein Mittelwert in einer Gruppe größer ist als in einer anderen). Wir berechnen dann, wie wahrscheinlich es wäre, dieses Muster zu finden, wenn die Nullhypothese stimmen würde. Das ist der <em>p-Wert</em>. Im Vorhinein definieren wir, wie unwahrscheinlich ein Muster unter der Nullhypothese sein muss, damit wir sie <em>verwerfen</em>. Das ist das <em>Alpha-Niveau</em> <span class="math inline">\(\alpha\)</span>, das per sozialer Norm oft auf 5 %, bzw. <span class="math inline">\(\alpha = 0.05\)</span> gesetzt wird. Wenn die Wahrscheinlichkeit unserer Daten bei Annahme der Nullhypothese unter dem Alpha-Niveau liegt, verwerfen wir also die Nullhypothese und werten unsere Daten als Evidenz für die H1, auch <em>Alternativhypothese</em> genannt.</p>
+<p>Die Argumentation ist in diesem Fall die Folgende:</p>
+<blockquote>
+<p>“Wenn kein Effekt vorliegen würde (H0 stimmt), dann wäre es sehr unwahrscheinlich, dass sich ein Muster wie in unseren Ergebnissen zeigen würde. Deshalb ist es nicht vernünftig, anzunehmen, dass kein Effekt vorliegt. Wir verwerfen also die H0 und nehmen stattdessen an, dass ein Effekt vorliegt, der zumindest irgendwie verschieden von 0 ist.”</p>
+</blockquote>
+<div id="schlussfolgerungen-über-die-h1" class="section level3">
+<h3>Schlussfolgerungen über die H1</h3>
+<p>Wir können dabei <strong>in Bezug auf die H1</strong> vier Arten von Schlussfolgerungen ziehen, die in Tabelle 1 aufgezeigt werden: Richtig positiv, falsch positiv, Richtig negativ und falsch negativ. Durch das Alpha-Niveau können wir kontrollieren, wie häufig wir falsch positive Entscheidungen treffen, im üblichen Fall von <span class="math inline">\(\alpha = 0,5\)</span> werten wir mit NHST-Tests also in 5 % oder einem von 20 Fällen eine Studie als Evidenz für eine Hypothese, die nicht stimmt.</p>
+<table>
+<colgroup>
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Wirklichkeit</th>
+<th>Test-Entscheidung</th>
+<th>Schlussfolgerung</th>
+<th>Bezeichnung</th>
+<th>Wahrscheinlichkeit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>H0 stimmt</td>
+<td>H0 beibehalten</td>
+<td>Richtig negativ</td>
+<td>Spezifität</td>
+<td><span class="math inline">\(1-\alpha\)</span></td>
+</tr>
+<tr class="even">
+<td>H0 stimmt</td>
+<td>H0 verwerfen</td>
+<td>Falsch positiv</td>
+<td>Typ 1 Fehler</td>
+<td><span class="math inline">\(\alpha\)</span></td>
+</tr>
+<tr class="odd">
+<td>H1 stimmt</td>
+<td>H0 verwerfen</td>
+<td>Richtig positiv</td>
+<td>Power/Teststärke</td>
+<td><span class="math inline">\(1-\beta\)</span></td>
+</tr>
+<tr class="even">
+<td>H1 stimmt</td>
+<td>H0 beibehalten</td>
+<td>Falsch negativ</td>
+<td>Typ 2 Fehler</td>
+<td><span class="math inline">\(\beta\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Neben dem Alpha-Niveau <span class="math inline">\(\alpha\)</span> ist auch <span class="math inline">\(\beta\)</span>, die Wahrscheinlichkeit, dass wir einen tatsächlich vorhandenen Effekt nicht entdecken, eine wichtige Größe, wobei meistens über den umgekehrten Fall <span class="math inline">\(1 - \beta\)</span> gesprochen wird, also die Power: die Wahrscheinlichkeit, einen tatsächlich vorhandenen Effekt zu entdecken. Während <span class="math inline">\(\alpha\)</span> in der Regel von den Forscher:innen einfach festgelegt wird, ist die Power von mehreren Faktoren abhängig: Von <span class="math inline">\(\alpha\)</span>, von der betrachteten Effektstärke, und von der Stichprobengröße (<a href="https://ctreffe.github.io/r-space/effektstaerke.html">siehe “Effektstärke und Signifikanz hängen zusammen”</a>).</p>
+<p>In der Praxis müssen wir wegen des Zusammenhangs von Power und Alpha-Niveau häufig zwischen beiden abwägen; vor allem dann, wenn wir keine unendlich großen Stichproben zur Verfügung haben. Wir können ein größeres Risiko für falsch-positive Befunde eingehen und dadurch unser Risiko für falsch-negative Befunde senken, indem wir ein höheren Alpha-Niveau ansetzen, bspw. <span class="math inline">\(\alpha = 0.10\)</span>. Wir können umgekehrt unser Risiko für falsch-positive Befunde verringern und ein höheres Risiko für falsch-negative Befunde eingehen, indem wir das Alpha-Niveau verringern, bspw. auf <span class="math inline">\(\alpha = 0.01\)</span>. Wenn wir allerdings unsere Stichprobengröße erhöhen können, dann können wir die Power steigern, <em>ohne</em> dafür mit Alpha-Niveau zu “bezahlen”.</p>
+<p>Die unten stehenden Boxen zeigen mögliche qualitative Überlegungen zur Abwägung von Alpha-Niveau und Power auf. Dabei nennen wir keine konkreten Zahlen, denn der Punkt dieser Beispiele ist es, deutlich zu machen, dass qualitative Risikoabschätzungen und Werturteile eine wesentliche Rolle bei der Abwägung von Alpha-Niveau und Power spielen.</p>
+<div id="beispiel-1-die-wirkung-eines-medikaments" class="section level4 alert alert-info">
+<h4>Beispiel 1: Die Wirkung eines Medikaments</h4>
+<p>Nehmen wir als Beispiel eine Studie, in der die Wirkung des (fiktiven) Krebs-Medikaments <em>Cancipex</em> untersucht werden soll. Wir fragen uns, welches Alpha-Niveau wir ansetzen sollten. Wir haben nur eine feste, begrenzte Stichprobe zur Verfügung, deshalb müssen wir Überlegungen zu sinnvollen Effektstärken anstellen und mit der Festsetzung des Alpha-Niveaus eine Balance aus Power und falsch-positiv-Rate finden. Dazu stellen wir folgende Überlegungen an:</p>
+<ul>
+<li><p>Wenn wir eine falsch-positives Schlussfolgerung ziehen, gehen wir das Risiko ein, dass Patient:innen mit unwirksamen Medikamenten behandelt werden. Das bedeutet gleichzeitig, dass sie in dem Zeitraum, in dem sie <em>Cancipex</em> erhalten, andere Medikamente nicht erhalten. Bei Krebs kann das den Unterschied zwischen Leben und Tod ausmachen. Ein falsch-positives Ergebnis wäre furchtbar, deshalb sollten wir nicht leichtfertig das Alpha-Niveau erhöhen.</p></li>
+<li><p>Wenn wir eine falsch-negative Schlussfolgerung ziehen, gehen wir das Risiko ein, dass Patient:innen ein wirksames Mittel <em>nicht</em> erhalten. Das ist vor allem dann schlimm, wenn <em>Cancipex</em> wirksamer als herkömmliche Mittel ist. In unsere Überlegungen zur Power können wir die Effektstärke der besten Alternative zu <em>Cancipex</em> einbeziehen: Wenn die Wirkung der Alternative einer großen Effektstärke entspricht, dann reicht es für uns aus, mit einer hohen Wahrscheinlichkeit eine <em>stärkere</em> Wirksamkeit von <em>Cancipex</em> zu entdecken.</p></li>
+</ul>
+</div>
+<div id="beispiel-2-die-umweltschädlichkeit-eines-unkrautvernichtungsmittels" class="section level4 alert alert-info">
+<h4>Beispiel 2: Die Umweltschädlichkeit eines Unkrautvernichtungsmittels</h4>
+<p>Nehmen wir als zweites Beispiel eine Studie, in der die Umweltschädlichkeit eines Unkrautvernichtungsmittels untersucht werden soll. Auch hier fragen wir uns, welches Alpha-Niveau wir ansetzen sollten und haben nur eine feste, begrenzte Menge von Daten zur Verfügung. Wir stellen folgende Überlegungen an:</p>
+<ul>
+<li><p>Wenn wir eine falsch-positive Schlussfolgerung ziehen (d.h. wir folgern fälschlicherweise, dass das Mittel umwelt<em>schädlich</em> ist), gehen wir das Risiko ein, dass ein umweltverträgliches Mittel verboten wird und damit der Landwirtschaft nicht zur Verfügung steht. Das könnte negative wirtschaftliche Konsequenzen haben. Andererseits sind eine Menge Alternativen verfügbar, so dass wir keinen allzu großen Schaden von einem falsch-positiven Ergebnis erwarten würden. Wir sind also in Bezug auf das Alpha-Niveau hier flexibler als beim Krebs-Medikament.</p></li>
+<li><p>Wir wir eine falsch-negative Schlussfolgerung ziehen, gehen wir das Risiko ein, dass ein umweltschädliches Mittel zugelassen wird. Der Einsatz eines solchen Mittels kann ungeahnte Konsequenzen für die komplexen Ökosysteme haben, von denen wir umgeben sind. Der Einsatz solcher Mittel spielt möglicherweise eine Rolle dabei, dass die Biomasse an Insekten in Deutschland seit 1989 um erschreckende 78 % zurückgegangen ist (<a href="https://www.sciencemag.org/news/2017/05/where-have-all-insects-gone">Quelle</a>). Das ist also ein enormes Risiko, bei dem sich Vorsicht lohnt.</p></li>
+</ul>
+</div>
+</div>
+<div id="schlussfolgerungen-über-die-h0" class="section level3">
+<h3>Schlussfolgerungen über die H0</h3>
+<p>In unseren bisherigen Ausführungen haben wir dargelegt, wie wir auf Basis der H0 indirekt Schlussfolgerungen über die Plausibilität der H1 zu ziehen versuchen. Können wir gleichzeitig auch Schlussfolgerungen über die H0 ziehen? Immerhin wäre es sehr interessant, wenn wir schlüssig argumentieren könnten, dass die H0 stimmt. Leider ist die Sache nicht so einfach. Nehmen wir als Ausgangspunkt für diesen Abschnitt einen prägnanten Merksatz:</p>
+<blockquote>
+<p>“Absence of evidence is not evidence of absence”</p>
+</blockquote>
+<p>Dieser Merksatz enthält eine wichtige Einsicht über das Testen der Nullhypothese: Wenn wir die Nullhypothese <em>nicht verwerfen können</em>, also keine Evidenz <em>für</em> die H1 finden, dann bedeutet das nicht automatisch, dass wir Evidenz <em>für</em> die H0 vorliegen haben. Ein solches Ergebnis sagt lediglich aus, dass die vorliegenden Daten unter der Annahme der Nullhypothese nicht besonders unwahrscheinlich wären. Das reicht als Evidenz für die H0 nicht aus, denn es ist häufig der Fall, dass die Power des Tests schlicht nicht ausreichte, um einen Effekt mit guter Wahrscheinlichkeit finden zu können. Deshalb nennen wir einen Befund, bei dem wir die Nullhypothese nicht verwerfen können, einen <em>Nullbefund</em>, oder einfach <em>nicht aussagekräftig</em>.</p>
+<p><strong>Trotzdem</strong> sollten wir diesen Merksatz nicht als absolute Wahrheit überhöhen, denn es gibt durchaus wertvolle Informationen, die in einem Nullbefund stecken können. Das wird klarer, wenn wir uns die Konfidenzintervalle der Effektschätzung ansehen. Die 95 %-Konfidenzintervalle zeigen uns einen Bereich um die Punktschätzung eines Effekts, der mit 95 %iger Wahrscheinlichkeit den echten Effekt beinhaltet. Wenn das Konfidenzintervall den Wert “0” nicht einschließt, ist das gleichbedeutend mit einem signifikanten Testergebnis (es ist sogar rechnerisch genau das selbe!). Wenn das Konfidenzintervall nun aber den Wert 0 einschließt, dann können wir aus dem Intervall ablesen, in welchem Bereich wahrscheinliche Werte liegen. So können wir eine zusätzlich Aussage darüber treffen, ob der Effekt signifikant kleiner als ein Referenzwert ist. Dieser Referenzwert kann, bzw. sollte die kleinste Effektstärke sein, die für uns von Bedeutung ist. In diesem Fall können wir davon reden, dass ein Effekt <em>praktisch äquivalent</em> zu 0 ist. Abbildung 2 zeigt vier Beispielszenarien für den Fall eines arbiträren Referenzwerts von 0.5.</p>
+<div class="figure" style="text-align: center">
+<img src="nhst_files/figure-html/unnamed-chunk-2-1.png" alt="Abbildung 2. Beispielszenarien bei der Untersuchung von Konfidenzintervallen. Horizontale Linien zeigen 95 % Konfidenzintervalle. Die Darstellung ist entlehnt von Lakens (2017)." width="75%" />
+<p class="caption">
+Abbildung 2. Beispielszenarien bei der Untersuchung von Konfidenzintervallen. Horizontale Linien zeigen 95 % Konfidenzintervalle. Die Darstellung ist entlehnt von Lakens (2017).
+</p>
+</div>
+<p>Gehen wir die vier Szenarien Schritt für Schritt durch:</p>
+<ul>
+<li><strong>Szenario a</strong>: Der Effekt ist <em>nicht</em> signifikant <em>verschieden</em> von 0, da das Konfidenzintervall 0 einschließt. Zusätzlich ist der Effekt auch <em>praktisch äquivalent</em> zu 0, da das Konfidenzintervall den Referenzwert 0.5 <em>nicht</em> einschließt.</li>
+<li><strong>Szenario b</strong>: Der Effekt ist signifikant <em>verschieden</em> von 0, da das Konfidenzintervall 0 <em>nicht</em> einschließt. Zusätzlich ist der Effekt auch <em>praktisch nicht äquivalent</em> zu 0, da das Konfidenzintervall den Referenzwert 0.5 einschließt.</li>
+<li><strong>Szenario c</strong>: Der Effekt ist signifikant <em>verschieden</em> von 0, da das Konfidenzintervall 0 <em>nicht</em> einschließt. Er ist aber <em>praktisch äquivalent</em> zu 0, da das Konfidenzintervall den Referenzwert 0.5 ebenfalls <em>nicht</em> einschließt. Das ist der Fall eines signifikanten Effekts, der so klein ist, dass er uns praktisch nicht interessiert (siehe <a href="https://ctreffe.github.io/r-space/effektstaerke.html">Effektstärke und Signifikanz</a>).</li>
+<li><strong>Szenario d</strong>: Der Effekt ist <em>nicht</em> signifikant verschieden von 0, da das Konfidenzintervall 0 einschließt. Er ist aber auch <em>nicht praktisch äquivalent</em> zu 0, da das Konfidenzintervall den Referenzwert 0.5 ebenfalls einschließt.</li>
+</ul>
+<p>Diese Überlegungen liegen den sogenannten <em>Äquivalenztests</em> zugrunde. Sie sind in der Psychologie noch nicht weit verbreitet, aber Lakens bietet eine gute Erklärung (Lakens, 2017) und ein Tutorial (Lakens, Scheel &amp; Isager, 2018).</p>
+<p><strong>Neben den Konfidenzintervallen</strong> kann es sich lohnen, die <strong>Power</strong> zu berücksichtigen. Wenn wir eine gute Power haben, dann bedeutet das, dass wir mit hoher Wahrscheinlichkeit einen Effekt entdecken können, wenn es einen gibt. In diesem Fall können wir einen Nullbefund als Evidenz dafür werten, dass ein Effekt einer bestimmten Stärke vermutlich nicht vorliegt.</p>
+<div id="studierenden-perspektive" class="section level4 alert alert-info">
+<h4>Studierenden-Perspektive</h4>
+<p><strong>Was wird von mir erwartet, wenn ich nach der Interpretation von Nullbefunden gefragt werde?</strong></p>
+<p>Folgende Punkte sind besonders wichtig:</p>
+<ol style="list-style-type: decimal">
+<li><p><em>Evidence of absence is not absence of evidence</em>. Man sollte nicht automatisch von einem Nullbefund auf eine “Bestätigung” der Nullhypothese zu schließen.</p></li>
+<li><p>Der Satz aus 1) gilt nicht absolut. Insbesondere sollte man beachten, wie groß die statistische Power ist. Auch ein Blick auf die Konfidenzintervalle zu geschätzten Effekten kann hier sehr informativ sein.</p></li>
+</ol>
+</div>
+</div>
+</div>
+<div id="die-bayessche-kritik-am-nullhypothesentesten" class="section level2">
+<h2>Die Bayessche Kritik am Nullhypothesentesten</h2>
+<p>In diesem Skript haben wir viel über das klassische Nullhypothesentesten geschrieben. Es ist wichtig, das NHST-Denken zu verstehen, um einen Großteil der psychologischen Forschung der vergangenen Jahrzehnte einordnen zu können. Doch unser Horizont sollte nicht auf das NHST-Denken beschränkt bleiben, da es wichtige Kritikpunkte und mächtige Alternativen gibt, allen voran die Bayessche Statistik.</p>
+<p>An dieser Stelle können wir leider nicht in die Tiefe dieser Debatte gehen, doch wir möchten das Thema zumindest anreißen.</p>
+<p>Ein Kern der bayesschen Kritik lautet: NHST betrachtet nur die Wahrscheinlichkeit der Daten in Anbetracht der Nullhypothese, nicht aber die Wahrscheinlichkeit der untersuchten Hypothesen in Anbetracht der Daten. Letzteres ist aber der eigentliche Faktor, der uns interessiert. Das NHST-Denken kann zu absurden Irrtümern führen, die im XKCD-Comic in Abbildung 3 auf die Schippe genommen werden. Für weitere, tiefergehende Informationen verweisen wir zunächst auf Wagenmakers et al. (2011) und Rouder et al. (2016).</p>
+<div class="figure" style="text-align: center">
+<img src="files/xkcd-nhst_vs_bayes.png" alt="Abbildung 3. XKCD-Comic zur NHST-vs-Bayes Debatte" width="50%" />
+<p class="caption">
+Abbildung 3. XKCD-Comic zur NHST-vs-Bayes Debatte
+</p>
+</div>
+</div>
+<div id="literatur" class="section level2">
+<h2>Literatur</h2>
+<p><strong>Äquivalenztests: Evidenz für die Nullhypothese im NHST Paradigma</strong></p>
+<ul>
+<li>Lakens, D. (2017). Equivalence Tests: A Practical Primer for t Tests, Correlations, and Meta-Analyses. Social Psychological and Personality Science, 8(4), 355–362. <a href="https://doi.org/10.1177/1948550617697177" class="uri">https://doi.org/10.1177/1948550617697177</a></li>
+<li>Lakens, D., Scheel, A. M., &amp; Isager, P. M. (2018). Equivalence Testing for Psychological Research: A Tutorial. Advances in Methods and Practices in Psychological Science, 1(2), 259–269. <a href="https://doi.org/10.1177/2515245918770963" class="uri">https://doi.org/10.1177/2515245918770963</a></li>
+</ul>
+<p><strong>Debatte über NHST vs. Bayes</strong></p>
+<ul>
+<li><p>Rouder, J. N., Morey, R. D., Verhagen, J., Province, J. M., &amp; Wagenmakers, E. J. (2016). Is There a Free Lunch in Inference? Topics in Cognitive Science, 8(3), 520–547. <a href="https://doi.org/10.1111/tops.12214" class="uri">https://doi.org/10.1111/tops.12214</a></p></li>
+<li><p>Wagenmakers, E. J., Wetzels, R., Borsboom, D., &amp; van der Maas, H. L. J. (2011). Why Psychologists Must Change the Way They Analyze Their Data: The Case of Psi: Comment on Bem (2011). Journal of Personality and Social Psychology, 100(3), 426–432. <a href="https://doi.org/10.1037/a0022790" class="uri">https://doi.org/10.1037/a0022790</a></p></li>
+</ul>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

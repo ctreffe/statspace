@@ -1,5 +1,6 @@
 ---
 title: "Regression zur Mitte"
+author: Johannes Brachem (Autor), Dr. Christian Treffenstädt (Projektleitung)
 editor_options: 
   chunk_output_type: inline
 ---
