@@ -4,6 +4,8 @@ title: "Welcome"
 
 Herzlich willkommen auf unserer Sammlung von Skripten mit Informationen über Forschungsmethoden und Praxisrelevanz in der Psychologie.
 
-Projektleitung: Dr. Christian Treffenstädt ([treffenstaedt(at)psych.uni-goettingen.de](mailto:treffenstaedt@psych.uni-goettingen.de))
+**Autoren**:
 
-Autor: Johannes Brachem ([brachem(at)psych.uni-goettingen.de](mailto:brachem@psych.uni-goettingen.de))
+Christian Treffenstädt (Projektleitung) ([treffenstaedt(at)psych.uni-goettingen.de](mailto:treffenstaedt@psych.uni-goettingen.de))
+
+Johannes Brachem ([brachem(at)psych.uni-goettingen.de](mailto:brachem@psych.uni-goettingen.de))

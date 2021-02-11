@@ -9,7 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Johannes Brachem (Autor), Dr. Christian Treffenstädt (Projektleitung)" />
+<meta name="author" content="Johannes Brachem &amp; Christian Treffenstädt" />
 
 
 <title>Regression zur Mitte</title>
@@ -333,7 +333,7 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Regression zur Mitte</h1>
-<h4 class="author">Johannes Brachem (Autor), Dr. Christian Treffenstädt (Projektleitung)</h4>
+<h4 class="author">Johannes Brachem &amp; Christian Treffenstädt</h4>
 
 </div>
 
@@ -350,23 +350,23 @@ $(document).ready(function () {
 <p>Ein Forscher:innen-Team möchte eine neue Methode zur Behandlung von generalisierten Angstzuständen untersuchen. Die Methode: Über einen Zeitraum von mehreren Monaten schreiben die Patient:innen einmal wöchentlich in ein Tagebuch alle Dinge auf, die ihnen Angst einflößen. Dadurch, so die Theorie, können sie sich von der Angst lösen.</p>
 <p>Die konnten eine herausragende Stichprobe gewinnen: 300 Menschen nehmen teil. Die generelle Ängstlichkeit der Teilnehmenden wird einmal zu Beginn der Intervention und einmal 6 Monate nach der Intervention erhoben.</p>
 <p>Die Ergebnisse scheinen zunächst nicht vielversprechend zu sein: Die durchschnittliche Ängstlichkeit veränderte sich vom ersten zum zweiten Messzeitpunkt praktisch gar nicht:</p>
-<p><img src="regression_to_mean_files/figure-html/unnamed-chunk-15-1.png" width="672" /> <strong>Anmerkung</strong>: In diesen Plots ist jeder kleine Punkt der Wert einer Versuchsperson.</p>
+<p><img src="regression_to_mean_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /> <strong>Anmerkung</strong>: In diesen Plots ist jeder kleine Punkt der Wert einer Versuchsperson.</p>
 <p>Doch das kann nicht das Ende der Geschichte gewesen sein - ein tüchtiger Doktorand macht sich daran, die Daten genauer zu analysieren. Er stellt sich die Frage: <em>„Was, wenn unsere Intervention unterschiedlich wirkt, je nachdem wie groß die Belastung zu Beginn war?“</em>. Ausgehend von dieser Frage schaut unser Doktorand sich an, wie die Entwicklung in zwei Subgruppen verläuft: In der Gruppe “hohe Angst” sind diejenigen, die zu Beginn ein hohes Angstlevel (höher als der Median) aufwiesen, und in der Gruppe “geringe Angst” sind diejenigen, die zu Beginn ein niedriges Angstlevel (niedriger als der Median) aufwiesen.</p>
 <p>Schauen wir uns an, was die Daten hier sagen:</p>
-<p><img src="regression_to_mean_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p><img src="regression_to_mean_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Es scheint eindeutig zu sein: Unser Doktorand war etwas wichtigem auf der Spur. Menschen mit hohem ursprünglichem Angstlevel scheinen durch die Tagebuchintervention tatsächlich ihr Angstlevel reduzieren zu können. Bei denjenigen allerdings, deren Angstlevel zu Beginn niedrig war, stieg die Ängstlichkeit an. Eine Regressionsanalyse bestätigt diesen Eindruck: Es gibt eine signifikante Interaktion zwischen der Gruppenzugehörigkeit am ersten Zeitpunkt und dem Zeitpunkt der Messung. (<em>Wir belassen es an dieser Stelle dabei und zeigen die zugehörigen Regressionstabellen nur im Anhang.</em>)</p>
 </div>
 <div id="der-haken" class="section level3">
 <h3>Der Haken</h3>
 <p>Aufmerksame Leser vermuten an dieser Stelle bereits, dass es einen Haken an der Analyse unseres Doktoranden gibt. Um diesen Haken aufzudecken, machen wir uns zunutze, dass wir die Daten, über die wir hier sprechen, simuliert haben. Deshalb kennen wir den wahren Wert der Ängstlichkeit unserer Versuchspersonen und den wahren Effekt der Tagebuchintervention. <em>Dieser Effekt ist als Null-Effekt simuliert</em>, das heißt in unserer Datensimulation hat die Tagebuchintervention keine Wirkung. Das bedeutet auch, dass sie <em>in den Subgruppen</em> keine unterschiedliche Wirkung hat. Doch warum scheint es trotzdem so zu sein?</p>
 <p><strong>Der Median-Split</strong>. Der Grund für den Schein-Effekt ist unsere Gruppeneinteilung auf Basis eines Median-Splits zum ersten Messzeitpunkt. Schauen wir uns dazu zwei weitere Plots an, in denen wir jeweils den wahren Wert mit abbilden. Plot <strong>A</strong> zeigt den Verlauf unserer zu t1 eingeteilten Gruppen. Plot <strong>B</strong> zeigt den Verlauf der echten Gruppen: Deren Einteilung wurde nicht auf Basis eines gemessenen Wertes vorgenommen, sondern auf Basis des <em>wahren</em> Werts (ein Luxus, den wir nur in einer Simulation haben).</p>
-<p><img src="regression_to_mean_files/figure-html/unnamed-chunk-17-1.png" width="672" /> Wir können deutlich sehen, dass die Mittelwerte der <em>wahren</em> Subgruppen zu jedem Messzeitpunkt gleich bleiben, währen unsere zum ersten Messzeitpunkt eingeteilten Gruppen Bumerang-förmig schwanken. Warum ist das so?</p>
+<p><img src="regression_to_mean_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /> Wir können deutlich sehen, dass die Mittelwerte der <em>wahren</em> Subgruppen zu jedem Messzeitpunkt gleich bleiben, währen unsere zum ersten Messzeitpunkt eingeteilten Gruppen Bumerang-förmig schwanken. Warum ist das so?</p>
 <ul>
 <li>Unsere Messung der Ängstlichkeit ist unperfekt: Wir können den wahren Wert nicht genau erfassen. Die Korrelation zwischen wahrem Wert und Messung in unserem simulierten Beispiel liegt etwa zwischen .45 und .48. Wegen dieses <em>Messfehlers</em> machen wir Fehler in der Einteilung: In unserer Gruppe “hohe Angst” zu t1 befinden sich einige Menschen, die eigentlich zur Gruppe “niedrige Angst” gehören. Diese falsch eingeteilten Versuchspersonen landen mit recht hoher Wahrscheinlichkeit bei der nächsten Messung nicht wieder in der falschen Gruppe.</li>
 <li>Wenn wir nun aber die Entwicklung der in der Gruppe “hohe Angst” eingeteilten Menschen verfolgen, dann finden wir durch diesen Effekt eine Abnahme des Mittelwerts. Umgekehrt funktioniert es genauso für die Gruppe “geringer Angst”.</li>
 </ul>
 <p>Die nächste Abbildung zeigt das gleiche Phänomen mit einzelnen Plots für die jeweiligen Subgruppen. Wir können daran wunderbar sehen, dass die Mittelwerte der <em>wahren</em> Subgruppen trotz Messfehler über die Zeit unverändert bleiben, während die Mittelwerte unserer zu t1 eingeteilten Subgruppen stark Schwanken.</p>
-<p><img src="regression_to_mean_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p><img src="regression_to_mean_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="was-tun-gegen-regression-zur-mitte" class="section level2">

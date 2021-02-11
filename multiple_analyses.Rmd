@@ -1,6 +1,6 @@
 ---
 title: "Multiple Analysen"
-author: Johannes Brachem (Autor), Dr. Christian Treffenstädt (Projektleitung)
+author: Johannes Brachem & Christian Treffenstädt
 editor_options: 
   chunk_output_type: console
 ---

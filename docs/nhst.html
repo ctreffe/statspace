@@ -9,7 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Johannes Brachem (Autor), Dr. Christian Treffenstädt (Projektleitung)" />
+<meta name="author" content="Johannes Brachem &amp; Christian Treffenstädt" />
 
 
 <title>Nullhypothesen-Signifikanztesten</title>
@@ -333,7 +333,7 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Nullhypothesen-Signifikanztesten</h1>
-<h4 class="author">Johannes Brachem (Autor), Dr. Christian Treffenstädt (Projektleitung)</h4>
+<h4 class="author">Johannes Brachem &amp; Christian Treffenstädt</h4>
 
 </div>
 
@@ -414,6 +414,7 @@ Abbildung 1. XKCD-Comic zum Nullhypothesentesten.
 <li><p>Wenn wir eine falsch-positives Schlussfolgerung ziehen, gehen wir das Risiko ein, dass Patient:innen mit unwirksamen Medikamenten behandelt werden. Das bedeutet gleichzeitig, dass sie in dem Zeitraum, in dem sie <em>Cancipex</em> erhalten, andere Medikamente nicht erhalten. Bei Krebs kann das den Unterschied zwischen Leben und Tod ausmachen. Ein falsch-positives Ergebnis wäre furchtbar, deshalb sollten wir nicht leichtfertig das Alpha-Niveau erhöhen.</p></li>
 <li><p>Wenn wir eine falsch-negative Schlussfolgerung ziehen, gehen wir das Risiko ein, dass Patient:innen ein wirksames Mittel <em>nicht</em> erhalten. Das ist vor allem dann schlimm, wenn <em>Cancipex</em> wirksamer als herkömmliche Mittel ist. In unsere Überlegungen zur Power können wir die Effektstärke der besten Alternative zu <em>Cancipex</em> einbeziehen: Wenn die Wirkung der Alternative einer großen Effektstärke entspricht, dann reicht es für uns aus, mit einer hohen Wahrscheinlichkeit eine <em>stärkere</em> Wirksamkeit von <em>Cancipex</em> zu entdecken.</p></li>
 </ul>
+<p>In diesem Beispiel ist es unserer Einschätzung nach sinnvoll, ein besonderes Augenmerk auf die Minimierung der falsch-positiv-Rate zu legen. Wenn wir also die Stichprobengröße nicht mehr erhöhen können, würde das bedeuten, einem kleineren <span class="math inline">\(\alpha\)</span> tendenziell mehr Bedeutung zuzugestehen, als einer größeren Power. Das Alpha-Niveau könnte bspw. auf <span class="math inline">\(\alpha = 0.005\)</span> festgesetzt werden, so dass nur in einem von 200 Fällen (statt in einem von 20 Fällen beim Standard-Niveau von 0.05) eine falsch-positive Schlussfolgerung gezogen wird.</p>
 </div>
 <div id="beispiel-2-die-umweltschädlichkeit-eines-unkrautvernichtungsmittels" class="section level4 alert alert-info">
 <h4>Beispiel 2: Die Umweltschädlichkeit eines Unkrautvernichtungsmittels</h4>
@@ -422,6 +423,7 @@ Abbildung 1. XKCD-Comic zum Nullhypothesentesten.
 <li><p>Wenn wir eine falsch-positive Schlussfolgerung ziehen (d.h. wir folgern fälschlicherweise, dass das Mittel umwelt<em>schädlich</em> ist), gehen wir das Risiko ein, dass ein umweltverträgliches Mittel verboten wird und damit der Landwirtschaft nicht zur Verfügung steht. Das könnte negative wirtschaftliche Konsequenzen haben. Andererseits sind eine Menge Alternativen verfügbar, so dass wir keinen allzu großen Schaden von einem falsch-positiven Ergebnis erwarten würden. Wir sind also in Bezug auf das Alpha-Niveau hier flexibler als beim Krebs-Medikament.</p></li>
 <li><p>Wir wir eine falsch-negative Schlussfolgerung ziehen, gehen wir das Risiko ein, dass ein umweltschädliches Mittel zugelassen wird. Der Einsatz eines solchen Mittels kann ungeahnte Konsequenzen für die komplexen Ökosysteme haben, von denen wir umgeben sind. Der Einsatz solcher Mittel spielt möglicherweise eine Rolle dabei, dass die Biomasse an Insekten in Deutschland seit 1989 um erschreckende 78 % zurückgegangen ist (<a href="https://www.sciencemag.org/news/2017/05/where-have-all-insects-gone">Quelle</a>). Das ist also ein enormes Risiko, bei dem sich Vorsicht lohnt.</p></li>
 </ul>
+<p>In diesem Beispiel ist es unserer Einschätzung nach sinnvoll, die Minimierung der falsch-negativ Rate besonders zu gewichten. Wenn wir also die Stichprobengröße nicht mehr erhöhen können, würde das bedeuten, ggf. ein höheres <span class="math inline">\(\alpha\)</span> von bspw. .10 zu wählen. Wir würden so zwar in einem von 10 Fällen ein unschädliches Mittel nicht zulassen, könnten so aber die Gefahr minimieren, dass wir ein schädliches Mittel nicht als schädlich erkennen.</p>
 </div>
 </div>
 <div id="schlussfolgerungen-über-die-h0" class="section level3">
@@ -452,9 +454,13 @@ Abbildung 2. Beispielszenarien bei der Untersuchung von Konfidenzintervallen. Ho
 <p><strong>Was wird von mir erwartet, wenn ich nach der Interpretation von Nullbefunden gefragt werde?</strong></p>
 <p>Folgende Punkte sind besonders wichtig:</p>
 <ol style="list-style-type: decimal">
-<li><p><em>Evidence of absence is not absence of evidence</em>. Man sollte nicht automatisch von einem Nullbefund auf eine “Bestätigung” der Nullhypothese zu schließen.</p></li>
+<li><p><em>Absence of evidence is not evidence of absence</em>. Man sollte nicht automatisch von einem Nullbefund auf eine Bestätigung der Nullhypothese zu schließen.</p></li>
 <li><p>Der Satz aus 1) gilt nicht absolut. Insbesondere sollte man beachten, wie groß die statistische Power ist. Auch ein Blick auf die Konfidenzintervalle zu geschätzten Effekten kann hier sehr informativ sein.</p></li>
 </ol>
+<p><strong>Unter welchen Bedingungen könnten wir denn sagen, dass ein Nullbefund Evidenz gegen das Vorliegen eines Effekts liefert?</strong></p>
+<p>Anders gesagt, wann gilt umgekehrt “<em>Absence of evidence is evidence of absence</em>”? Die wichtigste Bedingung dafür ist, dass wir für die kleinste Effektstärke, die uns interessieren würde (die Refenzgröße im Äquivalenztesten) eine ausreichende Power haben.</p>
+<p>Was eine ausreichende Power ist, hängt wiederum davon ab, wie wichtig es uns ist, falsch-negative Befunde zu minimieren. Häufig wird als Daumenregel hier eine Power von 80 % angesetzt - doch das würde bedeuten, dass von fünf negativen Befunden einer falsch ist. Wir sollten nicht annehmen, dass es eine magische Schwelle von Power gibt, ab der ein Effekt bei einem Nullbefund als widerlegt gelten kann. Besser ist, zu beobachten, dass die Evidenz gegen den Effekt umso stärker ist, je größer die Power ist. Bei einer Power von 80 % können wir also, als grobe Daumenregeln, sagen, dass es sich um erste Evidenz gegen einen Effekt handelt. Bei einer Power von 95 % handelt es sich um starke Evidenz.</p>
+<p>In der Psychologie sind Studien mit sehr schwacher Power von 30 % oder weniger leider noch immer sehr häufig. Deshalb bietet der Merksatz <em>Absence of evidence is not evidence of absence</em> tatsächlich eine ganz gute erste Richtlinie (die aber nicht die methodische Beurteilung einer einzelnen Studie ersetzen kann).</p>
 </div>
 </div>
 </div>

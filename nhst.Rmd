@@ -1,6 +1,6 @@
 ---
 title: "Nullhypothesen-Signifikanztesten"
-author: Johannes Brachem (Autor), Dr. Christian Treffenstädt (Projektleitung)
+author: Johannes Brachem & Christian Treffenstädt
 editor_options: 
   chunk_output_type: inline
 ---
@@ -118,6 +118,8 @@ falsch-positiv-Rate finden. Dazu stellen wir folgende Überlegungen an:
 - Wenn wir eine falsch-positives Schlussfolgerung ziehen, gehen wir das Risiko ein, dass Patient:innen mit unwirksamen Medikamenten behandelt werden. Das bedeutet gleichzeitig, dass sie in dem Zeitraum, in dem sie *Cancipex* erhalten, andere Medikamente nicht erhalten. Bei Krebs kann das den Unterschied zwischen Leben und Tod ausmachen. Ein falsch-positives Ergebnis wäre furchtbar, deshalb sollten wir nicht leichtfertig das Alpha-Niveau erhöhen.
 
 - Wenn wir eine falsch-negative Schlussfolgerung ziehen, gehen wir das Risiko ein, dass Patient:innen ein wirksames Mittel *nicht* erhalten. Das ist vor allem dann schlimm, wenn *Cancipex* wirksamer als herkömmliche Mittel ist. In unsere Überlegungen zur Power können wir die Effektstärke der besten Alternative zu *Cancipex* einbeziehen: Wenn die Wirkung der Alternative einer großen Effektstärke entspricht, dann reicht es für uns aus, mit einer hohen Wahrscheinlichkeit eine *stärkere* Wirksamkeit von *Cancipex* zu entdecken.
+
+In diesem Beispiel ist es unserer Einschätzung nach sinnvoll, ein besonderes Augenmerk auf die Minimierung der falsch-positiv-Rate zu legen. Wenn wir also die Stichprobengröße nicht mehr erhöhen können, würde das bedeuten, einem kleineren $\alpha$ tendenziell mehr Bedeutung zuzugestehen, als einer größeren Power. Das Alpha-Niveau könnte bspw. auf $\alpha = 0.005$ festgesetzt werden, so dass nur in einem von 200 Fällen (statt in einem von 20 Fällen beim Standard-Niveau von 0.05) eine falsch-positive Schlussfolgerung gezogen wird.
 </div>
 
 <div class="alert alert-info">
@@ -131,6 +133,9 @@ Menge von Daten zur Verfügung. Wir stellen folgende Überlegungen an:
 - Wenn wir eine falsch-positive Schlussfolgerung ziehen (d.h. wir folgern fälschlicherweise, dass das Mittel umwelt*schädlich* ist), gehen wir das Risiko ein, dass ein umweltverträgliches Mittel verboten wird und damit der Landwirtschaft nicht zur Verfügung steht. Das könnte negative wirtschaftliche Konsequenzen haben. Andererseits sind eine Menge Alternativen verfügbar, so dass wir keinen allzu großen Schaden von einem falsch-positiven Ergebnis erwarten würden. Wir sind also in Bezug auf das Alpha-Niveau hier flexibler als beim Krebs-Medikament.
 
 - Wir wir eine falsch-negative Schlussfolgerung ziehen, gehen wir das Risiko ein, dass ein umweltschädliches Mittel zugelassen wird. Der Einsatz eines solchen Mittels kann ungeahnte Konsequenzen für die komplexen Ökosysteme haben, von denen wir umgeben sind. Der Einsatz solcher Mittel spielt möglicherweise eine Rolle dabei, dass die Biomasse an Insekten in Deutschland seit 1989 um erschreckende 78 % zurückgegangen ist ([Quelle](https://www.sciencemag.org/news/2017/05/where-have-all-insects-gone)). Das ist also ein enormes Risiko, bei dem sich Vorsicht lohnt.
+
+In diesem Beispiel ist es unserer Einschätzung nach sinnvoll, die Minimierung der falsch-negativ Rate besonders zu gewichten. Wenn wir also die Stichprobengröße nicht mehr erhöhen können, würde das bedeuten, ggf. ein höheres $\alpha$ von bspw. .10 zu wählen. Wir würden so zwar in einem von 10 Fällen ein unschädliches Mittel nicht zulassen, könnten so aber die Gefahr minimieren, dass wir ein schädliches Mittel nicht als schädlich erkennen.
+
 </div>
 
 ### Schlussfolgerungen über die H0
@@ -172,7 +177,6 @@ kann, bzw. sollte die kleinste Effektstärke sein, die für uns von Bedeutung is
 Fall eines arbiträren Referenzwerts von 0.5.
 
 ```{r fig.cap="Abbildung 2. Beispielszenarien bei der Untersuchung von Konfidenzintervallen. Horizontale Linien zeigen 95 % Konfidenzintervalle. Die Darstellung ist entlehnt von Lakens (2017).", fig.height=3, out.width="75%"}
-library(tidyverse)
 set.seed(12345)
 
 a <- rnorm(100, mean = -0.1)
@@ -191,7 +195,10 @@ df %>% ggplot(aes(x = value, y = fct_inorder(name))) +
   stat_summary(fun.data = "mean_cl_normal", geom = "linerange", size = 1) +
   stat_summary(fun = mean, geom = "point", size = 3) +
   scale_x_continuous(breaks = c(-0.5, 0, 0.5)) +
-  labs(x = "Effektstärke", y = "") +
+  labs(x = "Effektstärke", y = "Szenario") +
+  theme(
+    text = element_text(size = 14),
+    axis.text.y = element_text(size=16)) +
   NULL
   
 
@@ -219,10 +226,34 @@ einer bestimmten Stärke vermutlich nicht vorliegt.
 
 Folgende Punkte sind besonders wichtig:
 
-1. *Evidence of absence is not absence of evidence*. Man sollte nicht automatisch von einem Nullbefund auf eine "Bestätigung"
+1. *Absence of evidence is not evidence of absence*. Man sollte nicht automatisch von einem Nullbefund auf eine Bestätigung
 der Nullhypothese zu schließen. 
 
 2. Der Satz aus 1) gilt nicht absolut. Insbesondere sollte man beachten, wie groß die statistische Power ist. Auch ein Blick auf die Konfidenzintervalle zu geschätzten Effekten kann hier sehr informativ sein.
+
+**Unter welchen Bedingungen könnten wir denn sagen, dass ein Nullbefund Evidenz gegen 
+das Vorliegen eines Effekts liefert?**
+
+Anders gesagt, wann gilt umgekehrt 
+"*Absence of evidence is evidence of absence*"? Die wichtigste Bedingung dafür 
+ist, dass wir für die kleinste Effektstärke, die uns interessieren würde (die 
+Refenzgröße im Äquivalenztesten) eine ausreichende Power haben. 
+
+Was eine ausreichende Power ist, hängt wiederum davon ab, wie wichtig es uns ist, 
+falsch-negative Befunde zu minimieren. Häufig wird als Daumenregel hier eine 
+Power von 80 % angesetzt - doch das würde bedeuten, dass von fünf negativen 
+Befunden einer falsch ist. Wir sollten nicht annehmen, dass es eine magische
+Schwelle von Power gibt, ab der ein Effekt bei einem Nullbefund als widerlegt 
+gelten kann. Besser ist, zu beobachten, dass die Evidenz gegen den Effekt umso
+stärker ist, je größer die Power ist. Bei einer Power von 80 % können wir also,
+als grobe Daumenregeln, sagen, dass es sich um erste Evidenz gegen einen Effekt 
+handelt. Bei einer Power von 95 % handelt es sich um starke Evidenz. 
+
+In der Psychologie sind Studien mit sehr schwacher Power von 30 % oder weniger
+leider noch immer sehr häufig. Deshalb bietet der Merksatz 
+*Absence of evidence is not evidence of absence* tatsächlich eine ganz gute erste
+Richtlinie (die aber nicht die methodische Beurteilung einer einzelnen Studie
+ersetzen kann).
 
 </div>
 

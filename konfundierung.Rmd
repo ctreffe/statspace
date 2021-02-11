@@ -1,6 +1,6 @@
 ---
 title: "Konfundierung"
-author: Johannes Brachem (Autor), Dr. Christian Treffenstädt (Projektleitung)
+author: Johannes Brachem & Christian Treffenstädt
 ---
 
 ```{=html}

@@ -1,6 +1,6 @@
 ---
 title: "Multilevel-Modelle"
-author: Johannes Brachem (Autor), Dr. Christian Treffenstädt (Projektleitung)
+author: Johannes Brachem & Christian Treffenstädt
 ---
 
 ```{r setup, include=FALSE}
