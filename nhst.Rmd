@@ -69,7 +69,7 @@ Wir können dabei **in Bezug auf die H1** vier Arten von Schlussfolgerungen zieh
 die in Tabelle 1 aufgezeigt werden: Richtig positiv, falsch positiv, Richtig 
 negativ und falsch negativ. Durch das Alpha-Niveau können wir kontrollieren, wie 
 häufig wir falsch positive Entscheidungen treffen, im üblichen Fall von 
-$\alpha = 0,5$ werten wir mit NHST-Tests also in 5 % oder einem von 20 Fällen 
+$\alpha = 0.05$ werten wir mit NHST-Tests also in 5 % oder einem von 20 Fällen 
 eine Studie als Evidenz für eine Hypothese, die nicht stimmt.
 
 | Wirklichkeit | Test-Entscheidung | Schlussfolgerung | Bezeichnung | Wahrscheinlichkeit |
