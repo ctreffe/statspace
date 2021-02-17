@@ -138,6 +138,30 @@ In diesem Beispiel ist es unserer Einschätzung nach sinnvoll, die Minimierung d
 
 </div>
 
+<div class="alert alert-danger">
+Die in diesem Skript genannten Alpha-Niveaus sind **soziale Konventionen**:
+
+\
+
+- $\alpha = 0.05$ ist das "Standard" Alpha Niveau
+- $\alpha = 0.20$ ist ein hohes Alpha-Niveau, mit dem die Nullhypothese bei
+  konstanter Stichprobengröße und Effektstärke stärker getestet werden kann. Es
+  ist auf Minimierung der falsch-negativ-Rate in Bezug auf die H1 ausgelegt.
+- $\alpha = 0.01$ ist ein niedrigeres, also strengeres, Alpha-Niveau, mit dem die
+  falsch-positiv-Rate verringert werden kann.
+
+\
+
+Man sollte diese sozialen Konventionen kennen, sich von ihnen aber nicht blenden
+lassen. Wichtig ist vor allem, dass Forscher:innen *vor* der Datenerhebung sinnvolle
+Alpha-Niveaus festlegen und eine sinnvolle Stichprobenplanung für angemessene
+Power unternehmen. In der Forschung gibt es intensive (und sehr lehrreiche)
+Debatten um die Festzsetzung von Alpha-Niveaus. Drei wichtige Beiträge, mit denen
+Interessierte Einblick in die Debatte nehmen können, sind unten in der Literaturliste
+zu finden.
+
+</div>
+
 ### Schlussfolgerungen über die H0
 
 In unseren bisherigen Ausführungen haben wir dargelegt, wie wir auf Basis der H0 
@@ -281,30 +305,14 @@ knitr::include_graphics("files/xkcd-nhst_vs_bayes.png")
 ```
 
 
-<div class="alert alert-danger">
-## Ein Hinweis zu Alpha-Niveaus 
+## Literatur
 
-Die in diesem Skript genannten Alpha-Niveaus sind **soziale Konventionen**:
+**Äquivalenztests: Evidenz für die Nullhypothese im NHST Paradigma**
 
-\
+-   Lakens, D. (2017). Equivalence Tests: A Practical Primer for t Tests, Correlations, and Meta-Analyses. Social Psychological and Personality Science, 8(4), 355--362. <https://doi.org/10.1177/1948550617697177>
+- Lakens, D., Scheel, A. M., & Isager, P. M. (2018). Equivalence Testing for Psychological Research: A Tutorial. Advances in Methods and Practices in Psychological Science, 1(2), 259–269. https://doi.org/10.1177/2515245918770963
 
-- $\alpha = 0.05$ ist das "Standard" Alpha Niveau
-- $\alpha = 0.20$ ist ein hohes Alpha-Niveau, mit dem die Nullhypothese bei
-  konstanter Stichprobengröße und Effektstärke stärker getestet werden kann. Es
-  ist auf Minimierung der falsch-negativ-Rate in Bezug auf die H1 ausgelegt.
-- $\alpha = 0.01$ ist ein niedrigeres, also strengeres, Alpha-Niveau, mit dem die
-  falsch-positiv-Rate verringert werden kann.
-
-\
-
-Man sollte diese sozialen Konventionen kennen, sich von ihnen aber nicht blenden
-lassen. Wichtig ist vor allem, dass Forscher:innen *vor* der Datenerhebung sinnvolle
-Alpha-Niveaus festlegen und eine sinnvolle Stichprobenplanung für angemessene
-Power unternehmen. In der Forschung gibt es intensive (und sehr lehrreiche)
-Debatten um die Festzsetzung von Alpha-Niveaus. Drei wichtige Beiträge, mit denen
-Interessierte Einblick in die Debatte nehmen können, sind:
-
-\
+**Debatte um Alpha-Niveaus**
 
 - Benjamin, D. J., Berger, J. O., Johannesson, M., Nosek, B. A., Wagenmakers, E.-J., Berk, R., … Johnson, V. E. (2017). Redefine statistical significance. Nature Human Behaviour, 2(January), 6–10. https://doi.org/10.1038/s41562-017-0189-z
 
@@ -312,14 +320,6 @@ Interessierte Einblick in die Debatte nehmen können, sind:
 
 - Lakens, D., Adolfi, F. G., Albers, C. J., Anvari, F., Apps, M. A. J., Argamon, S. E., … Zwaan, R. A. (2018). Justify your alpha. Nature Human Behaviour, 2(3), 168–171. https://doi.org/10.1038/s41562-018-0311-x
 
-</div>
-
-## Literatur
-
-**Äquivalenztests: Evidenz für die Nullhypothese im NHST Paradigma**
-
--   Lakens, D. (2017). Equivalence Tests: A Practical Primer for t Tests, Correlations, and Meta-Analyses. Social Psychological and Personality Science, 8(4), 355--362. <https://doi.org/10.1177/1948550617697177>
-- Lakens, D., Scheel, A. M., & Isager, P. M. (2018). Equivalence Testing for Psychological Research: A Tutorial. Advances in Methods and Practices in Psychological Science, 1(2), 259–269. https://doi.org/10.1177/2515245918770963
 
 **Debatte über NHST vs. Bayes**
 

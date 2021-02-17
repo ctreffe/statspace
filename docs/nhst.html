@@ -425,6 +425,19 @@ Abbildung 1. XKCD-Comic zum Nullhypothesentesten.
 </ul>
 <p>In diesem Beispiel ist es unserer Einschätzung nach sinnvoll, die Minimierung der falsch-negativ Rate besonders zu gewichten. Wenn wir also die Stichprobengröße nicht mehr erhöhen können, würde das bedeuten, ggf. ein höheres Alpha von bspw. <span class="math inline">\(\alpha = 0.20\)</span> zu wählen. Wir würden so zwar in einem von 5 Fällen ein unschädliches Mittel nicht zulassen, könnten aber die Gefahr minimieren, dass wir ein schädliches Mittel nicht als schädlich erkennen. In der Praxis müssten wir zunächst analysieren, wie groß die kleinste für uns interessante Effektstärke wäre, um auf dieser Basis zu einer informierten Abwägung von Alpha-Niveau und Power zu kommen.</p>
 </div>
+<div class="alert alert-danger">
+<p>Die in diesem Skript genannten Alpha-Niveaus sind <strong>soziale Konventionen</strong>:</p>
+<p><br />
+</p>
+<ul>
+<li><span class="math inline">\(\alpha = 0.05\)</span> ist das “Standard” Alpha Niveau</li>
+<li><span class="math inline">\(\alpha = 0.20\)</span> ist ein hohes Alpha-Niveau, mit dem die Nullhypothese bei konstanter Stichprobengröße und Effektstärke stärker getestet werden kann. Es ist auf Minimierung der falsch-negativ-Rate in Bezug auf die H1 ausgelegt.</li>
+<li><span class="math inline">\(\alpha = 0.01\)</span> ist ein niedrigeres, also strengeres, Alpha-Niveau, mit dem die falsch-positiv-Rate verringert werden kann.</li>
+</ul>
+<p><br />
+</p>
+<p>Man sollte diese sozialen Konventionen kennen, sich von ihnen aber nicht blenden lassen. Wichtig ist vor allem, dass Forscher:innen <em>vor</em> der Datenerhebung sinnvolle Alpha-Niveaus festlegen und eine sinnvolle Stichprobenplanung für angemessene Power unternehmen. In der Forschung gibt es intensive (und sehr lehrreiche) Debatten um die Festzsetzung von Alpha-Niveaus. Drei wichtige Beiträge, mit denen Interessierte Einblick in die Debatte nehmen können, sind unten in der Literaturliste zu finden.</p>
+</div>
 </div>
 <div id="schlussfolgerungen-über-die-h0" class="section level3">
 <h3>Schlussfolgerungen über die H0</h3>
@@ -476,33 +489,18 @@ Abbildung 3. XKCD-Comic zur NHST-vs-Bayes Debatte
 </p>
 </div>
 </div>
-<div id="ein-hinweis-zu-alpha-niveaus" class="section level2 alert alert-danger">
-<h2>Ein Hinweis zu Alpha-Niveaus</h2>
-<p>Die in diesem Skript genannten Alpha-Niveaus sind <strong>soziale Konventionen</strong>:</p>
-<p><br />
-</p>
-<ul>
-<li><span class="math inline">\(\alpha = 0.05\)</span> ist das “Standard” Alpha Niveau</li>
-<li><span class="math inline">\(\alpha = 0.20\)</span> ist ein hohes Alpha-Niveau, mit dem die Nullhypothese bei konstanter Stichprobengröße und Effektstärke stärker getestet werden kann. Es ist auf Minimierung der falsch-negativ-Rate in Bezug auf die H1 ausgelegt.</li>
-<li><span class="math inline">\(\alpha = 0.01\)</span> ist ein niedrigeres, also strengeres, Alpha-Niveau, mit dem die falsch-positiv-Rate verringert werden kann.</li>
-</ul>
-<p><br />
-</p>
-<p>Man sollte diese sozialen Konventionen kennen, sich von ihnen aber nicht blenden lassen. Wichtig ist vor allem, dass Forscher:innen <em>vor</em> der Datenerhebung sinnvolle Alpha-Niveaus festlegen und eine sinnvolle Stichprobenplanung für angemessene Power unternehmen. In der Forschung gibt es intensive (und sehr lehrreiche) Debatten um die Festzsetzung von Alpha-Niveaus. Drei wichtige Beiträge, mit denen Interessierte Einblick in die Debatte nehmen können, sind:</p>
-<p><br />
-</p>
-<ul>
-<li><p>Benjamin, D. J., Berger, J. O., Johannesson, M., Nosek, B. A., Wagenmakers, E.-J., Berk, R., … Johnson, V. E. (2017). Redefine statistical significance. Nature Human Behaviour, 2(January), 6–10. <a href="https://doi.org/10.1038/s41562-017-0189-z" class="uri">https://doi.org/10.1038/s41562-017-0189-z</a></p></li>
-<li><p>Amrhein, V., &amp; Greenland, S. (2017). Remove, rather than redefine, statistical significance. Nature Human Behaviour, 133(2016), 1. <a href="https://doi.org/10.1038/s41562-017-0224-0" class="uri">https://doi.org/10.1038/s41562-017-0224-0</a></p></li>
-<li><p>Lakens, D., Adolfi, F. G., Albers, C. J., Anvari, F., Apps, M. A. J., Argamon, S. E., … Zwaan, R. A. (2018). Justify your alpha. Nature Human Behaviour, 2(3), 168–171. <a href="https://doi.org/10.1038/s41562-018-0311-x" class="uri">https://doi.org/10.1038/s41562-018-0311-x</a></p></li>
-</ul>
-</div>
 <div id="literatur" class="section level2">
 <h2>Literatur</h2>
 <p><strong>Äquivalenztests: Evidenz für die Nullhypothese im NHST Paradigma</strong></p>
 <ul>
 <li>Lakens, D. (2017). Equivalence Tests: A Practical Primer for t Tests, Correlations, and Meta-Analyses. Social Psychological and Personality Science, 8(4), 355–362. <a href="https://doi.org/10.1177/1948550617697177" class="uri">https://doi.org/10.1177/1948550617697177</a></li>
 <li>Lakens, D., Scheel, A. M., &amp; Isager, P. M. (2018). Equivalence Testing for Psychological Research: A Tutorial. Advances in Methods and Practices in Psychological Science, 1(2), 259–269. <a href="https://doi.org/10.1177/2515245918770963" class="uri">https://doi.org/10.1177/2515245918770963</a></li>
+</ul>
+<p><strong>Debatte um Alpha-Niveaus</strong></p>
+<ul>
+<li><p>Benjamin, D. J., Berger, J. O., Johannesson, M., Nosek, B. A., Wagenmakers, E.-J., Berk, R., … Johnson, V. E. (2017). Redefine statistical significance. Nature Human Behaviour, 2(January), 6–10. <a href="https://doi.org/10.1038/s41562-017-0189-z" class="uri">https://doi.org/10.1038/s41562-017-0189-z</a></p></li>
+<li><p>Amrhein, V., &amp; Greenland, S. (2017). Remove, rather than redefine, statistical significance. Nature Human Behaviour, 133(2016), 1. <a href="https://doi.org/10.1038/s41562-017-0224-0" class="uri">https://doi.org/10.1038/s41562-017-0224-0</a></p></li>
+<li><p>Lakens, D., Adolfi, F. G., Albers, C. J., Anvari, F., Apps, M. A. J., Argamon, S. E., … Zwaan, R. A. (2018). Justify your alpha. Nature Human Behaviour, 2(3), 168–171. <a href="https://doi.org/10.1038/s41562-018-0311-x" class="uri">https://doi.org/10.1038/s41562-018-0311-x</a></p></li>
 </ul>
 <p><strong>Debatte über NHST vs. Bayes</strong></p>
 <ul>
