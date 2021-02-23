@@ -644,7 +644,7 @@ Dieses Skript wurde geschrieben, um Situationen abzudecken, in denen man mit
 multiplen Analysen konfrontiert ist, und das beste tun möchte, eine angemessene
 Interpretation zu finden. Daraus leitet sich nicht direkt ab, dass Experimente
 mit solchen multiplen Analysen geplant werden sollten. In der Planung von 
-Studien macht es im Gegenteil häufig eher Sinn, weniger Studien (und dadurch
+Studien macht es im Gegenteil häufig eher Sinn, wann immer möglich weniger Studien (und dadurch
 weniger Tests) mit größeren Stichproben durchzuführen, als mehr Studien mit 
 kleineren Stichproben.
 </div>
