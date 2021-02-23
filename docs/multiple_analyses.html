@@ -404,7 +404,7 @@ y_{ij} = &amp; \beta_{0j} + \beta_{1j} \cdot x_i + \epsilon_{ij}\\
 <div id="verschiedene-effektstärken" class="section level4">
 <h4>Verschiedene Effektstärken</h4>
 <p>Bleiben wir zunächst einmal bei unserer Stichprobengröße von <span class="math inline">\(n = 25\)</span> und schauen uns an, wie viele Tests bei verschiedenen zugrundeliegenden Effektstärken signifikant werden:</p>
-<p><img src="multiple_analyses_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="multiple_analyses_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <p>Wichtige Punkte dabei:</p>
 <ul>
 <li>Das linke Panel zeigt noch einmal den Plot von oben zum Vergleich, mit einer aus der Simulation abgeleiteten Rat von falsch-positiven Befunden (ob man den Anteil signifikanter Ergebnisse “Power” oder “Falsch-Positiv-Rate” nennt, hängt davon ab, ob es einen wahren Effekt gibt).</li>
@@ -415,7 +415,7 @@ y_{ij} = &amp; \beta_{0j} + \beta_{1j} \cdot x_i + \epsilon_{ij}\\
 <div id="verschiedene-stichprobengrößen" class="section level4">
 <h4>Verschiedene Stichprobengrößen</h4>
 <p>Jetzt gehen wir einen Schritt weiter, und schauen uns das Befundmuster noch für zwei zusätzliche Stichprobengrößen an, nämlich <span class="math inline">\(n = 50\)</span> und <span class="math inline">\(n = 100\)</span>.</p>
-<p><img src="multiple_analyses_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="multiple_analyses_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <p>Wichtige Punkte dabei:</p>
 <ul>
 <li>Die linke Spalte (wahrer Effekt ist 0) zeigt sich unbeeindruckt von der Stichprobengröße: Die Alpha-Fehler Inflation bleibt konstant. (Aber Vorsicht! Sie ist nicht grundsätzlich konstant, sondern nur unabhängig von der Stichprobengröße. Doch je mehr Tests durchgeführt werden, desto stärker wird die Inflation.)</li>
@@ -427,7 +427,7 @@ y_{ij} = &amp; \beta_{0j} + \beta_{1j} \cdot x_i + \epsilon_{ij}\\
 <div id="welchen-einfluss-hat-die-anzahl-von-tests" class="section level3">
 <h3>Welchen Einfluss hat die Anzahl von Tests?</h3>
 <p>Bisher haben wir die Anzahl von Tests konstant bei vier gehalten, damit unsere Simulation mit der Analyse von Paul und Marie vergleichbar bleibt. Doch was passiert, wenn wir nicht vier, sondern zehn Tests durchführen? Das können wir im nächsten Plot sehen. Wir beschränken uns dafür wieder auf eine Stichprobengröße von <span class="math inline">\(n = 25\)</span>.</p>
-<p><img src="multiple_analyses_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="multiple_analyses_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <p>Wichtige Punkte dabei:</p>
 <ul>
 <li><p>Die <strong>Alpha-Fehler-Inflation</strong> steigt mit steigender Testzahl. Mit 36 %-prozentiger Wahrscheinlichkeit ist hier <em>mindestens</em> ein Test signifikant, obwohl die wahre Effektstärke 0 ist. Wir können also wirklich nicht einfach viele Tests machen und “schauen, was funktioniert” - das führt uns in die Irre. Wir müssen das gesamt Muster betrachten.</p></li>
@@ -486,6 +486,42 @@ P(k\neq0|n=4,p=0.05) &amp; = P(k=1|n,p) + P(k=2|n,p) + P(k3|n,p) + P(k=4|n,p)\\
  &amp; \approx 0.185 
 \end{array}\]</span></p>
 <p>Auch <strong>Power-Berechnungen</strong> können analytisch durchgeführt werden, aber das übersteigt nun doch den Horizont dieses Zusatzinfo-Kastens.</p>
+</div>
+<div class="alert alert-info">
+<p><strong>Zusatzinfo 3: Multiples Testen und Testplanung</strong></p>
+<p>Dieses Skript wurde geschrieben, um Situationen abzudecken, in denen man mit multiplen Analysen konfrontiert ist, und das beste tun möchte, eine angemessene Interpretation zu finden. Daraus leitet sich nicht direkt ab, dass Experimente mit solchen multiplen Analysen geplant werden sollten. In der Planung von Studien macht es im Gegenteil häufig eher Sinn, weniger Studien (und dadurch weniger Tests) mit größeren Stichproben durchzuführen, als mehr Studien mit kleineren Stichproben.</p>
+</div>
+<div class="alert alert-info">
+<p><strong>Zusatzinfo 4: Alternative Interpretationsmöglichkeiten</strong></p>
+<p>Eine sehr beliebte Alternative (oder Ergänzung) zu dem hier vorgestellten Vorgehen bei der Interpretation multipler Tests ist die Korrektur des Alpha-Niveaus, bspw. die Bonferroni-Korrektur. Durch diese Korrektur kann erreicht werden, dass die <em>gesamte</em> falsch-positiv-Rate nicht größer als das Alpha-Niveau wird.</p>
+<p>Bei der Bonferroni-Korrektur wird das Alpha-Niveau durch die Anzahl der Tests geteilt. Die Nullhypothese wird dann verworfen, wenn in <em>einem</em> der Tests ein signifikantes Ergebnis vorliegt. Schauen wir uns das am besten mit einem Beispiel an. Nehmen wir einmal an, wir wollen testen, ob <a href="https://xkcd.com/882/">“Jelly Beans” Akne hervorrufen</a>. Es gibt 20 verschiedene Farben von Jelly Beans. Wir führen für jede Farbe einen Test durch. Legen wir für jeden Test ein Alpha-Niveau von 0.05 zugrunde, dann ist es sehr wahrscheinlich, dass einer oder mehr unserer Tests signifikant wird. Genau genommen beträgt die Wahrscheinlichkeit, dass einer oder mehr Tests falsch-positiv ein signifikantes Ergebnis zeigen gerundet ca. 64 %. Wir können das mit der Binomialverteilung genau berechnen (siehe Zusatzinfo 2):</p>
+<span class="math display">\[\begin{array}{ll}
+P(k \neq 0|n=20, p=0.05) &amp; = 1 - P(k = 0|n=20, p=0.05) \\
+&amp; = 1 - \binom{20}{0}0.05^0(1-0.05)^{20-0} \\
+&amp; = 1 - 1\cdot 1 \cdot 0.95^{20} \\
+&amp; = 1 - 0.95^{20} \\
+&amp; = 1 - 0.3584859 \\
+&amp; \approx 0.641
+\end{array}\]</span>
+<p>Das heißt, praktisch haben wir über alle Tests zusammengerechnet ein Alpha-Niveau von <span class="math inline">\(\alpha_{family} \approx 0.64\)</span>. Das nennen wir auch das <em>family-wise</em> Alpha-Niveau, weil es sich auf eine <em>Familie</em> von zusammengehörenden Tests bezieht. Nun korrigieren wir das Alpha-Niveau mit der Bonferroni-Korrektur:</p>
+<span class="math display">\[\begin{array}{ll}
+
+\alpha_{bf} &amp; = \frac{\alpha}{n} \\
+&amp; = 0.05 / 20 \\
+&amp; = 0.0025
+\end{array}\]</span>
+<p>Schauen wir nun, welche falsch-positiv-Rate wir mit <span class="math inline">\(\alpha_{bf} = 0.0025\)</span> erhalten:</p>
+<span class="math display">\[\begin{array}{ll}
+P(k \neq 0|n=20, p=0.0025) &amp; = 1 - P(k = 0|n=20, p=0.0025) \\
+&amp; = 1 - \binom{20}{0}0.0025^0(1-0.0025)^{20-0} \\
+&amp; = 1 - 1\cdot 1 \cdot 0.9975^{20} \\
+&amp; = 1 - 0.9975^{20} \\
+&amp; = 1 - 0.9511699 \\
+&amp; \approx 0.049
+\end{array}\]</span>
+<p>Wir konnten unser <em>family-wise</em> Alpha-Niveau also erfolgreich auf <span class="math inline">\(0.049\)</span> korrigieren. Eine Sache kann jedoch auffallen: Unser family-wise Alpha-Niveau liegt nun sogar <em>unter</em> 0.05! Aus diesem Grund gilt die Bonferroni-Korrektur als eine konservative Korrektur: Sie drückt die falsch-positiv-Rate <em>etwas</em> stärker als es das ursprüngliche Alpha-Niveau vorgeben würde.</p>
+<p><strong>Welche Variante zur Analyse multiple Befunde sollte man nun wählen?</strong></p>
+<p><em>Das kommt darauf an</em>. Die Korrektur des Alpha-Niveaus, insbesondere die Bonferroni- Korrektur ist einfach und schnell erledigt. Die oben im Skipt vorgestellte Analyse ist aufwendiger, aber genauer. Es kommt also wie so häufig darauf an, welche Kriterien bei der Analyse im Vordergrund stehen. Soll es schnell gehen, dann ist eine Bonferroni-Korrektur vertretbar. Andernfalls ist es hilfreich, sich die Ergebnisse detailliert anzusehen.</p>
 </div>
 </div>
 <div id="daten-und-skript" class="section level1">

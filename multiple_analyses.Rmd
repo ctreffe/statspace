@@ -637,6 +637,86 @@ Auch **Power-Berechnungen** können analytisch durchgeführt werden, aber das ü
 
 </div>
 
+<div class="alert alert-info">
+**Zusatzinfo 3: Multiples Testen und Testplanung**
+
+Dieses Skript wurde geschrieben, um Situationen abzudecken, in denen man mit 
+multiplen Analysen konfrontiert ist, und das beste tun möchte, eine angemessene
+Interpretation zu finden. Daraus leitet sich nicht direkt ab, dass Experimente
+mit solchen multiplen Analysen geplant werden sollten. In der Planung von 
+Studien macht es im Gegenteil häufig eher Sinn, weniger Studien (und dadurch
+weniger Tests) mit größeren Stichproben durchzuführen, als mehr Studien mit 
+kleineren Stichproben.
+</div>
+
+<div class="alert alert-info">
+**Zusatzinfo 4: Alternative Interpretationsmöglichkeiten**
+
+Eine sehr beliebte Alternative (oder Ergänzung) zu dem hier vorgestellten Vorgehen
+bei der Interpretation multipler Tests ist die Korrektur des Alpha-Niveaus, bspw.
+die Bonferroni-Korrektur. Durch diese Korrektur kann erreicht werden, dass die 
+*gesamte* falsch-positiv-Rate nicht größer als das Alpha-Niveau wird. 
+
+Bei der Bonferroni-Korrektur wird das Alpha-Niveau durch die Anzahl der Tests 
+geteilt. Die Nullhypothese wird dann verworfen, wenn in *einem* der Tests ein
+signifikantes Ergebnis vorliegt. Schauen wir uns das am besten mit einem Beispiel
+an. Nehmen wir einmal an, wir wollen testen, ob ["Jelly Beans" Akne hervorrufen](https://xkcd.com/882/).
+Es gibt 20 verschiedene Farben von Jelly Beans. Wir führen für jede Farbe einen
+Test durch. Legen wir für jeden Test ein Alpha-Niveau von 0.05 zugrunde, dann 
+ist es sehr wahrscheinlich, dass einer oder mehr unserer Tests signifikant wird. 
+Genau genommen beträgt die Wahrscheinlichkeit, dass einer oder mehr Tests
+falsch-positiv ein signifikantes Ergebnis zeigen gerundet ca. 64 %. Wir können
+das mit der Binomialverteilung genau berechnen (siehe Zusatzinfo 2):
+
+\begin{array}{ll}
+P(k \neq 0|n=20, p=0.05) & = 1 - P(k = 0|n=20, p=0.05) \\
+& = 1 - \binom{20}{0}0.05^0(1-0.05)^{20-0} \\
+& = 1 - 1\cdot 1 \cdot 0.95^{20} \\
+& = 1 - 0.95^{20} \\
+& = 1 - 0.3584859 \\
+& \approx 0.641
+\end{array}
+
+Das heißt, praktisch haben wir über alle Tests zusammengerechnet ein Alpha-Niveau
+von $\alpha_{family} \approx 0.64$. Das nennen wir auch das *family-wise* 
+Alpha-Niveau, weil es sich auf eine *Familie* von zusammengehörenden Tests bezieht.
+Nun korrigieren wir das Alpha-Niveau mit der Bonferroni-Korrektur:
+
+\begin{array}{ll}
+
+\alpha_{bf} & = \frac{\alpha}{n} \\
+& = 0.05 / 20 \\
+& = 0.0025
+\end{array}
+
+Schauen wir nun, welche falsch-positiv-Rate wir mit $\alpha_{bf} = 0.0025$ erhalten:
+
+\begin{array}{ll}
+P(k \neq 0|n=20, p=0.0025) & = 1 - P(k = 0|n=20, p=0.0025) \\
+& = 1 - \binom{20}{0}0.0025^0(1-0.0025)^{20-0} \\
+& = 1 - 1\cdot 1 \cdot 0.9975^{20} \\
+& = 1 - 0.9975^{20} \\
+& = 1 - 0.9511699 \\
+& \approx 0.049
+\end{array}
+
+Wir konnten unser *family-wise* Alpha-Niveau also erfolgreich auf $0.049$ korrigieren. Eine
+Sache kann jedoch auffallen: Unser family-wise Alpha-Niveau liegt nun sogar 
+*unter* 0.05! Aus diesem Grund gilt die Bonferroni-Korrektur als eine konservative
+Korrektur: Sie drückt die falsch-positiv-Rate *etwas* stärker als es das ursprüngliche
+Alpha-Niveau vorgeben würde.
+
+**Welche Variante zur Analyse multiple Befunde sollte man nun wählen?**
+
+*Das kommt darauf an*. Die Korrektur des Alpha-Niveaus, insbesondere die Bonferroni-
+Korrektur ist einfach und schnell erledigt. Die oben im Skipt vorgestellte Analyse
+ist aufwendiger, aber genauer. Es kommt also wie so häufig darauf an, welche
+Kriterien bei der Analyse im Vordergrund stehen. Soll es schnell gehen, dann
+ist eine Bonferroni-Korrektur vertretbar. Andernfalls ist es hilfreich, sich
+die Ergebnisse detailliert anzusehen.
+
+</div>
+
 # Daten und Skript
 
 Hier können die Daten und das Skript der Datensimulation heruntergeladen werden:
