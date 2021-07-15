@@ -2,10 +2,15 @@
 title: "Welcome"
 ---
 
-Herzlich willkommen auf unserer Sammlung von Skripten mit Informationen über Forschungsmethoden und Praxisrelevanz in der Psychologie.
+__Herzlich willkommen auf unserer Sammlung von Methodenskripten und Lernunterlagen!__ 
+
+Diese Seite befindet sich derzeit im Aufbau und wird in kürze vollständig überarbeitet.
+Alle Skripte werden ggf. später unter anderen Direktlinks erreichbar sein, daher empfehlen
+wir dringend als Link zu dieser Skriptsammlung diese Startseite zu verwenden und nicht
+Links zu einzelenen Skripten.
 
 **Autoren**:
 
-Christian Treffenstädt (Projektleitung) ([treffenstaedt(at)psych.uni-goettingen.de](mailto:treffenstaedt@psych.uni-goettingen.de))
+Christian Treffenstädt ([treffenstaedt(at)psych.uni-goettingen.de](mailto:treffenstaedt@psych.uni-goettingen.de))
 
 Johannes Brachem ([brachem(at)psych.uni-goettingen.de](mailto:brachem@psych.uni-goettingen.de))

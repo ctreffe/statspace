@@ -1,3 +1,5 @@
-# R-Space
+# Statspace
 
-https://ctreffe.github.io/r-space/index.html
+Ein Repository für Methodenskripte und Lernunterlagen.
+
+https://ctreffe.github.io/statspace/index.html
